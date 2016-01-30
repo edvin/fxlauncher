@@ -9,6 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import javax.xml.bind.JAXB;
 import java.io.*;
@@ -39,10 +40,10 @@ public class Launcher extends Application {
 	    wrapper.setStyle(manifest.wrapperStyle);
 
         Scene scene = new Scene(wrapper);
-	    primaryStage.initStyle(manifest.stageStyle);
-        primaryStage.setScene(scene);
-        primaryStage.setTitle(manifest.name);
-        primaryStage.show();
+	    Stage stage = new Stage(StageStyle.UNDECORATED);
+	    stage.setScene(scene);
+	    stage.setTitle(manifest.name);
+	    stage.show();
 
         Task sync = sync();
 
@@ -51,6 +52,7 @@ public class Launcher extends Application {
         sync.setOnSucceeded(e -> {
             try {
                 app = launch(primaryStage);
+	            stage.close();
             } catch (Exception initError) {
                 reportError("Launch", initError);
             }

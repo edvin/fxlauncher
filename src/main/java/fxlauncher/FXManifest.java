@@ -1,7 +1,5 @@
 package fxlauncher;
 
-import javafx.stage.StageStyle;
-
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -22,8 +20,6 @@ public class FXManifest {
     String launchClass;
     @XmlElement(name = "lib")
     List<LibraryFile> files = new ArrayList<>();
-	@XmlAttribute
-	StageStyle stageStyle = StageStyle.DECORATED;
 	@XmlElement
 	String updateText = "Updating...";
 	@XmlElement
