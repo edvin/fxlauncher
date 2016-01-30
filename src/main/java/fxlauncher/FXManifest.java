@@ -10,7 +10,7 @@ import java.util.List;
 @SuppressWarnings("unchecked")
 @XmlRootElement(name = "Application")
 public class FXManifest {
-	public static final String filename = "fxapp.fxml";
+	public static final String filename = "fxapp.xml";
 
 	@XmlAttribute
     String name;
