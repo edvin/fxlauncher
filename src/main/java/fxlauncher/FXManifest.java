@@ -24,7 +24,7 @@ public class FXManifest {
     List<LibraryFile> files = new ArrayList<>();
 	@XmlAttribute
 	StageStyle stageStyle = StageStyle.DECORATED;
-	@XmlAttribute
+	@XmlElement
 	String updateText = "Updating...";
 	@XmlElement
 	String updateLabelStyle = "-fx-font-weight: bold;";
