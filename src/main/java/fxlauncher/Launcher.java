@@ -63,6 +63,10 @@ public class Launcher extends Application {
 		}).start();
 	}
 
+	public static void main(String[] args) {
+		launch(args);
+	}
+
 	private void createUpdateWrapper() {
 		phase = "Update Wrapper Creation";
 
