@@ -119,6 +119,12 @@ There is no need to rebuild the installer everytime you change your app. Just ru
 the contents of the build output folder to the Published APP URL, and every instance of your application will run
 the new version the next time they start.
 
+## A slimmer alternative
+
+It is also possible to embed _only_ the launchar jar in a native installer system like Advanced Installer
+and configure it to start the launcher with a single paramter pointing to your `app.xml`. With this approach,
+you can choose wether to include the JRE or have the installer software preinstall it as a prerequisite.
+
 ### A note on classloaders
 
 FXLauncher uses a custom classloader to dynamically load the synchronized resources. This classloader is 
