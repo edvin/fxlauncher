@@ -45,7 +45,7 @@ to perform the following steps:
 	<configuration>
 		<mainClass>fxlauncher.Launcher</mainClass>
 		<appName>CRMApplication</appName>
-		<vendor>SYSE</vendor>
+		<vendor>MyCompany</vendor>
 		<needShortcut>true</needShortcut>
 		<needMenu>true</needMenu>
 	</configuration>
@@ -69,7 +69,7 @@ to perform the following steps:
 ```
 
 Note that the mainClass is set to the launcher, _not_ to your main application class. Also note that the `build-jar`
-goal is executed in the `package` phase. The example above also includes a `built-native` goal in the `install` phase.
+goal is executed in the `package` phase. The example above also includes a `build-native` goal in the `install` phase.
 It is important that the `build-native` goal is run after FXLauncher adds the manifest.
 
 3. Create the manifest
