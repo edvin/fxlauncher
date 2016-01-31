@@ -1,16 +1,19 @@
 package fxlauncher;
 
+import javax.xml.bind.JAXB;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.net.URI;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
 @XmlRootElement(name = "Application")
 public class FXManifest {
-	public static final String filename = "fxapp.xml";
+	public static final String filename = "app.xml";
 
 	@XmlAttribute
     String name;
@@ -27,14 +30,21 @@ public class FXManifest {
 	@XmlElement
 	String progressBarStyle = "-fx-pref-width: 200;";
 	@XmlElement
-	String wrapperStyle = "-fx-spacing: 10;\n-fx-padding: 25;";
-	@XmlElement
-	String errorTitle = "Failed to %s application";
-	@XmlElement
-	String errorHeader = "There was an error during %s of the application";
+	String wrapperStyle = "-fx-spacing: 10; -fx-padding: 25;";
 
     public URI getFXAppURI() {
-        return uri.resolve("fxapp.xml");
+        return uri.resolve(filename);
     }
-}
 
+	public static Path getPath() {
+		return Paths.get(filename);
+	}
+
+	public void save() {
+		JAXB.marshal(this, getPath().toFile());
+	}
+
+	public static FXManifest load() {
+		return JAXB.unmarshal(getPath().toFile(), FXManifest.class);
+	}
+}

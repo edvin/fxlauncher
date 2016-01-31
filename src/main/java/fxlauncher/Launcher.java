@@ -2,11 +2,10 @@ package fxlauncher;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.concurrent.Task;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
+import javafx.scene.control.*;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -19,162 +18,212 @@ import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unchecked")
 public class Launcher extends Application {
-    private static FXManifest manifest;
-    private static Application app;
-    private static boolean offline = false;
+	private static final Logger log = Logger.getLogger("Launcher");
 
-    public void start(Stage primaryStage) throws Exception {
-	    ProgressBar progressBar = new ProgressBar();
-        progressBar.setStyle(manifest.progressBarStyle);
+	private FXManifest manifest;
+	private Application app;
+	private StackPane root;
+	private Stage primaryStage;
+	private ProgressBar progressBar;
+	private Stage stage;
+	private String phase;
 
-        Label label = new Label(manifest.updateText);
-        label.setStyle(manifest.updateLabelStyle);
+	public void start(Stage primaryStage) throws Exception {
+		this.primaryStage = primaryStage;
 
-        VBox wrapper = new VBox(label, progressBar);
-	    wrapper.setStyle(manifest.wrapperStyle);
+		root = new StackPane(new ProgressIndicator());
+		root.setPrefSize(200, 80);
+		root.setPadding(new Insets(10));
 
-        Scene scene = new Scene(wrapper);
-	    Stage stage = new Stage(StageStyle.UNDECORATED);
-	    stage.setScene(scene);
-	    stage.setTitle(manifest.name);
-	    stage.show();
+		stage = new Stage(StageStyle.UNDECORATED);
 
-        Task sync = sync();
+		Scene scene = new Scene(root);
+		stage.setScene(scene);
+		stage.show();
 
-        progressBar.progressProperty().bind(sync.progressProperty());
+		new Thread(() -> {
+			try {
+				updateManifest();
+				createUpdateWrapper();
+				syncFiles();
+				createApplication();
+				launchAppFromManifest();
+			} catch (Exception ex) {
+				reportError(String.format("Error during %s phase", phase), ex);
+			}
+		}).start();
+	}
 
-        sync.setOnSucceeded(e -> {
-            try {
-                app = launch(primaryStage);
-	            stage.close();
-            } catch (Exception initError) {
-                reportError("Launch", initError);
-            }
-        });
+	private void createUpdateWrapper() {
+		phase = "Update Wrapper Creation";
 
-        sync.setOnFailed(e -> reportError("Sync", sync.getException()));
-        new Thread(sync).start();
-    }
+		Platform.runLater(() -> {
+			stage.setTitle(manifest.name);
 
+			progressBar = new ProgressBar();
+			progressBar.setStyle(manifest.progressBarStyle);
 
-    public URLClassLoader createClassLoader() {
-        List<URL> libs = manifest.files.stream().map(LibraryFile::toURL).collect(Collectors.toList());
-        return new URLClassLoader(libs.toArray(new URL[libs.size()]));
-    }
+			Label label = new Label(manifest.updateText);
+			label.setStyle(manifest.updateLabelStyle);
 
-    public Application launch(Stage primaryStage) throws Exception {
-        URLClassLoader classLoader = createClassLoader();
-        Class<? extends Application> appclass = (Class<? extends Application>) classLoader.loadClass(manifest.launchClass);
-        Thread.currentThread().setContextClassLoader(classLoader);
-        Application app = appclass.newInstance();
-        app.init();
-        app.start(primaryStage);
-        return app;
-    }
+			VBox wrapper = new VBox(label, progressBar);
+			wrapper.setStyle(manifest.wrapperStyle);
+
+			root.getChildren().clear();
+			root.getChildren().add(wrapper);
+		});
+	}
 
 
-    public Task sync() throws IOException {
-        return new Task() {
-            protected Object call() throws Exception {
-                if (offline)
-                    return null;
+	public URLClassLoader createClassLoader() {
+		List<URL> libs = manifest.files.stream().map(LibraryFile::toURL).collect(Collectors.toList());
+		return new URLClassLoader(libs.toArray(new URL[libs.size()]));
+	}
 
-                List<LibraryFile> needsUpdate = manifest.files.stream().filter(LibraryFile::needsUpdate).collect(Collectors.toList());
-                Long totalBytes = needsUpdate.stream().mapToLong(f -> f.size).sum();
-                Long totalWritten = 0L;
+	private void launchAppFromManifest() throws Exception {
+		phase = "Application Init";
+		app.init();
+		phase = "Application Start";
+		Platform.runLater(() -> {
+			try {
+				stage.close();
+				app.start(primaryStage);
+			} catch (Exception ex) {
+				reportError("Failed to start application", ex);
+			}
+		});
+	}
 
-                for (LibraryFile lib : needsUpdate) {
-                    updateMessage(lib.file.concat("..."));
+	private void updateManifest() throws Exception {
+		phase = "Update Manifest";
 
-                    Path target = Paths.get(lib.file).toAbsolutePath();
-                    Files.createDirectories(target.getParent());
+		List<String> params = getParameters().getRaw();
 
-                    try (InputStream input = manifest.uri.resolve(lib.file).toURL().openStream();
-                         OutputStream output = Files.newOutputStream(target)) {
+		if (!params.isEmpty())
+			updateManifest(params.get(0));
+		else
+			syncManifest();
 
-                        byte[] buf = new byte[65536];
+		loadManifest(getLocalPath().toUri());
+	}
 
-                        int read;
-                        while ((read = input.read(buf)) > -1) {
-                            output.write(buf, 0, read);
-                            totalWritten += read;
-                            updateProgress(totalWritten, totalBytes);
-                        }
-                    }
-                }
+	private void syncFiles() throws Exception {
+		phase = "File Synchronization";
 
-                try (ByteArrayOutputStream mfstream = new ByteArrayOutputStream()) {
-                    JAXB.marshal(manifest, mfstream);
+		List<LibraryFile> needsUpdate = manifest.files.stream().filter(LibraryFile::needsUpdate).collect(Collectors.toList());
+		Long totalBytes = needsUpdate.stream().mapToLong(f -> f.size).sum();
+		Long totalWritten = 0L;
 
-                    Path manifestPath = Paths.get("fxapp.xml");
+		for (LibraryFile lib : needsUpdate) {
+			Path target = Paths.get(lib.file).toAbsolutePath();
+			Files.createDirectories(target.getParent());
 
-                    byte[] data = mfstream.toByteArray();
+			try (InputStream input = manifest.uri.resolve(lib.file).toURL().openStream();
+			     OutputStream output = Files.newOutputStream(target)) {
 
-                    if (Files.notExists(manifestPath) || !Arrays.equals(Files.readAllBytes(manifestPath), data))
-                        Files.write(manifestPath, data);
-                }
+				byte[] buf = new byte[65536];
 
-                return null;
-            }
-        };
-    }
+				int read;
+				while ((read = input.read(buf)) > -1) {
+					output.write(buf, 0, read);
+					totalWritten += read;
+					Double progress = totalWritten.doubleValue() / totalBytes.doubleValue();
+					Platform.runLater(() -> progressBar.setProgress(progress));
+				}
+			}
+		}
+	}
 
-    public void stop() throws Exception {
-        if (app != null)
-            app.stop();
-    }
+	private void createApplication() throws Exception {
+		phase = "Create Application";
 
-    private static void reportError(String job, Throwable error) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(String.format(manifest.errorTitle, job));
-        alert.setHeaderText(String.format(manifest.errorHeader, job));
+		URLClassLoader classLoader = createClassLoader();
+		Class<? extends Application> appclass = (Class<? extends Application>) classLoader.loadClass(manifest.launchClass);
+		Thread.currentThread().setContextClassLoader(classLoader);
+		app = appclass.newInstance();
+	}
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        PrintWriter writer = new PrintWriter(out);
-        error.printStackTrace(writer);
-        writer.close();
-        alert.setContentText(out.toString());
+	public void stop() throws Exception {
+		if (app != null)
+			app.stop();
+	}
 
-        alert.showAndWait();
-        Platform.exit();
-    }
+	private void reportError(String title, Throwable error) {
+		log.log(Level.WARNING, title, error);
 
-    public static void main(String[] args) throws Exception {
-        // If URI given explicitly, load from there
-        if (args.length > 0) {
-            loadManifest(URI.create(args[0]).resolve(FXManifest.filename));
-        } else {
-            // If no uri given, load from manifest and try to reload from the uri given in the manifest
-	        // If the local manifest doesn't exist, this is the best we can do.
-	        try {
-		        URI localURI = Paths.get(FXManifest.filename).toUri();
-		        loadManifest(localURI);
-	        } catch (Exception ex) {
-		        manifest = new FXManifest();
-		        manifest.errorHeader = String.format("Could not locate %s and no manifest uri parameter was given", FXManifest.filename);
-		        launch();
-		        Platform.runLater(() -> reportError("Manifest load", ex));
-		        return;
-	        }
+		Platform.runLater(() -> {
+			Alert alert = new Alert(Alert.AlertType.ERROR);
+			alert.setTitle(title);
+			alert.setHeaderText(title);
+			alert.getDialogPane().setPrefWidth(600);
 
-            try {
-                loadManifest(manifest.getFXAppURI());
-            } catch (Exception networkError) {
-                networkError.printStackTrace();
-                offline = true;
-            }
-        }
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			PrintWriter writer = new PrintWriter(out);
+			error.printStackTrace(writer);
+			writer.close();
+			TextArea text = new TextArea(out.toString());
+			alert.getDialogPane().setContent(text);
 
-        launch();
-    }
+			alert.showAndWait();
+			Platform.exit();
+		});
+	}
 
-    private static void loadManifest(URI uri) {
-        manifest = JAXB.unmarshal(uri, FXManifest.class);
-    }
+	private static Path getLocalPath() {
+		return Paths.get(FXManifest.filename);
+	}
+
+	private void syncManifest() throws Exception {
+		if (!Files.exists(FXManifest.getPath()))
+			throw new IllegalArgumentException(String.format("No %s in current directory", FXManifest.filename));
+
+		manifest = FXManifest.load();
+
+		try {
+			byte[] remoteContent = toByteArray(manifest.getFXAppURI().toURL().openStream());
+			byte[] localContent = Files.readAllBytes(FXManifest.getPath());
+
+			if (!Arrays.equals(remoteContent, localContent))
+				Files.write(FXManifest.getPath(), remoteContent, StandardOpenOption.TRUNCATE_EXISTING);
+		} catch (Exception ex) {
+			log.log(Level.WARNING, "Unable to update manifest", ex);
+		}
+	}
+
+	private static byte[] toByteArray(InputStream is) throws IOException {
+		try (ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
+			int read;
+			byte[] buf = new byte[16384];
+
+			while ((read = is.read(buf, 0, buf.length)) != -1)
+				buffer.write(buf, 0, read);
+
+			buffer.flush();
+
+			return buffer.toByteArray();
+		}
+	}
+
+	/**
+	 * Load manifest from the given uri and save it to the local filesystem
+	 *
+	 * @param uri The uri base path to fetch the manifest from
+	 */
+	private void updateManifest(String uri) {
+		loadManifest(URI.create(uri));
+		manifest.save();
+	}
+
+	private void loadManifest(URI uri) {
+		manifest = JAXB.unmarshal(uri, FXManifest.class);
+	}
 }
