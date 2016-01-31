@@ -108,7 +108,7 @@ The main method in `fxlauncher.CreateManifest` is invoked with the following arg
 You can run this from the command line instead of using a build tool:
  
 ```bash
-java -jar fxlauncher-1.0.1.jar http://hostname/app your.package.AppClass target/jfx/app MyApp
+java -cp fxlauncher-1.0.1.jar fxlauncher.CreateManifest http://hostname/app your.package.AppClass target/jfx/app MyApp
 ```
 
 All you need to do now is upload the contents of the target folder to the URL specified as the first argument to `CreateManifest`.
