@@ -2,6 +2,7 @@ package fxlauncher;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -151,6 +152,7 @@ public class Launcher extends Application {
 		phase = "Create Application";
 
 		URLClassLoader classLoader = createClassLoader();
+		FXMLLoader.setDefaultClassLoader(classLoader);
 		Class<? extends Application> appclass = (Class<? extends Application>) classLoader.loadClass(manifest.launchClass);
 		Thread.currentThread().setContextClassLoader(classLoader);
 		app = appclass.newInstance();
@@ -220,7 +222,7 @@ public class Launcher extends Application {
 	/**
 	 * Load manifest from the given uri and save it to the local filesystem
 	 *
-	 * @param uri The uri base path to fetch the manifest from
+	 * @param uri The uri to fetch the manifest from
 	 */
 	private void updateManifest(String uri) {
 		loadManifest(URI.create(uri));
