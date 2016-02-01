@@ -9,14 +9,14 @@ example uses Maven, but the launcher is not maven spesific in any way.
 ## How does it work?
 
 FXLauncher is a very small binary that can be used to boot your application. All it needs is access to your application 
-manifest [example here][http://fxsamples.tornado.no/app.xml]. FXLauncher will look
-for the manifest in the current folder, or you can specify it with a url parameter.
+manifest [example here](http://fxsamples.tornado.no/app.xml). FXLauncher will look
+for the manifest in the current folder, or you can specify it via a parameter.
  
 After the manifest is retrieved and stored in the current folder as `app.xml`, FXLauncher synchronizes every file
  mentioned in the manifest while providing the user with a progress indicator. After all resources are in sync,
  a classloader is initialized with all the resources from the manifest.
  
-Lastly, the application entrypoint retrieved from the manifest is invoked.
+Lastly, the application entrypoint retrieved from the manifest is invoked. Everything happens in-JVM, no restarts needed.
 
 Before each run, the launcher will synchronize all resources and seamlessly launch an always updated application.
 
@@ -85,17 +85,16 @@ to perform the following steps:
 				<argument>http://hostname/app</argument>
 				<argument>your.package.AppClass</argument>
 				<argument>${project.build.directory}/jfx/app</argument>
-				<argument>${project.description}</argument>
 			</arguments>
 		</configuration>
 	</plugin>
 	```
 	
 	The main method in `fxlauncher.CreateManifest` is invoked with the following arguments:
-	 1. Published APP Base URL
-	 2. Your application main class
-	 3. The output directory for the manifest (This must be where the resources for the app is placed)
-	 4. The application name used in the launcher
+	
+	 - Published APP Base URL
+	 - Your application main class
+	 - The output directory for the manifest (This must be where the resources for the app is placed)
 	
 	You can run this from the command line instead of using a build tool:
 	 
