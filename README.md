@@ -136,7 +136,8 @@ to perform the following steps:
 	Make javapackager bundle the launcher together with an argument pointing it to where you uploaded the manifest:
 	
 	```
-	javapackager -deploy -native -outdir packages -outfile MyApp -srcdir . -srcfiles lib/fxlauncher-1.0.1.jar -argument http://hostname/app/app.xml -appclass fxlauncher.Launcher -name "Myapp" -title "MyApp"
+	javapackager -deploy -native -outdir packages -outfile MyApp -srcdir . -srcfiles lib/fxlauncher-1.0.1.jar \
+	 -argument http://hostname/app/app.xml -appclass fxlauncher.Launcher -name "Myapp" -title "MyApp"
 	```
 
 	The result is a native installer for your platform that will automatically update whenever you deploy new artifacts to `http://hostname/app`.
