@@ -146,7 +146,7 @@ to perform the following steps:
 ### Try a native installer
 	
 	You can download prebuilt installers for a demo application to see FXLauncher in action
-	
+
     - [MacOSX](http://fxsamples.tornado.no/FXSamples-1.0.dmg)
     - [Windows](http://fxsamples.tornado.no/FXSamples-1.0.exe)
     - [Linux](http://fxsamples.tornado.no/fxsamples-1.0.deb)
