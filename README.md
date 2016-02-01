@@ -9,7 +9,7 @@ example uses Maven, but the launcher is not maven spesific in any way.
 ## How does it work?
 
 FXLauncher is a very small binary that can be used to boot your application. All it needs is access to your application 
-manifest (example here)[https://github.com/edvin/tornadofx-samples/blob/master/app/app.xml]. FXLauncher will look
+manifest [example here][http://fxsamples.tornado.no/app.xml]. FXLauncher will look
 for the manifest in the current folder, or you can specify it with a url parameter.
  
 After the manifest is retrieved and stored in the current folder as `app.xml`, FXLauncher synchronizes every file
@@ -22,7 +22,7 @@ Before each run, the launcher will synchronize all resources and seamlessly laun
 
 ## How to configure your project
 
-Look at the (deployment descriptor example)[https://github.com/edvin/tornadofx-samples/blob/master/pom.xml]. You need
+Have a look at the [deployment descriptor example](https://github.com/edvin/tornadofx-samples/blob/master/pom.xml). You need
 to perform the following steps:
 
 1. Include FXLauncher as a dependency
@@ -144,7 +144,7 @@ to perform the following steps:
 	To deploy your artifacts, a simple `scp` will do the trick, or you can use a build system plugin that transfers the files for you.
 	
 ### Try a native installer
-	´
+	
 	You can download prebuilt installers for a demo application to see FXLauncher in action
 	
     - [MacOSX](http://fxsamples.tornado.no/FXSamples-1.0.dmg)
