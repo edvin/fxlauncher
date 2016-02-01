@@ -111,7 +111,7 @@ to perform the following steps:
 1. Lanucher is local, remote manifest
 
 	```bash
-	java -jar fxlauncher-1.0.1.jar http://hostname/app/app.xml
+	java -jar fxlauncher-1.0.1.jar http://fxsamples.tornado.no/app.xml
 	```
 
 2. Launcher and manifest is local (download app.xml first)
@@ -143,6 +143,14 @@ to perform the following steps:
 	
 	To deploy your artifacts, a simple `scp` will do the trick, or you can use a build system plugin that transfers the files for you.
 	
+### Try a native installer
+	´
+	You can download prebuilt installers for a demo application to see FXLauncher in action
+	
+    - [MacOSX](http://fxsamples.tornado.no/FXSamples-1.0.dmg)
+    - [Windows](http://fxsamples.tornado.no/FXSamples-1.0.exe)
+    - [Linux](http://fxsamples.tornado.no/fxsamples-1.0.deb)
+
 ## A slimmer alternative
 
 It is also possible to embed the launchar jar in a native installer system like Advanced Installer
