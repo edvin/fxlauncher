@@ -57,4 +57,22 @@ public class LibraryFile {
         }
     }
 
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        LibraryFile that = (LibraryFile) o;
+
+        if (!file.equals(that.file)) return false;
+        if (!checksum.equals(that.checksum)) return false;
+        return size.equals(that.size);
+
+    }
+
+    public int hashCode() {
+        int result = file.hashCode();
+        result = 31 * result + checksum.hashCode();
+        result = 31 * result + size.hashCode();
+        return result;
+    }
 }

@@ -1,6 +1,5 @@
 package fxlauncher;
 
-import javax.xml.bind.JAXB;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -13,8 +12,6 @@ import java.util.List;
 @SuppressWarnings("unchecked")
 @XmlRootElement(name = "Application")
 public class FXManifest {
-	public static final String filename = "app.xml";
-
 	@XmlAttribute
     String name;
     @XmlAttribute
@@ -32,19 +29,44 @@ public class FXManifest {
 	@XmlElement
 	String wrapperStyle = "-fx-spacing: 10; -fx-padding: 25;";
 
-    public URI getFXAppURI() {
-        return uri.resolve(filename);
+    public String getFilename() {
+        return String.format("%s.xml", launchClass);
     }
 
-	public static Path getPath() {
-		return Paths.get(filename);
+    public URI getFXAppURI() {
+        return uri.resolve("app.xml");
+    }
+
+	public Path getPath() {
+		return Paths.get(getFilename());
 	}
 
-	public void save() {
-		JAXB.marshal(this, getPath().toFile());
-	}
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-	public static FXManifest load() {
-		return JAXB.unmarshal(getPath().toFile(), FXManifest.class);
-	}
+        FXManifest that = (FXManifest) o;
+
+        if (!name.equals(that.name)) return false;
+        if (!uri.equals(that.uri)) return false;
+        if (!launchClass.equals(that.launchClass)) return false;
+        if (!files.equals(that.files)) return false;
+        if (!updateText.equals(that.updateText)) return false;
+        if (!updateLabelStyle.equals(that.updateLabelStyle)) return false;
+        if (!progressBarStyle.equals(that.progressBarStyle)) return false;
+        return wrapperStyle.equals(that.wrapperStyle);
+
+    }
+
+    public int hashCode() {
+        int result = name.hashCode();
+        result = 31 * result + uri.hashCode();
+        result = 31 * result + launchClass.hashCode();
+        result = 31 * result + files.hashCode();
+        result = 31 * result + updateText.hashCode();
+        result = 31 * result + updateLabelStyle.hashCode();
+        result = 31 * result + progressBarStyle.hashCode();
+        result = 31 * result + wrapperStyle.hashCode();
+        return result;
+    }
 }

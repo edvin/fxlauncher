@@ -13,7 +13,7 @@ public class CreateManifest {
         String launchClass = args[1];
         Path appPath = Paths.get(args[2]);
         FXManifest manifest = create(baseURI, launchClass, appPath);
-        JAXB.marshal(manifest, appPath.resolve(FXManifest.filename).toFile());
+        JAXB.marshal(manifest, appPath.resolve("app.xml").toFile());
     }
 
     public static FXManifest create(URI baseURI, String launchClass, Path appPath) throws IOException {
