@@ -11,13 +11,15 @@ There is also a [QuickStart Project](https://github.com/edvin/fxldemo) with a
  
 ## How does it work?
 
-FXLauncher is a 14Kb jar that can be used to boot your application. All it needs is access to your application 
-manifest [example here](http://fxldemo.tornado.no/app.xml). FXLauncher will look
-for the manifest in the current folder, or you can specify it via a parameter.
+FXLauncher is a 14Kb jar that can be used to boot your application. It knows the location
+of your application repository where you host all the app resources.
+
+See a manifest [example here](http://fxldemo.tornado.no/app.xml). FXLauncher will look up the
+remote repository to check for a newer version of the manifest on each startup.
  
-After the manifest is retrieved and stored in the current folder as `app.xml`, FXLauncher synchronizes every file
- mentioned in the manifest while providing the user with a progress indicator. After all resources are in sync,
- a classloader is initialized with all the resources from the manifest.
+After the manifest is retrieved, FXLauncher synchronizes every file mentioned in the manifest while 
+providing the user with a progress indicator. After all resources are in sync, a classloader is 
+initialized with all the resources from the manifest.
  
 Lastly, the application entry point retrieved from the manifest is invoked. Everything happens in-JVM, no restarts needed.
 
@@ -31,7 +33,7 @@ The following steps are involved:
 
 - Compile project jar to app.dir
 - Copy dependencies to app.dir
-- Generate app.xml manifest and embed into launcher
+- Generate app.xml manifest and embed it into the launcher
 - Create native installer
 - Upload artifacts to auto update repository
 
@@ -79,7 +81,7 @@ All you need to do is configure the project spesific configuration properties:
 	
 	mvn exec:exec@installer
 
-The native installer does not contain any application code, only the launcher and the manifest uri. There is
+The native installer does not contain any application code, only the launcher. There is
 	no need to rebuild your native installer when you update your project, simply run the `deploy-app` goal
 	and all users will run the newest version on their next startup. Point users to the `fxlauncher.jar` or
 	 to a native installer if you wish.
