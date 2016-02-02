@@ -189,12 +189,18 @@ public class Launcher extends Application {
 	}
 
 	private void syncManifest() throws Exception {
-		if (!Files.exists(FXManifest.getPath()))
-			throw new IllegalArgumentException(String.format("No %s in current directory", FXManifest.filename));
+        if (Files.exists(FXManifest.getPath())) {
+            manifest = FXManifest.load();
+        } else {
+            URL embeddedManifest = Launcher.class.getResource("/app.xml");
+            if (embeddedManifest != null)
+                manifest = JAXB.unmarshal(embeddedManifest, FXManifest.class);
+        }
 
-		manifest = FXManifest.load();
+        if (manifest == null)
+            throw new IllegalArgumentException(String.format("No %s in current or embedded in launcher!", FXManifest.filename));
 
-		try {
+        try {
 			byte[] remoteContent = toByteArray(manifest.getFXAppURI().toURL().openStream());
 			byte[] localContent = Files.readAllBytes(FXManifest.getPath());
 
