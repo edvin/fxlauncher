@@ -12,8 +12,6 @@ import java.util.List;
 @SuppressWarnings("unchecked")
 @XmlRootElement(name = "Application")
 public class FXManifest {
-	@XmlAttribute
-    String name;
     @XmlAttribute
     URI uri;
     @XmlAttribute(name = "launch")
@@ -47,26 +45,26 @@ public class FXManifest {
 
         FXManifest that = (FXManifest) o;
 
-        if (!name.equals(that.name)) return false;
-        if (!uri.equals(that.uri)) return false;
-        if (!launchClass.equals(that.launchClass)) return false;
-        if (!files.equals(that.files)) return false;
-        if (!updateText.equals(that.updateText)) return false;
-        if (!updateLabelStyle.equals(that.updateLabelStyle)) return false;
-        if (!progressBarStyle.equals(that.progressBarStyle)) return false;
-        return wrapperStyle.equals(that.wrapperStyle);
+        if (uri != null ? !uri.equals(that.uri) : that.uri != null) return false;
+        if (launchClass != null ? !launchClass.equals(that.launchClass) : that.launchClass != null) return false;
+        if (files != null ? !files.equals(that.files) : that.files != null) return false;
+        if (updateText != null ? !updateText.equals(that.updateText) : that.updateText != null) return false;
+        if (updateLabelStyle != null ? !updateLabelStyle.equals(that.updateLabelStyle) : that.updateLabelStyle != null)
+            return false;
+        if (progressBarStyle != null ? !progressBarStyle.equals(that.progressBarStyle) : that.progressBarStyle != null)
+            return false;
+        return wrapperStyle != null ? wrapperStyle.equals(that.wrapperStyle) : that.wrapperStyle == null;
 
     }
 
     public int hashCode() {
-        int result = name.hashCode();
-        result = 31 * result + uri.hashCode();
-        result = 31 * result + launchClass.hashCode();
-        result = 31 * result + files.hashCode();
-        result = 31 * result + updateText.hashCode();
-        result = 31 * result + updateLabelStyle.hashCode();
-        result = 31 * result + progressBarStyle.hashCode();
-        result = 31 * result + wrapperStyle.hashCode();
+        int result = uri != null ? uri.hashCode() : 0;
+        result = 31 * result + (launchClass != null ? launchClass.hashCode() : 0);
+        result = 31 * result + (files != null ? files.hashCode() : 0);
+        result = 31 * result + (updateText != null ? updateText.hashCode() : 0);
+        result = 31 * result + (updateLabelStyle != null ? updateLabelStyle.hashCode() : 0);
+        result = 31 * result + (progressBarStyle != null ? progressBarStyle.hashCode() : 0);
+        result = 31 * result + (wrapperStyle != null ? wrapperStyle.hashCode() : 0);
         return result;
     }
 }

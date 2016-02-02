@@ -72,8 +72,6 @@ public class Launcher extends Application {
         phase = "Update Wrapper Creation";
 
         Platform.runLater(() -> {
-            stage.setTitle(manifest.name);
-
             progressBar = new ProgressBar();
             progressBar.setStyle(manifest.progressBarStyle);
 
@@ -187,7 +185,7 @@ public class Launcher extends Application {
 
             if (remoteManifest == null) {
                 log.info(String.format("No remote manifest at %s", manifest.getFXAppURI()));
-            } else {
+            } else if (!remoteManifest.equals(manifest)) {
                 manifest = remoteManifest;
                 JAXB.marshal(manifest, manifest.getPath().toFile());
             }
