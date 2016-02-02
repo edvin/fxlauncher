@@ -88,9 +88,9 @@ The native installer does not contain any application code, only the launcher an
 	
 Check out these prebuilt installers for a more complex demo application
 
-- [MacOSX](http://fxsamples.tornado.no/FXSamples-1.0.dmg)
-- [Windows](http://fxsamples.tornado.no/FXSamples-1.0.exe)
-- [Linux](http://fxsamples.tornado.no/fxsamples-1.0.deb)
+- [MacOSX](http://fxsamples.tornado.no/CRMApplication-1.0.dmg)
+- [Windows](http://fxsamples.tornado.no/CRMApplication-1.0.exe)
+- [Linux](http://fxsamples.tornado.no/crmapplication-1.0.deb)
 
 ## A slimmer alternative
 
