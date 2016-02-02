@@ -225,8 +225,12 @@ public class Launcher extends Application {
 	 * @param uri The uri to fetch the manifest from
 	 */
 	private void updateManifest(String uri) {
-		loadManifest(URI.create(uri));
-		manifest.save();
+		try {
+			loadManifest(URI.create(uri));
+			manifest.save();
+		} catch (Exception ex) {
+			log.log(Level.WARNING, String.format("Unable to update manifest from %s", uri));
+		}
 	}
 
 	private void loadManifest(URI uri) {

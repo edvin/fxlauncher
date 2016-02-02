@@ -23,7 +23,7 @@ public class CreateManifest {
 
         Files.walkFileTree(appPath, new SimpleFileVisitor<Path>() {
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                if (!Files.isDirectory(file) && file.toString().endsWith(".jar"))
+                if (!Files.isDirectory(file) && file.toString().endsWith(".jar") && !file.getFileName().toString().startsWith("fxlauncher"))
                     manifest.files.add(new LibraryFile(appPath, file));
                 return FileVisitResult.CONTINUE;
             }

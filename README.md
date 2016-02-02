@@ -6,10 +6,13 @@ a native installer with automatic app updates.
 You can see the launcher in action in this [Demo Application](https://github.com/edvin/tornadofx-samples). The
 example uses Maven, but the launcher is not maven spesific in any way.
 
+There is also a [QuickStart Project](https://github.com/edvin/fxldemo) with a complete 
+[pom.xml](https://github.com/edvin/fxldemo/blob/master/pom.xml) that describes the steps involved.
+ 
 ## How does it work?
 
-FXLauncher is a very small binary that can be used to boot your application. All it needs is access to your application 
-manifest [example here](http://fxsamples.tornado.no/app.xml). FXLauncher will look
+FXLauncher is a 14Kb jar that can be used to boot your application. All it needs is access to your application 
+manifest [example here](http://fxldemo.tornado.no/app.xml). FXLauncher will look
 for the manifest in the current folder, or you can specify it via a parameter.
  
 After the manifest is retrieved and stored in the current folder as `app.xml`, FXLauncher synchronizes every file
@@ -20,128 +23,59 @@ Lastly, the application entrypoint retrieved from the manifest is invoked. Every
 
 Before each run, the launcher will synchronize all resources and seamlessly launch an always updated application.
 
-## How to configure your project
+## How to use FXLauncher
 
-Have a look at the [deployment descriptor example](https://github.com/edvin/tornadofx-samples/blob/master/pom.xml). You need
-to perform the following steps:
+Have a look at the [pom.xml](https://github.com/edvin/fxldemo/blob/master/pom.xml) from the [QuickStart Project](https://github.com/edvin/fxldemo).
 
-1. Include FXLauncher as a dependency
+The following steps are involved:
 
-	```xml
-	<dependency>
-		<groupId>no.tornado</groupId>
-		<artifactId>fxlauncher</artifactId>
-		<version>1.0.1</version>
-	</dependency>
-	```
+- Compile project jar to app.dir
+- Copy dependencies to app.dir
+- Generate app.xml manifest
+- Create native installer
+- Upload artifacts to auto update repository
 
-2. Configure the `javafx-maven-plugin` (or equivalent) to build your application
+All you need to do is configure the project spesific configuration properties:
 
-	```xml
-	<plugin>
-		<groupId>com.zenjava</groupId>
-		<artifactId>javafx-maven-plugin</artifactId>
-		<version>8.1.5</version>
-		<configuration>
-			<mainClass>fxlauncher.Launcher</mainClass>
-			<appName>CRMApplication</appName>
-			<vendor>MyCompany</vendor>
-			<needShortcut>true</needShortcut>
-			<needMenu>true</needMenu>
-		</configuration>
-		<executions>
-			<execution>
-				<id>create-jfxjar</id>
-				<phase>package</phase>
-				<goals>
-					<goal>build-jar</goal>
-				</goals>
-			</execution>
-		</executions>
-	</plugin>
-	```
+```xml
+<properties>
+	<!-- Application Name -->
+	<app.filename>${project.name}</app.filename>
+
+	<!-- The JavaFX Application class name -->
+	<app.mainClass>no.tornado.FxmlDemo</app.mainClass>
+
+	<!-- The app and launcher will be assembled in this folder -->
+	<app.dir>${project.build.directory}/app</app.dir>
+
+	<!-- Native installers will be build in this folder -->
+	<app.installerdir>${project.build.directory}/installer</app.installerdir>
+
+	<!-- Base URL where you will host the application artifacts -->
+	<app.url>http://your.hostname/app/</app.url>
+
+	<!-- Optional scp target for application artifacts hosted at the above url -->
+	<app.deploy.target>user@your.hostname:folder</app.deploy.target>
+</properties>
+```
+
+### Maven targets
+ 
+#### Generate the application
+
+	mvn clean package
 	
-	Note that the mainClass is set to the launcher, _not_ to your main application class. Instead of using `javafx-maven-plugin` you can
-	use any mechanism that copies all the dependencies to a single folder. Nothing special here.
-
-3. Configure manifest creation
-
-	```xml
-	<plugin>
-		<groupId>org.codehaus.mojo</groupId>
-		<artifactId>exec-maven-plugin</artifactId>
-		<version>1.4.0</version>
-		<executions>
-			<execution>
-				<phase>package</phase>
-				<goals>
-					<goal>java</goal>
-				</goals>
-			</execution>
-		</executions>
-		<configuration>
-			<mainClass>fxlauncher.CreateManifest</mainClass>
-			<arguments>
-				<argument>http://hostname/app</argument>
-				<argument>your.package.AppClass</argument>
-				<argument>${project.build.directory}/jfx/app</argument>
-			</arguments>
-		</configuration>
-	</plugin>
-	```
+#### Deploy the application artifacts to your webserver
 	
-	The main method in `fxlauncher.CreateManifest` is invoked with the following arguments:
+	mvn exec:exec@deploy-app
 	
-	 - Published APP Base URL
-	 - Your application main class
-	 - The output directory for the manifest (This must be where the resources for the app is placed)
+#### Build a native installer
 	
-	You can run this from the command line instead of using a build tool:
-	 
-	```bash
-	java -cp fxlauncher-1.0.1.jar fxlauncher.CreateManifest http://hostname/app your.package.AppClass target/jfx/app MyApp
-	```
-	
-	All you need to do now is upload the contents of the target folder to the URL specified as the first argument to `CreateManifest`. This last step
-	is what you would do every time you want to deploy a new version of your app.
+	mvn exec:exec@installer
 
-### Application start alternatives
-
-1. Lanucher is local, remote manifest
-
-	```bash
-	java -jar fxlauncher-1.0.1.jar http://fxsamples.tornado.no/app.xml
-	```
-
-2. Launcher and manifest is local (download app.xml first)
-
-	```bash
-	java -jar fxlauncher-1.0.1.jar
-	```
-
-3. Build a native installer that wraps only the launcher, and points to the remote manifest
-
-	_The installer only has to be built once, no need to rebuild it when you deploy a new version of your application. 
-	 Even the launcher will be updated if you upgrade the launcher dependency later on._
-
-	 Create an empty folder with the following structure:
-	 
-	```
-	lib
-	 |
-	 fxlauncher-1.0.jar
-	```
-
-	Make javapackager bundle the launcher together with an argument pointing it to where you uploaded the manifest:
-	
-	```
-	javapackager -deploy -native -outdir packages -outfile MyApp -srcdir . -srcfiles lib/fxlauncher-1.0.1.jar \
-	 -argument http://hostname/app/app.xml -appclass fxlauncher.Launcher -name "Myapp" -title "MyApp"
-	```
-
-	The result is a native installer for your platform that will automatically update whenever you deploy new artifacts to `http://hostname/app`.
-	
-	To deploy your artifacts, a simple `scp` will do the trick, or you can use a build system plugin that transfers the files for you.
+The native installer does not contain any application code, only the launcher and the manifest uri. There is
+	no need to rebuild your native installer when you update your project, simply run the `deploy-app` goal
+	and all users will run the newest version on their next startup.
 	
 ### Try a native installer
 	
