@@ -6,7 +6,7 @@ a native installer with automatic app updates.
 You can see the launcher in action in this [Demo Application](https://github.com/edvin/tornadofx-samples). The
 example uses Maven, but the launcher is not maven spesific in any way.
 
-There is also a [QuickStart Project](https://github.com/edvin/fxldemo) with a complete 
+There is also a [QuickStart Project](https://github.com/edvin/fxldemo) with a 
 [pom.xml](https://github.com/edvin/fxldemo/blob/master/pom.xml) that describes the steps involved.
  
 ## How does it work?
@@ -39,23 +39,29 @@ All you need to do is configure the project spesific configuration properties:
 
 ```xml
 <properties>
-	<!-- Application Name -->
-	<app.filename>${project.name}</app.filename>
+	<!-- Installer Filename without suffix -->
+	<app.filename>FxlDemo</app.filename>
 
 	<!-- The JavaFX Application class name -->
-	<app.mainClass>no.tornado.FxmlDemo</app.mainClass>
+	<app.mainClass>no.tornado.FxlDemo</app.mainClass>
+
+	<!-- The Application vendor used by javapackager -->
+	<app.vendor>Acme Inc</app.vendor>
+
+	<!-- The Application version used by javapackager -->
+	<app.version>2.0</app.version>
+
+	<!-- Base URL where you will host the application artifacts -->
+	<app.url>http://fxldemo.tornado.no/</app.url>
+
+	<!-- Optional scp target for application artifacts hosted at the above url -->
+	<app.deploy.target>w48839@fxldemo.tornado.no:fxldemo</app.deploy.target>
 
 	<!-- The app and launcher will be assembled in this folder -->
 	<app.dir>${project.build.directory}/app</app.dir>
 
-	<!-- Native installers will be build in this folder -->
+	<!-- Native installers will be built in this folder -->
 	<app.installerdir>${project.build.directory}/installer</app.installerdir>
-
-	<!-- Base URL where you will host the application artifacts -->
-	<app.url>http://your.hostname/app/</app.url>
-
-	<!-- Optional scp target for application artifacts hosted at the above url -->
-	<app.deploy.target>user@your.hostname:folder</app.deploy.target>
 </properties>
 ```
 
@@ -80,7 +86,7 @@ The native installer does not contain any application code, only the launcher an
 	
 ### Try a native installer
 	
-You can download prebuilt installers for a more complex demo application to see FXLauncher in action
+Check out these prebuilt installers for a more complex demo application
 
 - [MacOSX](http://fxsamples.tornado.no/FXSamples-1.0.dmg)
 - [Windows](http://fxsamples.tornado.no/FXSamples-1.0.exe)
