@@ -31,7 +31,7 @@ The following steps are involved:
 
 - Compile project jar to app.dir
 - Copy dependencies to app.dir
-- Generate app.xml manifest
+- Generate app.xml manifest and embed into launcher
 - Create native installer
 - Upload artifacts to auto update repository
 
@@ -75,11 +75,12 @@ All you need to do is configure the project spesific configuration properties:
 
 The native installer does not contain any application code, only the launcher and the manifest uri. There is
 	no need to rebuild your native installer when you update your project, simply run the `deploy-app` goal
-	and all users will run the newest version on their next startup.
+	and all users will run the newest version on their next startup. Point users to the `fxlauncher.jar` or
+	 to a native installer if you wish.
 	
 ### Try a native installer
 	
-You can download prebuilt installers for a demo application to see FXLauncher in action
+You can download prebuilt installers for a more complex demo application to see FXLauncher in action
 
 - [MacOSX](http://fxsamples.tornado.no/FXSamples-1.0.dmg)
 - [Windows](http://fxsamples.tornado.no/FXSamples-1.0.exe)
@@ -87,9 +88,9 @@ You can download prebuilt installers for a demo application to see FXLauncher in
 
 ## A slimmer alternative
 
-It is also possible to embed the launchar jar in a native installer system like Advanced Installer
-and configure it to start the launcher with a single paramter pointing to your `app.xml` - same approach as above, but without
- using javapackager. With this approach, you can choose wether to include a JRE or have the installer software preinstall it.
+It is also possible to embed the launchar jar in a native installer system like Advanced Installer - same approach as above, 
+but without using javapackager. With this approach, you can choose wether to include a JRE or have the installer software preinstall it.
+Again, you are only distributing the launcher with the native installer, the rest is pulled down on demand.
 
 ### A note on classloaders
 

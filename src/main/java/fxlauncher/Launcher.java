@@ -193,8 +193,12 @@ public class Launcher extends Application {
             manifest = FXManifest.load();
         } else {
             URL embeddedManifest = Launcher.class.getResource("/app.xml");
-            if (embeddedManifest != null)
+            if (embeddedManifest != null) {
                 manifest = JAXB.unmarshal(embeddedManifest, FXManifest.class);
+                try (InputStream embeddedStream = embeddedManifest.openStream()){
+                    Files.write(FXManifest.getPath(), toByteArray(embeddedStream));
+                }
+            }
         }
 
         if (manifest == null)
@@ -206,6 +210,7 @@ public class Launcher extends Application {
 
 			if (!Arrays.equals(remoteContent, localContent))
 				Files.write(FXManifest.getPath(), remoteContent, StandardOpenOption.TRUNCATE_EXISTING);
+
 		} catch (Exception ex) {
 			log.log(Level.WARNING, "Unable to update manifest", ex);
 		}
