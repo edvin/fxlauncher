@@ -1,10 +1,10 @@
 # FXLauncher
 
-Auto updating launcher for JavaFX Applications. Combined with JavaFX native packagaging, you get
+Auto updating launcher for JavaFX Applications. Combined with JavaFX native packaging, you get
 a native installer with automatic app updates.
 
-You can see the launcher in action in this [Demo Application](https://github.com/edvin/tornadofx-samples). The
-example uses Maven, but the launcher is not maven spesific in any way.
+You can see the launcher in action in this [Demo Application](http://fxldemo.tornado.no). The
+example uses Maven, but the launcher is not maven specific in any way.
 
 There is also a [QuickStart Project](https://github.com/edvin/fxldemo) with a 
 [pom.xml](https://github.com/edvin/fxldemo/blob/master/pom.xml) that describes the steps involved.
@@ -19,7 +19,7 @@ After the manifest is retrieved and stored in the current folder as `app.xml`, F
  mentioned in the manifest while providing the user with a progress indicator. After all resources are in sync,
  a classloader is initialized with all the resources from the manifest.
  
-Lastly, the application entrypoint retrieved from the manifest is invoked. Everything happens in-JVM, no restarts needed.
+Lastly, the application entry point retrieved from the manifest is invoked. Everything happens in-JVM, no restarts needed.
 
 Before each run, the launcher will synchronize all resources and seamlessly launch an always updated application.
 
