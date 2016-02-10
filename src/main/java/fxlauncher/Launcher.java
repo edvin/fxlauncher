@@ -142,8 +142,9 @@ public class Launcher extends Application {
 
         URLClassLoader classLoader = createClassLoader();
         FXMLLoader.setDefaultClassLoader(classLoader);
+	    Thread.currentThread().setContextClassLoader(classLoader);
+	    Platform.runLater(() -> Thread.currentThread().setContextClassLoader(classLoader));
         Class<? extends Application> appclass = (Class<? extends Application>) classLoader.loadClass(manifest.launchClass);
-        Thread.currentThread().setContextClassLoader(classLoader);
         app = appclass.newInstance();
     }
 
