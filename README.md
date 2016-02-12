@@ -85,6 +85,10 @@ The native installer does not contain any application code, only the launcher. T
 	no need to rebuild your native installer when you update your project, simply run the `deploy-app` goal
 	and all users will run the newest version on their next startup. Point users to the `fxlauncher.jar` or
 	 to a native installer if you wish.
+
+### Video demonstration
+	
+See the launcher in action in this short [screencast](https://www.youtube.com/watch?v=NCP9wjRPQ14).
 	
 ### Try a native installer
 	
