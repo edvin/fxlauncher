@@ -3,11 +3,12 @@
 Auto updating launcher for JavaFX Applications. Combined with JavaFX native packaging, you get
 a native installer with automatic app updates.
 
-You can see the launcher in action in this [Demo Application](http://fxldemo.tornado.no). The
-example uses Maven, but the launcher is not maven specific in any way.
+You can see the launcher in action in this [Demo Application](http://fxldemo.tornado.no).
 
-There is also a [QuickStart Project](https://github.com/edvin/fxldemo) with a 
-[pom.xml](https://github.com/edvin/fxldemo/blob/master/pom.xml) that describes the steps involved.
+### QuickStart projects
+
+[Maven Example](https://github.com/edvin/fxldemo) with [pom.xml](https://github.com/edvin/fxldemo/blob/master/pom.xml).
+[Gradle Example](https://github.com/edvin/fxldemo-gradle) with [build.gradle](https://github.com/edvin/fxldemo/blob/master/build.gradle).
 
 ### Video demonstration
  	
@@ -31,59 +32,9 @@ Before each run, the launcher will synchronize all resources and seamlessly laun
 
 ## How to use FXLauncher
 
-Have a look at the [pom.xml](https://github.com/edvin/fxldemo/blob/master/pom.xml) from the [QuickStart Project](https://github.com/edvin/fxldemo).
-
-The following steps are involved:
-
-- Compile project jar to app.dir
-- Copy dependencies to app.dir
-- Generate app.xml manifest and embed it into the launcher
-- Create native installer
-- Upload artifacts to auto update repository
-
-All you need to do is configure the project spesific configuration properties:
-
-```xml
-<properties>
-	<!-- Installer Filename without suffix -->
-	<app.filename>FxlDemo</app.filename>
-
-	<!-- The JavaFX Application class name -->
-	<app.mainClass>no.tornado.FxlDemo</app.mainClass>
-
-	<!-- The Application vendor used by javapackager -->
-	<app.vendor>Acme Inc</app.vendor>
-
-	<!-- The Application version used by javapackager -->
-	<app.version>2.0</app.version>
-
-	<!-- Base URL where you will host the application artifacts -->
-	<app.url>http://fxldemo.tornado.no/</app.url>
-
-	<!-- Optional scp target for application artifacts hosted at the above url -->
-	<app.deploy.target>w48839@fxldemo.tornado.no:fxldemo</app.deploy.target>
-
-	<!-- The app and launcher will be assembled in this folder -->
-	<app.dir>${project.build.directory}/app</app.dir>
-
-	<!-- Native installers will be built in this folder -->
-	<app.installerdir>${project.build.directory}/installer</app.installerdir>
-</properties>
-```
-
-### Maven targets
- 
-#### Generate the application
-
-	mvn clean package
+See the QuickStart projects at the top of the README for information on integrating FXLauncher in your build system.
 	
-#### Deploy the application artifacts to your webserver
-	
-	mvn exec:exec@deploy-app
-	
-#### Build a native installer
-	
-	mvn exec:exec@installer
+#### Native installers
 
 The native installer does not contain any application code, only the launcher. There is
 	no need to rebuild your native installer when you update your project, simply run the `deploy-app` goal
