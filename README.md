@@ -7,8 +7,8 @@ You can see the launcher in action in this [Demo Application](http://fxldemo.tor
 
 ### QuickStart projects
 
-[Maven Example](https://github.com/edvin/fxldemo) with [pom.xml](https://github.com/edvin/fxldemo/blob/master/pom.xml).
-[Gradle Example](https://github.com/edvin/fxldemo-gradle) with [build.gradle](https://github.com/edvin/fxldemo/blob/master/build.gradle).
+- [Maven Example](https://github.com/edvin/fxldemo) with [pom.xml](https://github.com/edvin/fxldemo/blob/master/pom.xml).
+- [Gradle Example](https://github.com/edvin/fxldemo-gradle) with [build.gradle](https://github.com/edvin/fxldemo/blob/master/build.gradle).
 
 ### Video demonstration
  	
