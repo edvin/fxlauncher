@@ -8,7 +8,11 @@ example uses Maven, but the launcher is not maven specific in any way.
 
 There is also a [QuickStart Project](https://github.com/edvin/fxldemo) with a 
 [pom.xml](https://github.com/edvin/fxldemo/blob/master/pom.xml) that describes the steps involved.
- 
+
+### Video demonstration
+ 	
+See the launcher in action in this short [screencast](https://www.youtube.com/watch?v=NCP9wjRPQ14).
+
 ## How does it work?
 
 FXLauncher is a 14Kb jar that can be used to boot your application. It knows the location
@@ -85,10 +89,6 @@ The native installer does not contain any application code, only the launcher. T
 	no need to rebuild your native installer when you update your project, simply run the `deploy-app` goal
 	and all users will run the newest version on their next startup. Point users to the `fxlauncher.jar` or
 	 to a native installer if you wish.
-
-### Video demonstration
-	
-See the launcher in action in this short [screencast](https://www.youtube.com/watch?v=NCP9wjRPQ14).
 	
 ### Try a native installer
 	
