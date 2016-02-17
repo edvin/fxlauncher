@@ -6,13 +6,13 @@ public enum OS {
 	public static final OS current;
 
 	static {
-		String OS = System.getProperty("os.name", "generic").toLowerCase();
+		String os = System.getProperty("os.name", "generic").toLowerCase();
 
-		if ((OS.contains("mac")) || (OS.contains("darwin")))
+		if ((os.contains("mac")) || (os.contains("darwin")))
 			current = mac;
-		else if (OS.contains("win"))
+		else if (os.contains("win"))
 			current = win;
-		else if (OS.contains("nux"))
+		else if (os.contains("nux"))
 			current = linux;
 		else
 			current = other;
