@@ -117,7 +117,11 @@ public class Launcher extends Application {
     private void syncFiles() throws Exception {
         phase = "File Synchronization";
 
-        List<LibraryFile> needsUpdate = manifest.files.stream().filter(LibraryFile::needsUpdate).collect(Collectors.toList());
+        List<LibraryFile> needsUpdate = manifest.files.stream()
+                .filter(LibraryFile::loadForCurrentPlatform)
+                .filter(LibraryFile::needsUpdate)
+                .collect(Collectors.toList());
+
         Long totalBytes = needsUpdate.stream().mapToLong(f -> f.size).sum();
         Long totalWritten = 0L;
 
