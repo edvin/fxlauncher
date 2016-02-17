@@ -8,6 +8,8 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.Adler32;
 
 public class LibraryFile {
@@ -17,6 +19,8 @@ public class LibraryFile {
     Long checksum;
     @XmlAttribute
     Long size;
+	@XmlAttribute
+	OS os;
 
     public boolean needsUpdate() {
         Path path = Paths.get(file);
@@ -30,11 +34,21 @@ public class LibraryFile {
     public LibraryFile() {
     }
 
-    public LibraryFile(Path basepath, Path file) throws IOException {
+	public LibraryFile(Path basepath, Path file) throws IOException {
         this.file = basepath.relativize(file).toString();
         this.size = Files.size(file);
         this.checksum = checksum(file);
+
+	    String filename = file.getFileName().toString().toLowerCase();
+	    Pattern osPattern = Pattern.compile(".*-(linux|win|mac).jar");
+	    Matcher osMatcher = osPattern.matcher(filename);
+	    if (osMatcher.matches())
+		    this.os = OS.valueOf(osMatcher.group(1));
     }
+
+	public boolean loadForCurrentPlatform() {
+		return os == null || os == OS.current;
+	}
 
     public URL toURL() {
         try {

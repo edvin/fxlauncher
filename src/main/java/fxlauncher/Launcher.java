@@ -87,7 +87,11 @@ public class Launcher extends Application {
     }
 
     public URLClassLoader createClassLoader() {
-        List<URL> libs = manifest.files.stream().map(LibraryFile::toURL).collect(Collectors.toList());
+        List<URL> libs = manifest.files.stream()
+	        .filter(LibraryFile::loadForCurrentPlatform)
+	        .map(LibraryFile::toURL)
+	        .collect(Collectors.toList());
+
         return new URLClassLoader(libs.toArray(new URL[libs.size()]));
     }
 
