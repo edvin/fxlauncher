@@ -59,3 +59,9 @@ Again, you are only distributing the launcher with the native installer, the res
 
 FXLauncher uses a custom classloader to dynamically load the synchronized resources. This classloader is 
 then made available to the `FXMLLoader`. You can access it via `FXMLLoader.getDefaultClassLoader()`.
+
+### Platform specific resources
+
+From version 1.0.7, FXLauncher supports filtering of resources for the running platform. Any resource
+that ends with `-[mac|win|linux].jar` will only be downloaded and put on the classpath on the corresponding
+platform. The manifest enforces this though the `os` attribute in `app.xml`.

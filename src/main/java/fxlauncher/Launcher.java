@@ -1,5 +1,6 @@
 package fxlauncher;
 
+import com.sun.javafx.application.ParametersImpl;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -102,7 +103,8 @@ public class Launcher extends Application {
         Platform.runLater(() -> {
             try {
                 stage.close();
-                app.start(primaryStage);
+	            ParametersImpl.registerParameters(app, getParameters());
+	            app.start(primaryStage);
             } catch (Exception ex) {
                 reportError("Failed to start application", ex);
             }
