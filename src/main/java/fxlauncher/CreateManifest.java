@@ -13,6 +13,10 @@ public class CreateManifest {
         String launchClass = args[1];
         Path appPath = Paths.get(args[2]);
         FXManifest manifest = create(baseURI, launchClass, appPath);
+
+        if (args.length == 4)
+            manifest.parameters = args[3];
+
         JAXB.marshal(manifest, appPath.resolve("app.xml").toFile());
     }
 

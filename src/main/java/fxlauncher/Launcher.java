@@ -57,11 +57,17 @@ public class Launcher extends Application {
                 updateManifest();
                 createUpdateWrapper();
                 syncFiles();
+            } catch (Exception ex) {
+                log.log(Level.WARNING, String.format("Error during %s phase", phase), ex);
+            }
+
+            try {
                 createApplication();
                 launchAppFromManifest();
             } catch (Exception ex) {
                 reportError(String.format("Error during %s phase", phase), ex);
             }
+
         }).start();
     }
 
@@ -89,9 +95,9 @@ public class Launcher extends Application {
 
     public URLClassLoader createClassLoader() {
         List<URL> libs = manifest.files.stream()
-	        .filter(LibraryFile::loadForCurrentPlatform)
-	        .map(LibraryFile::toURL)
-	        .collect(Collectors.toList());
+                .filter(LibraryFile::loadForCurrentPlatform)
+                .map(LibraryFile::toURL)
+                .collect(Collectors.toList());
 
         return new URLClassLoader(libs.toArray(new URL[libs.size()]));
     }
@@ -103,8 +109,8 @@ public class Launcher extends Application {
         Platform.runLater(() -> {
             try {
                 stage.close();
-	            ParametersImpl.registerParameters(app, getParameters());
-	            app.start(primaryStage);
+                ParametersImpl.registerParameters(app, new LauncherParams(getParameters(), manifest));
+                app.start(primaryStage);
             } catch (Exception ex) {
                 reportError("Failed to start application", ex);
             }
@@ -152,8 +158,8 @@ public class Launcher extends Application {
 
         URLClassLoader classLoader = createClassLoader();
         FXMLLoader.setDefaultClassLoader(classLoader);
-	    Thread.currentThread().setContextClassLoader(classLoader);
-	    Platform.runLater(() -> Thread.currentThread().setContextClassLoader(classLoader));
+        Thread.currentThread().setContextClassLoader(classLoader);
+        Platform.runLater(() -> Thread.currentThread().setContextClassLoader(classLoader));
         Class<? extends Application> appclass = (Class<? extends Application>) classLoader.loadClass(manifest.launchClass);
         app = appclass.newInstance();
     }

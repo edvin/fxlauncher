@@ -26,6 +26,8 @@ public class FXManifest {
 	String progressBarStyle = "-fx-pref-width: 200;";
 	@XmlElement
 	String wrapperStyle = "-fx-spacing: 10; -fx-padding: 25;";
+    @XmlElement
+    String parameters;
 
     public String getFilename() {
         return String.format("%s.xml", launchClass);
