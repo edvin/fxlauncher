@@ -1,6 +1,12 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.0.9] - Unreleased
+
+### Added
+
+- App manifest location can be given as command line parameter (https://github.com/edvin/fxlauncher/issues/3)
+
 ## [1.0.8] - 2016-03-02
 
 ### Added

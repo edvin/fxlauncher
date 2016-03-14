@@ -18,7 +18,7 @@ See the launcher in action in this short [screencast](https://www.youtube.com/wa
 
 ## How does it work?
 
-FXLauncher is a 14Kb jar that can be used to boot your application. It knows the location
+FXLauncher is a 18Kb jar that can be used to boot your application. It knows the location
 of your application repository where you host all the app resources.
 
 See a manifest [example here](http://fxldemo.tornado.no/app.xml). FXLauncher will look up the
@@ -35,7 +35,15 @@ Before each run, the launcher will synchronize all resources and seamlessly laun
 ## How to use FXLauncher
 
 See the QuickStart projects at the top of the README for information on integrating FXLauncher in your build system.
+
+## Adhoc usage
 	
+FXLauncher can also be used to launch an application at an arbitrary url by specifying the `--app` parameter at startup:
+	
+```bash
+java -jar fxlauncher.jar --app=http://remote/location/app.xml
+```
+
 #### Native installers
 
 The native installer does not contain any application code, only the launcher. There is
@@ -64,6 +72,6 @@ then made available to the `FXMLLoader`. You can access it via `FXMLLoader.getDe
 
 ### Platform specific resources
 
-From version 1.0.7, FXLauncher supports filtering of resources for the running platform. Any resource
+FXLauncher supports filtering of resources for the running platform. Any resource
 that ends with `-[mac|win|linux].jar` will only be downloaded and put on the classpath on the corresponding
 platform. The manifest enforces this though the `os` attribute in `app.xml`.

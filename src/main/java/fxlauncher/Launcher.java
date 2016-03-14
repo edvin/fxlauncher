@@ -17,12 +17,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -191,6 +193,15 @@ public class Launcher extends Application {
     }
 
     private void syncManifest() throws Exception {
+        Map<String, String> namedParams = getParameters().getNamed();
+
+        if (namedParams.containsKey("app")) {
+            String manifestURL = namedParams.get("app");
+            log.info(String.format("Loading manifest from parameter supplied location %s", manifestURL));
+            manifest = JAXB.unmarshal(URI.create(manifestURL), FXManifest.class);
+            return;
+        }
+
         URL embeddedManifest = Launcher.class.getResource("/app.xml");
         manifest = JAXB.unmarshal(embeddedManifest, FXManifest.class);
 
