@@ -1,7 +1,7 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## [1.0.9] - Unreleased
+## [1.0.9] - 2016-03-14
 
 ### Added
 
