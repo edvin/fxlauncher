@@ -34,7 +34,10 @@ public class FXManifest {
     }
 
     public URI getFXAppURI() {
-        return uri.resolve("app.xml");
+	    if (uri.getPath().endsWith("/"))
+		    return uri.resolve("app.xml");
+
+	    return URI.create(uri.toString() + "/app.xml");
     }
 
 	public Path getPath() {
