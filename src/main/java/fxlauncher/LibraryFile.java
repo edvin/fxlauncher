@@ -22,8 +22,8 @@ public class LibraryFile {
 	@XmlAttribute
 	OS os;
 
-    public boolean needsUpdate() {
-        Path path = Paths.get(file);
+    public boolean needsUpdate(Path cacheDir) {
+        Path path = cacheDir.resolve(file);
         try {
             return !Files.exists(path) || Files.size(path) != size || checksum(path) != checksum;
         } catch (IOException e) {
@@ -50,15 +50,15 @@ public class LibraryFile {
 		return os == null || os == OS.current;
 	}
 
-    public URL toURL() {
+    public URL toURL(Path cacheDir) {
         try {
-            return Paths.get(file).toFile().toURI().toURL();
+            return cacheDir.resolve(file).toFile().toURI().toURL();
         } catch (MalformedURLException whaat) {
             throw new RuntimeException(whaat);
         }
     }
 
-    public static long checksum(Path path) throws IOException {
+    private static long checksum(Path path) throws IOException {
         try (InputStream input = Files.newInputStream(path)) {
             Adler32 checksum = new Adler32();
             byte[] buf = new byte[16384];

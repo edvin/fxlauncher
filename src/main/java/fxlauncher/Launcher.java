@@ -22,7 +22,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -58,7 +57,8 @@ public class Launcher extends Application {
             try {
                 updateManifest();
                 createUpdateWrapper();
-                syncFiles();
+	            Path cacheDir = manifest.resolveCacheDir(getParameters().getNamed());
+	            syncFiles(cacheDir);
             } catch (Exception ex) {
                 log.log(Level.WARNING, String.format("Error during %s phase", phase), ex);
             }
@@ -95,10 +95,10 @@ public class Launcher extends Application {
         });
     }
 
-    public URLClassLoader createClassLoader() {
+    private URLClassLoader createClassLoader(Path cacheDir) {
         List<URL> libs = manifest.files.stream()
                 .filter(LibraryFile::loadForCurrentPlatform)
-                .map(LibraryFile::toURL)
+                .map(it -> it.toURL(cacheDir))
                 .collect(Collectors.toList());
 
         return new URLClassLoader(libs.toArray(new URL[libs.size()]));
@@ -124,19 +124,19 @@ public class Launcher extends Application {
         syncManifest();
     }
 
-    private void syncFiles() throws Exception {
+    private void syncFiles(Path cacheDir) throws Exception {
         phase = "File Synchronization";
 
         List<LibraryFile> needsUpdate = manifest.files.stream()
                 .filter(LibraryFile::loadForCurrentPlatform)
-                .filter(LibraryFile::needsUpdate)
+                .filter(it -> it.needsUpdate(cacheDir))
                 .collect(Collectors.toList());
 
         Long totalBytes = needsUpdate.stream().mapToLong(f -> f.size).sum();
         Long totalWritten = 0L;
 
         for (LibraryFile lib : needsUpdate) {
-            Path target = Paths.get(lib.file).toAbsolutePath();
+            Path target = cacheDir.resolve(lib.file).toAbsolutePath();
             Files.createDirectories(target.getParent());
 
             try (InputStream input = manifest.uri.resolve(lib.file).toURL().openStream();
@@ -158,7 +158,9 @@ public class Launcher extends Application {
     private void createApplication() throws Exception {
         phase = "Create Application";
 
-        URLClassLoader classLoader = createClassLoader();
+	    Path cacheDir = manifest.resolveCacheDir(getParameters().getNamed());
+
+	    URLClassLoader classLoader = createClassLoader(cacheDir);
         FXMLLoader.setDefaultClassLoader(classLoader);
         Thread.currentThread().setContextClassLoader(classLoader);
         Platform.runLater(() -> Thread.currentThread().setContextClassLoader(classLoader));
@@ -205,8 +207,11 @@ public class Launcher extends Application {
         URL embeddedManifest = Launcher.class.getResource("/app.xml");
         manifest = JAXB.unmarshal(embeddedManifest, FXManifest.class);
 
-        if (Files.exists(manifest.getPath()))
-            manifest = JAXB.unmarshal(manifest.getPath().toFile(), FXManifest.class);
+	    Path cacheDir = manifest.resolveCacheDir(namedParams);
+	    Path manifestPath = manifest.getPath(cacheDir);
+
+	    if (Files.exists(manifestPath))
+            manifest = JAXB.unmarshal(manifestPath.toFile(), FXManifest.class);
 
         try {
             FXManifest remoteManifest = JAXB.unmarshal(manifest.getFXAppURI(), FXManifest.class);
@@ -215,7 +220,7 @@ public class Launcher extends Application {
                 log.info(String.format("No remote manifest at %s", manifest.getFXAppURI()));
             } else if (!remoteManifest.equals(manifest)) {
                 manifest = remoteManifest;
-                JAXB.marshal(manifest, manifest.getPath().toFile());
+                JAXB.marshal(manifest, manifestPath.toFile());
             }
         } catch (Exception ex) {
             log.log(Level.WARNING, "Unable to update manifest", ex);

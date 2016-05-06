@@ -1,10 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [1.0.10]
 
 ### Changed
 
+- Add optional `--cache-dir` program parameter `cacheDir` and manifest entry (https://github.com/edvin/fxlauncher/issues/9)
 - Add / if missing from base url (https://github.com/edvin/fxlauncher/issues/6)
 
 ## [1.0.9] - 2016-03-14
