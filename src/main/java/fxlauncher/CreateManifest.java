@@ -1,10 +1,15 @@
 package fxlauncher;
 
+import com.sun.javafx.application.ParametersImpl;
+
 import javax.xml.bind.JAXB;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class CreateManifest {
 
@@ -14,8 +19,21 @@ public class CreateManifest {
         Path appPath = Paths.get(args[2]);
         FXManifest manifest = create(baseURI, launchClass, appPath);
 
-        if (args.length == 4)
-            manifest.parameters = args[3];
+        if (args.length > 3) {
+	        // Parse named parameters
+	        List<String> rawParams = new ArrayList<>();
+	        for (int i = 3; i < args.length; i++)
+		        rawParams.add(args[i]);
+	        ParametersImpl params = new ParametersImpl(rawParams);
+	        Map<String, String> named = params.getNamed();
+
+	        // Configure cacheDir
+	        if (named != null && named.containsKey("cache-dir"))
+		        manifest.cacheDir = named.get("cache-dir");
+
+	        // Add the raw parameter string to the manifest
+	        manifest.parameters = args[3];
+        }
 
         JAXB.marshal(manifest, appPath.resolve("app.xml").toFile());
     }
