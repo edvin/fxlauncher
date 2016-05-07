@@ -60,6 +60,12 @@ Check out these prebuilt installers for a more complex demo application
 - [Windows](http://fxsamples.tornado.no/CRMApplication-1.0.exe)
 - [Linux](http://fxsamples.tornado.no/crmapplication-1.0.deb)
 
+## Specify cache directory
+
+By default, the artifacts are downloaded to the current working directory. This is usually fine for native installers, but if you distribute
+your application via just the launcher jar, you might want to specify where the downloaded artifacts land. See the 
+[cache dir documentation](https://github.com/edvin/fxlauncher/wiki/Optional-Cache-Directory)for more information.
+
 ## A slimmer alternative
 
 It is also possible to embed the launchar jar in a native installer system like Advanced Installer - same approach as above, 
