@@ -59,23 +59,28 @@ public class FXManifest {
 
 		Path path;
 
-		if (cacheDir.startsWith("USERLIB/")) {
+		if (cacheDir.contains("USERLIB")) {
+			String replacement;
 			switch (OS.current) {
 				case mac:
-					path = Paths.get(System.getProperty("user.home"))
+					replacement = Paths.get(System.getProperty("user.home"))
 						.resolve("Library")
 						.resolve("Application Support")
-						.resolve(cacheDir.substring(8));
+						.resolve(cacheDir.substring(8))
+						.toString();
 					break;
 				case win:
-					path = Paths.get(System.getProperty("user.home"))
+					replacement = Paths.get(System.getProperty("user.home"))
 						.resolve("AppData")
-						.resolve(cacheDir.substring(8));
+						.resolve(cacheDir.substring(8))
+						.toString();
 					break;
 				default:
-					path = Paths.get(System.getProperty("user.home"))
-						.resolve("." + cacheDir.substring(8));
+					replacement = Paths.get(System.getProperty("user.home"))
+						.resolve("." + cacheDir.substring(8))
+						.toString();
 			}
+			path = Paths.get(replacement);
 		} else {
 			path = Paths.get(cacheDir);
 		}
@@ -88,7 +93,7 @@ public class FXManifest {
 			}
 		}
 
-		return Paths.get(cacheDir);
+		return path;
 	}
 
 	public boolean equals(Object o) {

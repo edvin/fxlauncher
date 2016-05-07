@@ -58,6 +58,7 @@ public class Launcher extends Application {
                 updateManifest();
                 createUpdateWrapper();
 	            Path cacheDir = manifest.resolveCacheDir(getParameters().getNamed());
+	            log.info(String.format("Using cache dir %s", cacheDir));
 	            syncFiles(cacheDir);
             } catch (Exception ex) {
                 log.log(Level.WARNING, String.format("Error during %s phase", phase), ex);

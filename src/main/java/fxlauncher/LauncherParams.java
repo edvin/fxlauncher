@@ -36,7 +36,7 @@ public class LauncherParams extends Application.Parameters {
                     if (arg.startsWith("--") && arg.contains("=")) {
                         String argname = arg.substring(0, arg.indexOf("="));
                         if (rawArgs.stream().filter(a -> a.startsWith(argname)).findAny().isPresent())
-                                continue;
+	                        continue;
                     }
 
                     rawArgs.add(arg);

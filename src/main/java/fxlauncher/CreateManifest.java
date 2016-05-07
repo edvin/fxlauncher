@@ -8,6 +8,7 @@ import java.net.URI;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -22,8 +23,7 @@ public class CreateManifest {
         if (args.length > 3) {
 	        // Parse named parameters
 	        List<String> rawParams = new ArrayList<>();
-	        for (int i = 3; i < args.length; i++)
-		        rawParams.add(args[i]);
+	        rawParams.addAll(Arrays.asList(args).subList(3, args.length));
 	        ParametersImpl params = new ParametersImpl(rawParams);
 	        Map<String, String> named = params.getNamed();
 
@@ -31,8 +31,17 @@ public class CreateManifest {
 	        if (named != null && named.containsKey("cache-dir"))
 		        manifest.cacheDir = named.get("cache-dir");
 
+	        // Append the rest as manifest parameters
+	        StringBuilder rest = new StringBuilder();
+	        for (String raw : params.getRaw()) {
+		        if (raw.startsWith("--cache-dir=")) continue;
+		        if (rest.length() > 0) rest.append(" ");
+		        rest.append(raw);
+	        }
+
 	        // Add the raw parameter string to the manifest
-	        manifest.parameters = args[3];
+	        if (rest.length() > 0)
+	            manifest.parameters = rest.toString();
         }
 
         JAXB.marshal(manifest, appPath.resolve("app.xml").toFile());
