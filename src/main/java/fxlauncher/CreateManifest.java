@@ -54,7 +54,7 @@ public class CreateManifest {
 
         Files.walkFileTree(appPath, new SimpleFileVisitor<Path>() {
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                if (!Files.isDirectory(file) && file.toString().endsWith(".jar") && !file.getFileName().toString().startsWith("fxlauncher"))
+                if (!Files.isDirectory(file) && isJavaLibrary(file) && !file.getFileName().toString().startsWith("fxlauncher"))
                     manifest.files.add(new LibraryFile(appPath, file));
                 return FileVisitResult.CONTINUE;
             }
@@ -62,5 +62,10 @@ public class CreateManifest {
 
         return manifest;
     }
+
+	private static boolean isJavaLibrary(Path file) {
+		String filename = file.getFileName().toString();
+		return filename.endsWith(".jar") || filename.endsWith(".war");
+	}
     
 }
