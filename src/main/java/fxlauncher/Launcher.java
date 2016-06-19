@@ -1,6 +1,7 @@
 package fxlauncher;
 
 import com.sun.javafx.application.ParametersImpl;
+import com.sun.javafx.application.PlatformImpl;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -54,6 +55,7 @@ public class Launcher extends Application {
         stage.show();
 
         new Thread(() -> {
+	        Thread.currentThread().setName("FXLauncher-Thread");
             try {
                 updateManifest();
                 createUpdateWrapper();
@@ -109,10 +111,11 @@ public class Launcher extends Application {
         phase = "Application Init";
         app.init();
         phase = "Application Start";
-        Platform.runLater(() -> {
+        PlatformImpl.runAndWait(() -> {
             try {
-                stage.close();
-                ParametersImpl.registerParameters(app, new LauncherParams(getParameters(), manifest));
+	            primaryStage.showingProperty().addListener(observable -> {
+		            if (stage.isShowing()) stage.close();
+	            });
                 app.start(primaryStage);
             } catch (Exception ex) {
                 reportError("Failed to start application", ex);
@@ -166,7 +169,16 @@ public class Launcher extends Application {
         Thread.currentThread().setContextClassLoader(classLoader);
         Platform.runLater(() -> Thread.currentThread().setContextClassLoader(classLoader));
         Class<? extends Application> appclass = (Class<? extends Application>) classLoader.loadClass(manifest.launchClass);
-        app = appclass.newInstance();
+
+	    PlatformImpl.runAndWait(() -> {
+		    try {
+			    app = appclass.newInstance();
+			    ParametersImpl.registerParameters(app, new LauncherParams(getParameters(), manifest));
+			    PlatformImpl.setApplicationName(appclass);
+		    } catch (Throwable t) {
+			    reportError("Error creating app class", t);
+		    }
+	    });
     }
 
     public void stop() throws Exception {

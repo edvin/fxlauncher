@@ -1,7 +1,13 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## [1.0.10]
+## [1.0.11]
+
+### Changed
+
+- Progress window is now closed after primaryStage is shown instead of right before app.start() is called
+
+## [1.0.10] - 2016-05-07
 
 ### Changed
 
