@@ -35,7 +35,7 @@ public class LibraryFile {
     }
 
 	public LibraryFile(Path basepath, Path file) throws IOException {
-        this.file = basepath.relativize(file).toString();
+        this.file = basepath.relativize(file).toString().replace("\\", "/");
         this.size = Files.size(file);
         this.checksum = checksum(file);
 

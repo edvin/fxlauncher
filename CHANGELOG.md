@@ -1,6 +1,12 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.0.12-SNAPSHOT]
+
+### Changed
+
+- Artifacts in subfolders gets correct path delimiter in app manifest for Windows
+
 ## [1.0.11]
 
 ### Changed
