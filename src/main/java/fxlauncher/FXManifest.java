@@ -17,6 +17,8 @@ import java.util.Map;
 @XmlRootElement(name = "Application")
 public class FXManifest {
 	@XmlAttribute
+	Long ts;
+	@XmlAttribute
 	URI uri;
 	@XmlAttribute(name = "launch")
 	String launchClass;
@@ -34,6 +36,8 @@ public class FXManifest {
 	String parameters;
 	@XmlElement
 	String cacheDir;
+	@XmlElement
+	Boolean acceptDowngrade = false;
 
 	public String getFilename() {
 		return String.format("%s.xml", launchClass);
@@ -96,33 +100,45 @@ public class FXManifest {
 		return path;
 	}
 
+	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 
 		FXManifest that = (FXManifest) o;
 
+		if (ts != null ? !ts.equals(that.ts) : that.ts != null) return false;
 		if (uri != null ? !uri.equals(that.uri) : that.uri != null) return false;
 		if (launchClass != null ? !launchClass.equals(that.launchClass) : that.launchClass != null) return false;
 		if (files != null ? !files.equals(that.files) : that.files != null) return false;
 		if (updateText != null ? !updateText.equals(that.updateText) : that.updateText != null) return false;
-		if (updateLabelStyle != null ? !updateLabelStyle.equals(that.updateLabelStyle) : that.updateLabelStyle != null)
-			return false;
-		if (progressBarStyle != null ? !progressBarStyle.equals(that.progressBarStyle) : that.progressBarStyle != null)
-			return false;
-		return wrapperStyle != null ? wrapperStyle.equals(that.wrapperStyle) : that.wrapperStyle == null;
+		if (updateLabelStyle != null ? !updateLabelStyle.equals(that.updateLabelStyle) : that.updateLabelStyle != null) return false;
+		if (progressBarStyle != null ? !progressBarStyle.equals(that.progressBarStyle) : that.progressBarStyle != null) return false;
+		if (wrapperStyle != null ? !wrapperStyle.equals(that.wrapperStyle) : that.wrapperStyle != null) return false;
+		if (parameters != null ? !parameters.equals(that.parameters) : that.parameters != null) return false;
+		if (cacheDir != null ? !cacheDir.equals(that.cacheDir) : that.cacheDir != null) return false;
+		return acceptDowngrade != null ? acceptDowngrade.equals(that.acceptDowngrade) : that.acceptDowngrade == null;
 
 	}
 
+	@Override
 	public int hashCode() {
-		int result = uri != null ? uri.hashCode() : 0;
+		int result = ts != null ? ts.hashCode() : 0;
+		result = 31 * result + (uri != null ? uri.hashCode() : 0);
 		result = 31 * result + (launchClass != null ? launchClass.hashCode() : 0);
 		result = 31 * result + (files != null ? files.hashCode() : 0);
 		result = 31 * result + (updateText != null ? updateText.hashCode() : 0);
 		result = 31 * result + (updateLabelStyle != null ? updateLabelStyle.hashCode() : 0);
 		result = 31 * result + (progressBarStyle != null ? progressBarStyle.hashCode() : 0);
 		result = 31 * result + (wrapperStyle != null ? wrapperStyle.hashCode() : 0);
+		result = 31 * result + (parameters != null ? parameters.hashCode() : 0);
+		result = 31 * result + (cacheDir != null ? cacheDir.hashCode() : 0);
+		result = 31 * result + (acceptDowngrade != null ? acceptDowngrade.hashCode() : 0);
 		return result;
 	}
 
+	public boolean isNewerThan(FXManifest other) {
+		if (ts == null || other.ts == null) return false;
+		return ts > other.ts;
+	}
 }

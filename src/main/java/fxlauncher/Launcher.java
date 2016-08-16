@@ -232,8 +232,11 @@ public class Launcher extends Application {
             if (remoteManifest == null) {
                 log.info(String.format("No remote manifest at %s", manifest.getFXAppURI()));
             } else if (!remoteManifest.equals(manifest)) {
-                manifest = remoteManifest;
-                JAXB.marshal(manifest, manifestPath.toFile());
+                // Update to remote manifest if newer or we specifially accept downgrades
+                if (remoteManifest.isNewerThan(manifest) || manifest.acceptDowngrade) {
+                    manifest = remoteManifest;
+                    JAXB.marshal(manifest, manifestPath.toFile());
+                }
             }
         } catch (Exception ex) {
             log.log(Level.WARNING, "Unable to update manifest", ex);
