@@ -50,7 +50,6 @@ public class CreateManifest {
     public static FXManifest create(URI baseURI, String launchClass, Path appPath) throws IOException {
         FXManifest manifest = new FXManifest();
         manifest.ts = System.currentTimeMillis();
-        manifest.acceptDowngrade = true;
         manifest.uri = baseURI;
         manifest.launchClass = launchClass;
 
