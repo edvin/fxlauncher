@@ -27,9 +27,15 @@ public class CreateManifest {
 	        ParametersImpl params = new ParametersImpl(rawParams);
 	        Map<String, String> named = params.getNamed();
 
-	        // Configure cacheDir
-	        if (named != null && named.containsKey("cache-dir"))
-		        manifest.cacheDir = named.get("cache-dir");
+	        if (named != null) {
+		        // Configure cacheDir
+		        if (named.containsKey("cache-dir"))
+			        manifest.cacheDir = named.get("cache-dir");
+
+		        // Configure acceptDowngrade
+		        if (named.containsKey("accept-downgrade"))
+			        manifest.acceptDowngrade = Boolean.valueOf(named.get("accept-downgrade"));
+	        }
 
 	        // Append the rest as manifest parameters
 	        StringBuilder rest = new StringBuilder();
