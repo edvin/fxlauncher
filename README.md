@@ -66,6 +66,13 @@ By default, the artifacts are downloaded to the current working directory. This 
 your application via just the launcher jar, you might want to specify where the downloaded artifacts land. See the 
 [cache dir documentation](https://github.com/edvin/fxlauncher/wiki/Optional-Cache-Directory)for more information.
 
+## Accept downgrades
+
+Starting from version 1.0.12, FXLauncher will not download a remote version if the local version is newer. This is controlled
+by comparing a timestamp in the manifest. Specifying `--accept-downgrades=true` as the last argument to CreateManifest will
+allow you to make sure that the version you have published will always be used by your clients even if they have a newer version installed.
+This option is also available in the Gradle plugin as `acceptDowngrades`.
+
 ## A slimmer alternative
 
 It is also possible to embed the launchar jar in a native installer system like Advanced Installer - same approach as above, 

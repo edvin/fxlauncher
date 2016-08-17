@@ -1,10 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## [1.0.12-SNAPSHOT]
+## [1.0.12]
 
 ### Changed
 
+- Added --accept-downgrade=<true|false> parameter to CreateManifest. Default is to not accept downgrades (server version is older than local version)
 - Artifacts in subfolders gets correct path delimiter in app manifest for Windows
 
 ## [1.0.11]

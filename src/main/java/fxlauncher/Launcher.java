@@ -162,7 +162,7 @@ public class Launcher extends Application {
     private void createApplication() throws Exception {
         phase = "Create Application";
 
-	    Path cacheDir = manifest.resolveCacheDir(getParameters().getNamed());
+	    Path cacheDir = manifest.resolveCacheDir(getParameters() != null ? getParameters().getNamed() : null);
 
 	    URLClassLoader classLoader = createClassLoader(cacheDir);
         FXMLLoader.setDefaultClassLoader(classLoader);
