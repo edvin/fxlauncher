@@ -41,6 +41,7 @@ public class CreateManifest {
 	        StringBuilder rest = new StringBuilder();
 	        for (String raw : params.getRaw()) {
 		        if (raw.startsWith("--cache-dir=")) continue;
+		        if (raw.startsWith("--accept-downgrade=")) continue;
 		        if (rest.length() > 0) rest.append(" ");
 		        rest.append(raw);
 	        }
