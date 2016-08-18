@@ -6,7 +6,7 @@
 
     <groupId>no.tornado</groupId>
     <artifactId>fxlauncher</artifactId>
-    <version>1.0.12-SNAPSHOT</version>
+    <version>1.0.12</version>
     <packaging>jar</packaging>
     <name>FX Launcher</name>
     <description>Auto updating launcher for JavaFX Applications</description>
@@ -119,7 +119,7 @@
                 <executions>
                     <execution>
                         <id>sign-artifacts</id>
-                        <phase>deploy</phase>
+                        <phase>install</phase>
                         <goals>
                             <goal>sign</goal>
                         </goals>
