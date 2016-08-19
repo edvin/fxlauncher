@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [10.0.13-SNAPSHOT]
+
+## Added `--include-extensions` as a comma separated list of filename extensions to include of other resources from the build dir. By default it always includes `jar,war`.
+
 ## [1.0.12]
 
 ### Changed
