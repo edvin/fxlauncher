@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+- Added `include-extensions` parameter to CreateManaifest. By default only `jar` and `war` files are included, add more extensions via this comma separated list.
 - Added --accept-downgrade=<true|false> parameter to CreateManifest. Default is to not accept downgrades (server version is older than local version)
 - Artifacts in subfolders gets correct path delimiter in app manifest for Windows
 
