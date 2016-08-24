@@ -162,6 +162,7 @@ public class Launcher extends Application {
     private void createApplication() throws Exception {
         phase = "Create Application";
 
+        if (manifest == null) throw new IllegalArgumentException("Unable to retrieve embedded or remote manifest.");
 	    Path cacheDir = manifest.resolveCacheDir(getParameters() != null ? getParameters().getNamed() : null);
 
 	    URLClassLoader classLoader = createClassLoader(cacheDir);
@@ -213,7 +214,7 @@ public class Launcher extends Application {
         if (namedParams.containsKey("app")) {
             String manifestURL = namedParams.get("app");
             log.info(String.format("Loading manifest from parameter supplied location %s", manifestURL));
-            manifest = JAXB.unmarshal(URI.create(manifestURL), FXManifest.class);
+            manifest = FXManifest.load(URI.create(manifestURL));
             return;
         }
 
@@ -227,7 +228,7 @@ public class Launcher extends Application {
             manifest = JAXB.unmarshal(manifestPath.toFile(), FXManifest.class);
 
         try {
-            FXManifest remoteManifest = JAXB.unmarshal(manifest.getFXAppURI(), FXManifest.class);
+            FXManifest remoteManifest = FXManifest.load(manifest.getFXAppURI());
 
             if (remoteManifest == null) {
                 log.info(String.format("No remote manifest at %s", manifest.getFXAppURI()));

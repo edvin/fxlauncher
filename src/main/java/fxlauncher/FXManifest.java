@@ -1,17 +1,18 @@
 package fxlauncher;
 
+import javax.xml.bind.JAXB;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @SuppressWarnings("unchecked")
 @XmlRootElement(name = "Application")
@@ -140,5 +141,17 @@ public class FXManifest {
 	public boolean isNewerThan(FXManifest other) {
 		if (ts == null || other.ts == null) return false;
 		return ts > other.ts;
+	}
+
+	static FXManifest load(URI uri) throws IOException {
+		HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
+		if (uri.getUserInfo() != null) {
+			byte[] payload = uri.getUserInfo().getBytes(StandardCharsets.UTF_8);
+			String encoded = Base64.getEncoder().encodeToString(payload);
+			connection.setRequestProperty("Authorization", String.format("Basic %s", encoded));
+		}
+		try (InputStream input = connection.getInputStream()) {
+			return JAXB.unmarshal(input, FXManifest.class);
+		}
 	}
 }
