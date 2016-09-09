@@ -1,6 +1,6 @@
 package fxlauncher;
 
-public enum OS {
+enum OS {
 	win, mac, linux, other;
 
 	public static final OS current;

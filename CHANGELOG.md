@@ -3,6 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [10.0.13-SNAPSHOT]
 
+- Fixed bug: If updating from a manifest with no timestamp (pre 1.0.11), new version was considered older, so no upgrade was performed
 - Basic Authentication support for manifest url (via https://user:pass@host/path)
 - Added `--include-extensions` as a comma separated list of filename extensions to include of other resources from the build dir. By default it always includes `jar,war`.
 
