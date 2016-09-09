@@ -139,8 +139,7 @@ public class FXManifest {
 	}
 
 	public boolean isNewerThan(FXManifest other) {
-		if (ts == null || other.ts == null) return false;
-		return ts > other.ts;
+		return ts == null || other.ts == null || ts > other.ts;
 	}
 
 	static FXManifest load(URI uri) throws IOException {
