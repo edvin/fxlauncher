@@ -96,7 +96,7 @@ public class Launcher extends Application {
 		phase = "Update Wrapper Creation";
 
 		Platform.runLater(() -> {
-			Parent updater = uiProvider.createUpdater(manifest);
+			Parent updater = uiProvider.createUpdater(stage, manifest);
 			stage.getScene().setRoot(updater);
 		});
 	}

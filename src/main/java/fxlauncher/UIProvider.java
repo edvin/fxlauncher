@@ -31,7 +31,7 @@ public interface UIProvider {
 	 * before the update process starts. The default implementation is an intdeterminate
 	 * progress indicator, but you can return any arbitrary scene graph.
 	 *
-	 * This method is always called before {@link #createUpdater(FXManifest)}
+	 * This method is always called before {@link #createUpdater(Stage, FXManifest)}
 	 *
 	 * @return The launcher UI
 	 */
@@ -46,7 +46,7 @@ public interface UIProvider {
 	 * @see #updateProgress(double)
 	 * @return The updater Node
 	 */
-	Parent createUpdater(FXManifest manifest);
+	Parent createUpdater(Stage stage, FXManifest manifest);
 
 	/**
 	 * Called when the update/download progress is changing. The progress is a value between

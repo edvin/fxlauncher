@@ -19,7 +19,7 @@ public class DefaultUIProvider implements UIProvider {
 		return root;
 	}
 
-	public Parent createUpdater(FXManifest manifest) {
+	public Parent createUpdater(Stage stage, FXManifest manifest) {
 		progressBar = new ProgressBar();
 		progressBar.setStyle(manifest.progressBarStyle);
 
