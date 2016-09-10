@@ -30,8 +30,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import static com.sun.org.apache.xml.internal.security.keys.keyresolver.KeyResolver.iterator;
-
 @SuppressWarnings("unchecked")
 public class Launcher extends Application {
 	private static final Logger log = Logger.getLogger("Launcher");

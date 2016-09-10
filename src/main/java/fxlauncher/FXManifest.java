@@ -18,27 +18,27 @@ import java.util.*;
 @XmlRootElement(name = "Application")
 public class FXManifest {
 	@XmlAttribute
-	Long ts;
+	public Long ts;
 	@XmlAttribute
-	URI uri;
+	public URI uri;
 	@XmlAttribute(name = "launch")
-	String launchClass;
+	public String launchClass;
 	@XmlElement(name = "lib")
-	List<LibraryFile> files = new ArrayList<>();
+	public List<LibraryFile> files = new ArrayList<>();
 	@XmlElement
-	String updateText = "Updating...";
+	public String updateText = "Updating...";
 	@XmlElement
-	String updateLabelStyle = "-fx-font-weight: bold;";
+	public String updateLabelStyle = "-fx-font-weight: bold;";
 	@XmlElement
-	String progressBarStyle = "-fx-pref-width: 200;";
+	public String progressBarStyle = "-fx-pref-width: 200;";
 	@XmlElement
-	String wrapperStyle = "-fx-spacing: 10; -fx-padding: 25;";
+	public String wrapperStyle = "-fx-spacing: 10; -fx-padding: 25;";
 	@XmlElement
-	String parameters;
+	public String parameters;
 	@XmlElement
-	String cacheDir;
+	public String cacheDir;
 	@XmlElement
-	Boolean acceptDowngrade = false;
+	public Boolean acceptDowngrade = false;
 
 	public String getFilename() {
 		return String.format("%s.xml", launchClass);
