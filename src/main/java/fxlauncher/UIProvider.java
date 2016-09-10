@@ -1,6 +1,7 @@
 package fxlauncher;
 
 import javafx.scene.Parent;
+import javafx.stage.Stage;
 
 /**
  * The UIProvider is responsible for creating the loader screen and the updater screen.
@@ -30,9 +31,11 @@ public interface UIProvider {
 	 * before the update process starts. The default implementation is an intdeterminate
 	 * progress indicator, but you can return any arbitrary scene graph.
 	 *
+	 * This method is always called before {@link #createUpdater(FXManifest)}
+	 *
 	 * @return The launcher UI
 	 */
-	Parent createLoader();
+	Parent createLoader(Stage stage);
 
 	/**
 	 * Create the Node that will be displayed while the launcher is updating resources.

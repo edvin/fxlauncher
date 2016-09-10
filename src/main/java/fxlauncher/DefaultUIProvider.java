@@ -7,11 +7,12 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 public class DefaultUIProvider implements UIProvider {
 	private ProgressBar progressBar;
 
-	public Parent createLoader() {
+	public Parent createLoader(Stage stage) {
 		StackPane root = new StackPane(new ProgressIndicator());
 		root.setPrefSize(200, 80);
 		root.setPadding(new Insets(10));

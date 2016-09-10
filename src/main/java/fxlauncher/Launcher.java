@@ -58,9 +58,9 @@ public class Launcher extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		this.primaryStage = primaryStage;
 
-		Parent loader = uiProvider.createLoader();
-
 		stage = new Stage(StageStyle.UNDECORATED);
+
+		Parent loader = uiProvider.createLoader(stage);
 
 		Scene scene = new Scene(loader);
 		stage.setScene(scene);
