@@ -89,3 +89,10 @@ then made available to the `FXMLLoader`. You can access it via `FXMLLoader.getDe
 FXLauncher supports filtering of resources for the running platform. Any resource
 that ends with `-[mac|win|linux].jar` will only be downloaded and put on the classpath on the corresponding
 platform. The manifest enforces this though the `os` attribute in `app.xml`.
+
+### Custom UI
+
+There are two ways to customize the appearance of the update UI. Either you can configure the 
+supported style properties in the manifest, or you can provide a custom implementation of the
+[UIProvider](https://github.com/edvin/fxlauncher/blob/master/src/main/java/fxlauncher/UIProvider.java)
+to completely customize the UI.

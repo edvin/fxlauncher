@@ -2,6 +2,28 @@ package fxlauncher;
 
 import javafx.scene.Parent;
 
+/**
+ * The UIProvider is responsible for creating the loader screen and the updater screen.
+ * A default implementation is available in the {@link DefaultUIProvider} class, but you
+ * can provide a custom implementation to alter the appearance of the loader UI.
+ *
+ * Implement this interface and make sure to embed the classes inside the fxlauncher.jar
+ * right around the "embed manifest" step. You have to do this manually as there is no function
+ * in the plugin to support this yet. Basically you have to do the following two steps:
+ *
+ * 1. Copy the implementation classes into the fxlauncher.jar
+ * 2. Create META-INF/services/fxlauncher.UIProvider inside the fxlauncher.jar. The content must
+ * be a string with the fully qualified name of your implementation class.
+ *
+ * Typical example:
+ *
+ * <div>
+ * # cd into directory with ui sources
+ * jar uf fxlauncher.jar -C my/package/MyUIProvider.class
+ * # cd into directory with META-INF folder
+ * jar uf fxlauncher.jar -C META-INF/services/fxlauncher.UIProvider
+ * </div>
+ */
 public interface UIProvider {
 	/**
 	 * Create the Node that will be displayed while the launcher is loading resources,
