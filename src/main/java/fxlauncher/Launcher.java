@@ -9,6 +9,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextArea;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -40,6 +41,7 @@ public class Launcher extends Application {
 	private Stage stage;
 	private String phase;
 	private UIProvider uiProvider;
+	private StackPane root;
 
 	/**
 	 * Initialize the UI Provider by looking for an UIProvider inside the launcher
@@ -58,13 +60,13 @@ public class Launcher extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		this.primaryStage = primaryStage;
 		stage = new Stage(StageStyle.UNDECORATED);
+		root = new StackPane();
+		Scene scene = new Scene(root);
+		stage.setScene(scene);
 
 		this.uiProvider.init(stage);
+		root.getChildren().add(uiProvider.createLoader());
 
-		Parent loader = uiProvider.createLoader();
-
-		Scene scene = new Scene(loader);
-		stage.setScene(scene);
 		stage.show();
 
 		new Thread(() -> {
@@ -98,7 +100,8 @@ public class Launcher extends Application {
 
 		Platform.runLater(() -> {
 			Parent updater = uiProvider.createUpdater(manifest);
-			stage.getScene().setRoot(updater);
+			root.getChildren().clear();
+			root.getChildren().add(updater);
 		});
 	}
 
