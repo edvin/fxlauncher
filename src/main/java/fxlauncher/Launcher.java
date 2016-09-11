@@ -57,10 +57,11 @@ public class Launcher extends Application {
 
 	public void start(Stage primaryStage) throws Exception {
 		this.primaryStage = primaryStage;
-
 		stage = new Stage(StageStyle.UNDECORATED);
 
-		Parent loader = uiProvider.createLoader(stage);
+		this.uiProvider.init(stage);
+
+		Parent loader = uiProvider.createLoader();
 
 		Scene scene = new Scene(loader);
 		stage.setScene(scene);
@@ -96,7 +97,7 @@ public class Launcher extends Application {
 		phase = "Update Wrapper Creation";
 
 		Platform.runLater(() -> {
-			Parent updater = uiProvider.createUpdater(stage, manifest);
+			Parent updater = uiProvider.createUpdater(manifest);
 			stage.getScene().setRoot(updater);
 		});
 	}

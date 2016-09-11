@@ -26,16 +26,24 @@ import javafx.stage.Stage;
  * </div>
  */
 public interface UIProvider {
+
+	/**
+	 * Initialization method called before {@link #createLoader()}
+	 * and {@link #createUpdater(FXManifest)}. This is a good place to add
+	 * stylesheets and perform other configuration.
+	 *
+	 * @param stage The stage that will be used to contain the loader and updater.
+	 */
+	void init(Stage stage);
+
 	/**
 	 * Create the Node that will be displayed while the launcher is loading resources,
 	 * before the update process starts. The default implementation is an intdeterminate
 	 * progress indicator, but you can return any arbitrary scene graph.
 	 *
-	 * This method is always called before {@link #createUpdater(Stage, FXManifest)}
-	 *
 	 * @return The launcher UI
 	 */
-	Parent createLoader(Stage stage);
+	Parent createLoader();
 
 	/**
 	 * Create the Node that will be displayed while the launcher is updating resources.
@@ -46,7 +54,7 @@ public interface UIProvider {
 	 * @see #updateProgress(double)
 	 * @return The updater Node
 	 */
-	Parent createUpdater(Stage stage, FXManifest manifest);
+	Parent createUpdater(FXManifest manifest);
 
 	/**
 	 * Called when the update/download progress is changing. The progress is a value between

@@ -12,14 +12,14 @@ import javafx.stage.Stage;
 public class DefaultUIProvider implements UIProvider {
 	private ProgressBar progressBar;
 
-	public Parent createLoader(Stage stage) {
+	public Parent createLoader() {
 		StackPane root = new StackPane(new ProgressIndicator());
 		root.setPrefSize(200, 80);
 		root.setPadding(new Insets(10));
 		return root;
 	}
 
-	public Parent createUpdater(Stage stage, FXManifest manifest) {
+	public Parent createUpdater(FXManifest manifest) {
 		progressBar = new ProgressBar();
 		progressBar.setStyle(manifest.progressBarStyle);
 
@@ -34,5 +34,9 @@ public class DefaultUIProvider implements UIProvider {
 
 	public void updateProgress(double progress) {
 		progressBar.setProgress(progress);
+	}
+
+	public void init(Stage stage) {
+
 	}
 }
