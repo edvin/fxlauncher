@@ -95,4 +95,5 @@ platform. The manifest enforces this though the `os` attribute in `app.xml`.
 There are two ways to customize the appearance of the update UI. Either you can configure the 
 supported style properties in the manifest, or you can provide a custom implementation of the
 [UIProvider](https://github.com/edvin/fxlauncher/blob/master/src/main/java/fxlauncher/UIProvider.java)
-to completely customize the UI.
+to completely customize the UI. Have a look at this [Custom UI Demo Project](https://github.com/edvin/fxlauncher-custom-ui) for
+more information about customizing the updater.
