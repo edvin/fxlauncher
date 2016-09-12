@@ -15,7 +15,7 @@ You can see the launcher in action in this [Demo Application](http://fxldemo.tor
 
 ### Video demonstration
  	
-See the launcher in action in this short [screencast](https://www.youtube.com/watch?v=NCP9wjRPQ14).
+See the launcher in action in this short [screencast](https://www.youtube.com/watch?v=NCP9wjRPQ14). There is also a [video](https://www.youtube.com/watch?v=-6PlFVUgntU) about customizing the update user interface.
 
 ## How does it work?
 
