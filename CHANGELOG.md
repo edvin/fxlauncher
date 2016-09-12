@@ -1,7 +1,7 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## [1.0.13-SNAPSHOT]
+## [1.0.13] - 2016-09-12
 
 - Support for fully customizable update UI, see (https://github.com/edvin/fxlauncher-custom-ui) 
 - Basic Authentication support for manifest url (via https://user:pass@host/path)
