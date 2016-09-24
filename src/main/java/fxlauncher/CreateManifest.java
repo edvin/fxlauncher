@@ -24,7 +24,10 @@ public class CreateManifest {
         URI baseURI = URI.create(args[0]);
         String launchClass = args[1];
         Path appPath = Paths.get(args[2]);
-        FXManifest manifest = create(baseURI, launchClass, appPath);
+
+        String cacheDir = null;
+        Boolean acceptDowngrade = null;
+        String parameters = null;
 
         if (args.length > 3) {
             // Parse named parameters
@@ -36,11 +39,11 @@ public class CreateManifest {
             if (named != null) {
                 // Configure cacheDir
                 if (named.containsKey("cache-dir"))
-                    manifest.cacheDir = named.get("cache-dir");
+                    cacheDir = named.get("cache-dir");
 
                 // Configure acceptDowngrade
                 if (named.containsKey("accept-downgrade"))
-                    manifest.acceptDowngrade = Boolean.valueOf(named.get("accept-downgrade"));
+                    acceptDowngrade = Boolean.valueOf(named.get("accept-downgrade"));
 
                 // Add additional files with these extensions to manifest
                 if (named.containsKey("include-extensions"))
@@ -63,8 +66,13 @@ public class CreateManifest {
 
             // Add the raw parameter string to the manifest
             if (rest.length() > 0)
-                manifest.parameters = rest.toString();
+                parameters = rest.toString();
         }
+
+        FXManifest manifest = create(baseURI, launchClass, appPath);
+        if (cacheDir != null) manifest.cacheDir = cacheDir;
+        if (acceptDowngrade != null) manifest.acceptDowngrade = acceptDowngrade;
+        if (parameters != null) manifest.parameters = parameters;
 
         JAXB.marshal(manifest, appPath.resolve("app.xml").toFile());
     }
