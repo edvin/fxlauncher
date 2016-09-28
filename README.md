@@ -1,5 +1,8 @@
 # FXLauncher
 
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/no.tornado/fxlauncher/badge.svg)](https://search.maven.org/#search|ga|1|no.tornado.fxlauncher)
+[![Apache License](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
+
 Auto updating launcher for JavaFX Applications. Combined with JavaFX native packaging, you get
 a native installer with automatic app updates.
 
@@ -12,11 +15,11 @@ You can see the launcher in action in this [Demo Application](http://fxldemo.tor
 
 ### Video demonstration
  	
-See the launcher in action in this short [screencast](https://www.youtube.com/watch?v=NCP9wjRPQ14).
+See the launcher in action in this short [screencast](https://www.youtube.com/watch?v=NCP9wjRPQ14). There is also a [video](https://www.youtube.com/watch?v=-6PlFVUgntU) about customizing the update user interface.
 
 ## How does it work?
 
-FXLauncher is a 14Kb jar that can be used to boot your application. It knows the location
+FXLauncher is a 18Kb jar that can be used to boot your application. It knows the location
 of your application repository where you host all the app resources.
 
 See a manifest [example here](http://fxldemo.tornado.no/app.xml). FXLauncher will look up the
@@ -33,7 +36,15 @@ Before each run, the launcher will synchronize all resources and seamlessly laun
 ## How to use FXLauncher
 
 See the QuickStart projects at the top of the README for information on integrating FXLauncher in your build system.
+
+## Adhoc usage
 	
+FXLauncher can also be used to launch an application at an arbitrary url by specifying the `--app` parameter at startup:
+	
+```bash
+java -jar fxlauncher.jar --app=http://remote/location/app.xml
+```
+
 #### Native installers
 
 The native installer does not contain any application code, only the launcher. There is
@@ -49,6 +60,19 @@ Check out these prebuilt installers for a more complex demo application
 - [Windows](http://fxsamples.tornado.no/CRMApplication-1.0.exe)
 - [Linux](http://fxsamples.tornado.no/crmapplication-1.0.deb)
 
+## Specify cache directory
+
+By default, the artifacts are downloaded to the current working directory. This is usually fine for native installers, but if you distribute
+your application via just the launcher jar, you might want to specify where the downloaded artifacts land. See the 
+[cache dir documentation](https://github.com/edvin/fxlauncher/wiki/Optional-Cache-Directory)for more information.
+
+## Accept downgrades
+
+Starting from version 1.0.12, FXLauncher will not download a remote version if the local version is newer. This is controlled
+by comparing a timestamp in the manifest. Specifying `--accept-downgrades=true` as the last argument to CreateManifest will
+allow you to make sure that the version you have published will always be used by your clients even if they have a newer version installed.
+This option is also available in the Gradle plugin as `acceptDowngrades`.
+
 ## A slimmer alternative
 
 It is also possible to embed the launchar jar in a native installer system like Advanced Installer - same approach as above, 
@@ -59,3 +83,17 @@ Again, you are only distributing the launcher with the native installer, the res
 
 FXLauncher uses a custom classloader to dynamically load the synchronized resources. This classloader is 
 then made available to the `FXMLLoader`. You can access it via `FXMLLoader.getDefaultClassLoader()`.
+
+### Platform specific resources
+
+FXLauncher supports filtering of resources for the running platform. Any resource
+that ends with `-[mac|win|linux].jar` will only be downloaded and put on the classpath on the corresponding
+platform. The manifest enforces this though the `os` attribute in `app.xml`.
+
+### Custom UI
+
+There are two ways to customize the appearance of the update UI. Either you can configure the 
+supported style properties in the manifest, or you can provide a custom implementation of the
+[UIProvider](https://github.com/edvin/fxlauncher/blob/master/src/main/java/fxlauncher/UIProvider.java)
+to completely customize the UI. Have a look at this [Custom UI Demo Project](https://github.com/edvin/fxlauncher-custom-ui) for
+more information about customizing the updater.
