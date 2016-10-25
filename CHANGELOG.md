@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 ## [10.0.14-SNAPSHOT]
 
 - `include-extensions` was consulted too early, leaving the matched files out of the manifest
+- Basic Authentication only worked for manifest, not for the artifacts
 
 ## [1.0.13] - 2016-09-12
 
