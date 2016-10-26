@@ -13,6 +13,10 @@ You can see the launcher in action in this [Demo Application](http://fxldemo.tor
 - [Maven Example](https://github.com/edvin/fxldemo) with [pom.xml](https://github.com/edvin/fxldemo/blob/master/pom.xml)
 - [Gradle Example](https://github.com/edvin/fxldemo-gradle) with [build.gradle](https://github.com/edvin/fxldemo-gradle/blob/master/build.gradle)
 
+### Changelog
+
+Check out [the changelog](https://github.com/edvin/fxlauncher/blob/master/CHANGELOG.md) for a list of all updates to the project.
+
 ### Video demonstration
  	
 See the launcher in action in this short [screencast](https://www.youtube.com/watch?v=NCP9wjRPQ14). There is also a [video](https://www.youtube.com/watch?v=-6PlFVUgntU) about customizing the update user interface.
