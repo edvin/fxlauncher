@@ -80,7 +80,7 @@ This option is also available in the Gradle plugin as `acceptDowngrades`.
 ## A slimmer alternative
 
 It is also possible to embed the launchar jar in a native installer system like Advanced Installer - same approach as above, 
-but without using javapackager. With this approach, you can choose wether to include a JRE or have the installer software preinstall it.
+but without using javapackager. With this approach, you can choose whether to include a JRE or have the installer software preinstall it.
 Again, you are only distributing the launcher with the native installer, the rest is pulled down on demand.
 
 ### A note on classloaders
