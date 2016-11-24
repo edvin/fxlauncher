@@ -60,9 +60,9 @@ The native installer does not contain any application code, only the launcher. T
 	
 Check out these prebuilt installers for a more complex demo application
 
-- [MacOSX](http://fxsamples.tornado.no/CRMApplication-1.0.dmg)
-- [Windows](http://fxsamples.tornado.no/CRMApplication-1.0.exe)
-- [Linux](http://fxsamples.tornado.no/crmapplication-1.0.deb)
+- [MacOSX](http://fxldemo.tornado.no/FxlDemo-2.0.dmg)
+- [Windows](http://fxldemo.tornado.no/FxlDemo-2.0.exe)
+- [Linux](http://fxldemo.tornado.no/fxldemo-2.0.deb)
 
 ## Specify cache directory
 
