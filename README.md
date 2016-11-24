@@ -70,6 +70,17 @@ By default, the artifacts are downloaded to the current working directory. This 
 your application via just the launcher jar, you might want to specify where the downloaded artifacts land. See the 
 [cache dir documentation](https://github.com/edvin/fxlauncher/wiki/Optional-Cache-Directory)for more information.
 
+## Installation location
+
+It's worth noting that the two package alternatives for Windows, (EXE and MSI) have different install location defaults.
+While EXE will default to %APPDATALOCAL%, the MSI installer will default to %ProgramFiles%. If you use the MSI installer you
+might therefore need to specify the cache dir parameter as `cacheDir 'USERLIB/MyApp'` to make sure that the launcher has
+write access to download the artifacts for your application.
+
+Read more about Java Packager in the official documentation:
+
+https://docs.oracle.com/javase/8/docs/technotes/guides/deploy/self-contained-packaging.html
+
 ## Accept downgrades
 
 Starting from version 1.0.12, FXLauncher will not download a remote version if the local version is newer. This is controlled
