@@ -105,6 +105,11 @@ FXLauncher supports filtering of resources for the running platform. Any resourc
 that ends with `-[mac|win|linux].jar` will only be downloaded and put on the classpath on the corresponding
 platform. The manifest enforces this though the `os` attribute in `app.xml`.
 
+### Native libraries (Version 1.0.15-SNAPSHOT)
+
+If you need to load native libraries before the custom class loader kicks inn, specify the `--preload-native-libraries=` parameter
+to CreateManifest. It supports a comma separated list of libraries to load. Remember: No extensions, just the library name.
+
 ### Custom UI
 
 There are two ways to customize the appearance of the update UI. Either you can configure the 

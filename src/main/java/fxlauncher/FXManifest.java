@@ -39,6 +39,13 @@ public class FXManifest {
 	public String cacheDir;
 	@XmlElement
 	public Boolean acceptDowngrade = false;
+	@XmlElement
+	public String preloadNativeLibraries;
+
+	public List<String> getPreloadNativeLibraryList() {
+		if (preloadNativeLibraries == null || preloadNativeLibraries.isEmpty()) return Collections.emptyList();
+		return Arrays.asList(preloadNativeLibraries.split(".*,-*"));
+	}
 
 	public String getFilename() {
 		return String.format("%s.xml", launchClass);
@@ -153,4 +160,5 @@ public class FXManifest {
 			return JAXB.unmarshal(input, FXManifest.class);
 		}
 	}
+
 }

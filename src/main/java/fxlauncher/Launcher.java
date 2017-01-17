@@ -176,6 +176,10 @@ public class Launcher extends Application {
         phase = "Create Application";
 
         if (manifest == null) throw new IllegalArgumentException("Unable to retrieve embedded or remote manifest.");
+        List<String> preloadLibs = manifest.getPreloadNativeLibraryList();
+        for (String preloadLib : preloadLibs)
+            System.loadLibrary(preloadLib);
+
         Path cacheDir = manifest.resolveCacheDir(getParameters() != null ? getParameters().getNamed() : null);
 
         URLClassLoader classLoader = createClassLoader(cacheDir);

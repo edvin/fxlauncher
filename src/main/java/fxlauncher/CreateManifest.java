@@ -28,6 +28,7 @@ public class CreateManifest {
         String cacheDir = null;
         Boolean acceptDowngrade = null;
         String parameters = null;
+        String preloadNativeLibraries = null;
 
         if (args.length > 3) {
             // Parse named parameters
@@ -45,6 +46,10 @@ public class CreateManifest {
                 if (named.containsKey("accept-downgrade"))
                     acceptDowngrade = Boolean.valueOf(named.get("accept-downgrade"));
 
+                // Configure preload native libraries
+                if (named.containsKey("preload-native-libraries"))
+                    preloadNativeLibraries = named.get("preload-native-libraries");
+
                 // Add additional files with these extensions to manifest
                 if (named.containsKey("include-extensions"))
                     includeExtensions.addAll(
@@ -60,6 +65,7 @@ public class CreateManifest {
                 if (raw.startsWith("--cache-dir=")) continue;
                 if (raw.startsWith("--accept-downgrade=")) continue;
                 if (raw.startsWith("--include-extensions=")) continue;
+                if (raw.startsWith("--preload-native-libraries=")) continue;
                 if (rest.length() > 0) rest.append(" ");
                 rest.append(raw);
             }
@@ -73,6 +79,7 @@ public class CreateManifest {
         if (cacheDir != null) manifest.cacheDir = cacheDir;
         if (acceptDowngrade != null) manifest.acceptDowngrade = acceptDowngrade;
         if (parameters != null) manifest.parameters = parameters;
+        if (preloadNativeLibraries != null) manifest.preloadNativeLibraries = preloadNativeLibraries;
 
         JAXB.marshal(manifest, appPath.resolve("app.xml").toFile());
     }
