@@ -224,10 +224,32 @@ public class Launcher extends Application {
     private void syncManifest() throws Exception {
         Map<String, String> namedParams = getParameters().getNamed();
 
+        String appStr = null;
+
         if (namedParams.containsKey("app")) {
-            String manifestURL = namedParams.get("app");
-            log.info(String.format("Loading manifest from parameter supplied location %s", manifestURL));
-            manifest = FXManifest.load(URI.create(manifestURL));
+            // get --app-param
+            appStr = namedParams.get("app");
+            log.info(String.format("Loading manifest from 'app' parameter supplied: %s", appStr));
+        }
+
+        if (namedParams.containsKey("uri")) {
+            // get --uri-param
+            String uriStr  = namedParams.get("uri");
+            if (! uriStr.endsWith("/")) { uriStr = uriStr + "/"; }
+            log.info(String.format("Syncing files from 'uri' parameter supplied:  %s", uriStr));
+
+            URI uri = URI.create(uriStr);
+            // load manifest from --app param if supplied, else default file at supplied uri
+            URI app = appStr != null ? URI.create(appStr) : uri.resolve("app.xml");
+            manifest = FXManifest.load(app);
+            // set supplied uri in manifest
+            manifest.uri = uri;
+            return;
+        }
+
+        if (appStr != null) {
+            // --uri was not supplied, but --app was, so load manifest from that
+            manifest = FXManifest.load(URI.create(appStr));
             return;
         }
 
@@ -246,14 +268,15 @@ public class Launcher extends Application {
             if (remoteManifest == null) {
                 log.info(String.format("No remote manifest at %s", manifest.getFXAppURI()));
             } else if (!remoteManifest.equals(manifest)) {
-                // Update to remote manifest if newer or we specifially accept downgrades
+                // Update to remote manifest if newer or we specifically accept downgrades
                 if (remoteManifest.isNewerThan(manifest) || manifest.acceptDowngrade) {
                     manifest = remoteManifest;
                     JAXB.marshal(manifest, manifestPath.toFile());
                 }
             }
         } catch (Exception ex) {
-            log.log(Level.WARNING, "Unable to update manifest", ex);
+            log.log(Level.WARNING,
+                    String.format("Unable to update manifest from %s", manifest.getFXAppURI()), ex);
         }
     }
 
