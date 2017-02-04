@@ -49,6 +49,20 @@ FXLauncher can also be used to launch an application at an arbitrary url by spec
 java -jar fxlauncher.jar --app=http://remote/location/app.xml
 ```
 
+Alternatively (or in combination with `--app...`), you can override the uri attribute in the manifest (`app.xml`) so that both `app.xml` and all resources are loaded from the specified uri. This is especially useful for testing the complete setup locally or from a staging environment.
+
+```bash
+java -jar fxlauncher.jar --uri=http://remote/location/
+```
+
+The two parameters also work in tandem, allowing you to load a specified manifest from one URL and override its uri.
+
+```bash
+java -jar fxlauncher.jar --app=http://remote/location/app.xml --uri=http://remote/location/
+```
+
+Note: All parameters (including these) are passed on to your application.  So please ensure that your parameters have a different name if they carry different data.
+
 #### Native installers
 
 The native installer does not contain any application code, only the launcher. There is
