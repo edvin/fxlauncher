@@ -13,6 +13,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import javax.net.ssl.*;
 import javax.xml.bind.JAXB;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -25,6 +26,10 @@ import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -228,6 +233,9 @@ public class Launcher extends Application {
     private void syncManifest() throws Exception {
         Map<String, String> namedParams = getParameters().getNamed();
 
+        if (getParameters().getUnnamed().contains("--ignoressl")) {
+            setupIgnoreSSLCertificate();
+        }
         String appStr = null;
 
         if (namedParams.containsKey("app")) {
@@ -238,8 +246,10 @@ public class Launcher extends Application {
 
         if (namedParams.containsKey("uri")) {
             // get --uri-param
-            String uriStr  = namedParams.get("uri");
-            if (! uriStr.endsWith("/")) { uriStr = uriStr + "/"; }
+            String uriStr = namedParams.get("uri");
+            if (!uriStr.endsWith("/")) {
+                uriStr = uriStr + "/";
+            }
             log.info(String.format("Syncing files from 'uri' parameter supplied:  %s", uriStr));
 
             URI uri = URI.create(uriStr);
@@ -284,4 +294,28 @@ public class Launcher extends Application {
         }
     }
 
+    private void setupIgnoreSSLCertificate() throws NoSuchAlgorithmException, KeyManagementException {
+        TrustManager[] trustManager = new TrustManager[]{new X509TrustManager() {
+            @Override
+            public void checkClientTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
+            }
+
+            @Override
+            public void checkServerTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
+
+            }
+
+            @Override
+            public X509Certificate[] getAcceptedIssuers() {
+                return null;
+            }
+        }
+        };
+        SSLContext sslContext = SSLContext.getInstance("SSL");
+        sslContext.init(null, trustManager, new java.security.SecureRandom());
+        HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
+
+        HostnameVerifier hostnameVerifier = (s, sslSession) -> true;
+        HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);
+    }
 }
