@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [10.0.15-SNAPSHOT]
+- `--ignoressl` commandline argument to the fxlauncher.jar will ignore ssl certificate errors. This especially usefull when running in a business environment with for example 
+the *blue coat proxy* that uses a man in the middle attack to sniff on https connections.
 
 
 ## [10.0.14] - 2016-10-26
