@@ -59,6 +59,7 @@ public class CreateManifest {
                 // configure the whats-new option
                 if (named.containsKey("whats-new"))
                     whatsnew = named.get("whats-new");
+
                 // Add additional files with these extensions to manifest
                 if (named.containsKey("include-extensions"))
                     includeExtensions.addAll(
@@ -75,6 +76,7 @@ public class CreateManifest {
                 if (raw.startsWith("--accept-downgrade=")) continue;
                 if (raw.startsWith("--include-extensions=")) continue;
                 if (raw.startsWith("--preload-native-libraries=")) continue;
+                if (raw.startsWith("--whats-new")) continue;
                 if (rest.length() > 0) rest.append(" ");
                 rest.append(raw);
             }
@@ -89,7 +91,7 @@ public class CreateManifest {
         if (acceptDowngrade != null) manifest.acceptDowngrade = acceptDowngrade;
         if (parameters != null) manifest.parameters = parameters;
         if (preloadNativeLibraries != null) manifest.preloadNativeLibraries = preloadNativeLibraries;
-
+        if(whatsnew != null) manifest.whatsNewPage = whatsnew;
         JAXB.marshal(manifest, appPath.resolve("app.xml").toFile());
     }
 
