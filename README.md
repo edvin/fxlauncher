@@ -102,6 +102,39 @@ by comparing a timestamp in the manifest. Specifying `--accept-downgrades=true` 
 allow you to make sure that the version you have published will always be used by your clients even if they have a newer version installed.
 This option is also available in the Gradle plugin as `acceptDowngrades`.
 
+## Show what's new dialog.
+Starting from 1.0.15, you can have fxlauncher show a whats new dialog. This dialog will
+only be shown when fxlauncher has to download new files from the server. Fxlauncher will use a `webView` to show it. Specify `--whats-new=filename.html`
+The file needs to be copied into the jar like so:
+
+```xml
+<plugin>
+   <groupId>org.codehaus.mojo</groupId>
+   <artifactId>exec-maven-plugin</artifactId>
+   <version>1.4.0</version>
+   <executions>
+      <execution>
+         <id>copy-whatsnewfile</id>
+         <phase>package</phase>
+         <goals>
+            <goal>exec</goal>
+         </goals>
+         <configuration>
+            <executable>jar</executable>
+            <workingDirectory>${app.dir}</workingDirectory>
+            <arguments>
+               <argument>uf</argument>
+               <argument>fxlauncher.jar</argument>
+               <argument>-C</argument>
+               <argument>${project.basedir}/src/main/resources</argument>
+               <argument>whatsnew.html</argument>
+            </arguments>
+         </configuration>
+   </execution>
+</executions>
+</plugin>
+```
+
 ## A slimmer alternative
 
 It is also possible to embed the launchar jar in a native installer system like Advanced Installer - same approach as above, 

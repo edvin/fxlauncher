@@ -106,10 +106,6 @@ public class Launcher extends Application
 
             try
             {
-                //                if (filesUpdated[0] && !manifest.whatsNewPage.isEmpty())
-                //                {
-                //                    showWhatsNewDialog(manifest.whatsNewPage);
-                //                }
                 createApplication();
                 launchAppFromManifest(filesUpdated[0]);
             }
@@ -156,17 +152,17 @@ public class Launcher extends Application
         return new URLClassLoader(libs.toArray(new URL[libs.size()]));
     }
 
-    private void launchAppFromManifest(boolean showWhatshew) throws Exception
+    private void launchAppFromManifest(boolean showWhatsnew) throws Exception
     {
         phase = "Application Init";
         app.init();
         phase = "Application Start";
-        log.info("show whats new dialog?"+showWhatshew);
+        log.info("show whats new dialog? "+showWhatsnew);
         PlatformImpl.runAndWait(() ->
         {
             try
             {
-                if(showWhatshew) showWhatsNewDialog(manifest.whatsNewPage);
+                if(showWhatsnew) showWhatsNewDialog(manifest.whatsNewPage);
                 primaryStage.showingProperty().addListener(observable ->
                 {
                     if (stage.isShowing())

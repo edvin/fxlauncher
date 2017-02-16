@@ -33,7 +33,7 @@ public class CreateManifest {
         String cacheDir = null;
         Boolean acceptDowngrade = null;
         String parameters = null;
-        String whatsnew = null;
+        String whatsNew = null;
         String preloadNativeLibraries = null;
 
         if (args.length > 3) {
@@ -58,7 +58,7 @@ public class CreateManifest {
 
                 // configure the whats-new option
                 if (named.containsKey("whats-new"))
-                    whatsnew = named.get("whats-new");
+                    whatsNew = named.get("whats-new");
 
                 // Add additional files with these extensions to manifest
                 if (named.containsKey("include-extensions"))
@@ -91,7 +91,7 @@ public class CreateManifest {
         if (acceptDowngrade != null) manifest.acceptDowngrade = acceptDowngrade;
         if (parameters != null) manifest.parameters = parameters;
         if (preloadNativeLibraries != null) manifest.preloadNativeLibraries = preloadNativeLibraries;
-        if(whatsnew != null) manifest.whatsNewPage = whatsnew;
+        if(whatsNew != null) manifest.whatsNewPage = whatsNew;
         JAXB.marshal(manifest, appPath.resolve("app.xml").toFile());
     }
 
