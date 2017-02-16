@@ -18,10 +18,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -150,7 +150,7 @@ public class Launcher extends Application {
             Files.createDirectories(target.getParent());
 
             URI uri = manifest.uri.resolve(lib.file);
-            HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
+            URLConnection connection = uri.toURL().openConnection();
             if (uri.getUserInfo() != null) {
                 byte[] payload = uri.getUserInfo().getBytes(StandardCharsets.UTF_8);
                 String encoded = Base64.getEncoder().encodeToString(payload);

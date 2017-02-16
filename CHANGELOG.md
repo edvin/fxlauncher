@@ -3,6 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [10.0.15-SNAPSHOT]
 
+- App URI can now be any kind of URI, for example file://
 
 ## [10.0.14] - 2016-10-26
 
