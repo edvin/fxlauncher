@@ -1,21 +1,7 @@
 package fxlauncher;
 
-import com.sun.javafx.application.ParametersImpl;
-import com.sun.javafx.application.PlatformImpl;
-import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.TextArea;
-import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-
-import javax.net.ssl.*;
-import javax.xml.bind.JAXB;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -30,10 +16,34 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.*;
+import java.util.Base64;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import javax.xml.bind.JAXB;
+
+import com.sun.javafx.application.ParametersImpl;
+import com.sun.javafx.application.PlatformImpl;
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.TextArea;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 @SuppressWarnings("unchecked")
 public class Launcher extends Application {
@@ -96,6 +106,8 @@ public class Launcher extends Application {
     }
 
     public static void main(String[] args) {
+        File file = new File("app.xml");
+        System.out.println(file.toURI());
         launch(args);
     }
 
@@ -234,6 +246,7 @@ public class Launcher extends Application {
         Map<String, String> namedParams = getParameters().getNamed();
 
         if (getParameters().getUnnamed().contains("--ignoressl")) {
+            System.out.println("sslignore");
             setupIgnoreSSLCertificate();
         }
         String appStr = null;
@@ -295,6 +308,7 @@ public class Launcher extends Application {
     }
 
     private void setupIgnoreSSLCertificate() throws NoSuchAlgorithmException, KeyManagementException {
+        log.info("starting ssl setup");
         TrustManager[] trustManager = new TrustManager[]{new X509TrustManager() {
             @Override
             public void checkClientTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {

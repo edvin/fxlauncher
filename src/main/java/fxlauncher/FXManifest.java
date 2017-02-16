@@ -1,18 +1,24 @@
 package fxlauncher;
 
-import javax.xml.bind.JAXB;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import javax.xml.bind.JAXB;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 @SuppressWarnings("unchecked")
 @XmlRootElement(name = "Application")
@@ -150,7 +156,8 @@ public class FXManifest {
 	}
 
 	static FXManifest load(URI uri) throws IOException {
-		HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
+
+		URLConnection connection =  uri.toURL().openConnection();
 		if (uri.getUserInfo() != null) {
 			byte[] payload = uri.getUserInfo().getBytes(StandardCharsets.UTF_8);
 			String encoded = Base64.getEncoder().encodeToString(payload);
