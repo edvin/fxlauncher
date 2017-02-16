@@ -1,17 +1,22 @@
 package fxlauncher;
 
-import com.sun.javafx.application.ParametersImpl;
-
-import javax.xml.bind.JAXB;
 import java.io.IOException;
 import java.net.URI;
-import java.nio.file.*;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import javax.xml.bind.JAXB;
+
+import com.sun.javafx.application.ParametersImpl;
 
 public class CreateManifest {
     private static ArrayList<String> includeExtensions = new ArrayList<>();
@@ -28,6 +33,7 @@ public class CreateManifest {
         String cacheDir = null;
         Boolean acceptDowngrade = null;
         String parameters = null;
+        String whatsnew = null;
         String preloadNativeLibraries = null;
 
         if (args.length > 3) {
@@ -50,6 +56,9 @@ public class CreateManifest {
                 if (named.containsKey("preload-native-libraries"))
                     preloadNativeLibraries = named.get("preload-native-libraries");
 
+                // configure the whats-new option
+                if (named.containsKey("whats-new"))
+                    whatsnew = named.get("whats-new");
                 // Add additional files with these extensions to manifest
                 if (named.containsKey("include-extensions"))
                     includeExtensions.addAll(
