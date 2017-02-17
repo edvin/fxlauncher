@@ -162,7 +162,7 @@ public class Launcher extends Application
         {
             try
             {
-                if(showWhatsnew) showWhatsNewDialog(manifest.whatsNewPage);
+                if(showWhatsnew && manifest.whatsNewPage!=null) showWhatsNewDialog(manifest.whatsNewPage);
                 primaryStage.showingProperty().addListener(observable ->
                 {
                     if (stage.isShowing())
