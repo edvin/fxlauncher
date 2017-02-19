@@ -166,7 +166,7 @@ When appendAsemblyId=false, the uberjar will get the same name as the original j
                 <executions>
                     <execution>
                         <id>sign-artifacts</id>
-                        <phase>install</phase>
+                        <phase>deploy</phase>
                         <goals>
                             <goal>sign</goal>
                         </goals>

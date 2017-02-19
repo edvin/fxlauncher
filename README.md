@@ -133,6 +133,39 @@ This app mutex implementation uses [JUnique](https://github.com/terjedahl/juniqu
 Regarding choice of mutex name: 
  > To avoid potential conflicts, it is advisable to choose a fully qualifying lock ID for each application using JUnique. Using a generic ID, such "notepad", "chat" or "myapp", is not a good idea. Better to use something like "myName.myAppName", and even better it's to pick your application main class full name as the JUnique lock ID.
 
+## Show what's new dialog.
+
+Starting from 1.0.15, you can have fxlauncher show a whats new dialog. This dialog will
+only be shown when fxlauncher has to download new files from the server. Fxlauncher will use a `webView` to show it. Specify `--whats-new=filename.html`
+The file needs to be copied into the jar like so:
+
+```xml
+<plugin>
+   <groupId>org.codehaus.mojo</groupId>
+   <artifactId>exec-maven-plugin</artifactId>
+   <version>1.4.0</version>
+   <executions>
+      <execution>
+         <id>copy-whatsnewfile</id>
+         <phase>package</phase>
+         <goals>
+            <goal>exec</goal>
+         </goals>
+         <configuration>
+            <executable>jar</executable>
+            <workingDirectory>${app.dir}</workingDirectory>
+            <arguments>
+               <argument>uf</argument>
+               <argument>fxlauncher.jar</argument>
+               <argument>-C</argument>
+               <argument>${project.basedir}/src/main/resources</argument>
+               <argument>whatsnew.html</argument>
+            </arguments>
+         </configuration>
+   </execution>
+</executions>
+</plugin>
+```
 
 ## A slimmer alternative
 

@@ -1,10 +1,17 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## [10.0.15-SNAPSHOT]
+## [1.0.15-SNAPSHOT]
 
+- `--ignoressl` commandline argument to the fxlauncher.jar will ignore ssl certificate errors. This especially usefull when running in a business environment with for example 
+the *blue coat proxy* that uses a man in the middle attack to sniff on https connections.
+- `whatsnew` option is available, see README.md how to use it.
+- App URI can now be any kind of URI, for example file://
+- log statements get logged to TEMPDIR/fxlauncher.log. TEMPDIR is OS specific. The Error dialog will show you where it 
+expects to find it. Logfile location can be overwritten with the `--logfile=filename` command line option.
+- `--offline` flag added. when used on the command line the files will not be checked or downloaded from the remote.
 
-## [10.0.14] - 2016-10-26
+## [1.0.14] - 2016-10-26
 
 - `include-extensions` was consulted too early, leaving the matched files out of the manifest
 - Basic Authentication only worked for manifest, not for the artifacts
@@ -20,7 +27,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
-- Added `include-extensions` parameter to CreateManaifest. By default only `jar` and `war` files are included, add more extensions via this comma separated list.
+- Added `include-extensions` parameter to CreateManifest. By default only `jar` and `war` files are included, add more extensions via this comma separated list.
 - Added --accept-downgrade=<true|false> parameter to CreateManifest. Default is to not accept downgrades (server version is older than local version)
 - Artifacts in subfolders gets correct path delimiter in app manifest for Windows
 
