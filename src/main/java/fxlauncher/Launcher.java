@@ -30,6 +30,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import it.sauronsoftware.junique.JUnique;
+import it.sauronsoftware.junique.AlreadyLockedException;
+
+
 @SuppressWarnings("unchecked")
 public class Launcher extends Application {
     private static final Logger log = Logger.getLogger("Launcher");
@@ -56,6 +60,7 @@ public class Launcher extends Application {
         uiProvider = providers.hasNext() ? providers.next() : new DefaultUIProvider();
     }
 
+
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
         stage = new Stage(StageStyle.UNDECORATED);
@@ -81,6 +86,20 @@ public class Launcher extends Application {
             }
 
             try {
+
+                if (manifest.isMutex()) {
+                    if (!acquireMutexLock(manifest.getMutex())) {
+                        log.info(String.format("Mutex lock '%s' not acquired. Exiting.", manifest.getMutex()));
+                        System.exit(1);
+                    }
+                    else {
+                        log.info(String.format("Mutex lock '%s' acquired.", manifest.getMutex()));
+                    }
+                }
+                else {
+                    log.info(String.format("No mutex."));
+                }
+
                 createApplication();
                 launchAppFromManifest();
             } catch (Exception ex) {
@@ -103,6 +122,22 @@ public class Launcher extends Application {
             root.getChildren().add(updater);
         });
     }
+
+    /** Attempts to acquire a lock.  If successful, then 'true' is returned.
+     * If 'false' is returned, then another instance is already running
+     * and this instance should exit.
+     */
+    private boolean acquireMutexLock(String name) {
+        boolean acquired;
+        try {
+            JUnique.acquireLock(name);
+            acquired = true;
+        } catch (AlreadyLockedException e) {
+            acquired = false;
+        }
+        return acquired;
+    }
+
 
     private URLClassLoader createClassLoader(Path cacheDir) {
         List<URL> libs = manifest.files.stream()
@@ -131,7 +166,15 @@ public class Launcher extends Application {
 
     private void updateManifest() throws Exception {
         phase = "Update Manifest";
+
         syncManifest();
+
+        Map<String, String> namedParams = getParameters().getNamed();
+
+        if (namedParams.containsKey("mutex")) {
+            manifest.mutex = namedParams.get("mutex");
+            log.info(String.format("Setting 'mutex' parameter supplied: %s", manifest.mutex));
+        }
     }
 
     private void syncFiles(Path cacheDir) throws Exception {
@@ -231,13 +274,13 @@ public class Launcher extends Application {
         String appStr = null;
 
         if (namedParams.containsKey("app")) {
-            // get --app-param
+            // get --app param
             appStr = namedParams.get("app");
             log.info(String.format("Loading manifest from 'app' parameter supplied: %s", appStr));
         }
 
         if (namedParams.containsKey("uri")) {
-            // get --uri-param
+            // get --uri param
             String uriStr  = namedParams.get("uri");
             if (! uriStr.endsWith("/")) { uriStr = uriStr + "/"; }
             log.info(String.format("Syncing files from 'uri' parameter supplied:  %s", uriStr));

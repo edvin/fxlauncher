@@ -38,6 +38,8 @@ public class FXManifest {
 	@XmlElement
 	public String cacheDir;
 	@XmlElement
+	public String mutex;
+	@XmlElement
 	public Boolean acceptDowngrade = false;
 	@XmlElement
 	public String preloadNativeLibraries;
@@ -108,6 +110,17 @@ public class FXManifest {
 		return path;
 	}
 
+	public String getMutex() {
+		if (mutex == null)
+			return null;
+		return mutex.trim();
+	}
+
+	public boolean isMutex() {
+		String name = getMutex();
+		return (name != null && !name.isEmpty());
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -125,6 +138,7 @@ public class FXManifest {
 		if (wrapperStyle != null ? !wrapperStyle.equals(that.wrapperStyle) : that.wrapperStyle != null) return false;
 		if (parameters != null ? !parameters.equals(that.parameters) : that.parameters != null) return false;
 		if (cacheDir != null ? !cacheDir.equals(that.cacheDir) : that.cacheDir != null) return false;
+		if (mutex != null ? mutex.equals(that.mutex) : that.mutex != null) return false;
 		return acceptDowngrade != null ? acceptDowngrade.equals(that.acceptDowngrade) : that.acceptDowngrade == null;
 
 	}
@@ -141,6 +155,7 @@ public class FXManifest {
 		result = 31 * result + (wrapperStyle != null ? wrapperStyle.hashCode() : 0);
 		result = 31 * result + (parameters != null ? parameters.hashCode() : 0);
 		result = 31 * result + (cacheDir != null ? cacheDir.hashCode() : 0);
+		result = 31 * result + (mutex != null ? mutex.hashCode() : 0);
 		result = 31 * result + (acceptDowngrade != null ? acceptDowngrade.hashCode() : 0);
 		return result;
 	}

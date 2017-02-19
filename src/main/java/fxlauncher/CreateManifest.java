@@ -26,6 +26,7 @@ public class CreateManifest {
         Path appPath = Paths.get(args[2]);
 
         String cacheDir = null;
+        String mutex = null;
         Boolean acceptDowngrade = null;
         String parameters = null;
         String preloadNativeLibraries = null;
@@ -41,6 +42,10 @@ public class CreateManifest {
                 // Configure cacheDir
                 if (named.containsKey("cache-dir"))
                     cacheDir = named.get("cache-dir");
+
+                // If empty string or null, then not isMutex
+                if (named.containsKey("mutex"))
+                    mutex = named.get("mutex");
 
                 // Configure acceptDowngrade
                 if (named.containsKey("accept-downgrade"))
@@ -66,6 +71,7 @@ public class CreateManifest {
                 if (raw.startsWith("--accept-downgrade=")) continue;
                 if (raw.startsWith("--include-extensions=")) continue;
                 if (raw.startsWith("--preload-native-libraries=")) continue;
+                if (raw.startsWith("--mutex=")) continue;
                 if (rest.length() > 0) rest.append(" ");
                 rest.append(raw);
             }
@@ -77,6 +83,7 @@ public class CreateManifest {
 
         FXManifest manifest = create(baseURI, launchClass, appPath);
         if (cacheDir != null) manifest.cacheDir = cacheDir;
+        if (mutex != null) manifest.mutex = mutex;
         if (acceptDowngrade != null) manifest.acceptDowngrade = acceptDowngrade;
         if (parameters != null) manifest.parameters = parameters;
         if (preloadNativeLibraries != null) manifest.preloadNativeLibraries = preloadNativeLibraries;

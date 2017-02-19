@@ -63,6 +63,22 @@ java -jar fxlauncher.jar --app=http://remote/location/app.xml --uri=http://remot
 
 Note: All parameters (including these) are passed on to your application.  So please ensure that your parameters have a different name if they carry different data.
 
+
+You can also override the mutex setting in the manifest.
+This is useful if you wish run multiple instances of your application, but have set a mutex.
+ 
+To set a mutex:
+```bash
+java -jar fxlauncher.jar --mutex=MyAppMutexName
+```
+
+To remove the embedded mutex:
+```bash
+java -jar fxlauncher.jar --mutex=  # no value
+```
+
+See more on mutex bellow.
+
 #### Native installers
 
 The native installer does not contain any application code, only the launcher. There is
@@ -101,6 +117,22 @@ Starting from version 1.0.12, FXLauncher will not download a remote version if t
 by comparing a timestamp in the manifest. Specifying `--accept-downgrades=true` as the last argument to CreateManifest will
 allow you to make sure that the version you have published will always be used by your clients even if they have a newer version installed.
 This option is also available in the Gradle plugin as `acceptDowngrades`.
+
+## Mutex
+
+Starting with version 1.0.15, FXLauncher can ensure that only a single instance of your app will run.  Specifying `--mutex=MyAppMutexName` ensures a single instance only.
+
+This parameter can be overridden adhoc. (See above.)
+An empty value is equivalent to no mutex ( `--mutex=` ).
+
+A lock is aquired by that name, by the first instance to run, and removed when that instance exits. If subsequent instances are attempted, they will fail to aquire a lock and exit silently (with log-entry) as soon as they have loaded their manifest.
+
+The lock is per-user on a shared system, allowing each user to run a single instance each.
+
+This app mutex implementation uses [JUnique](https://github.com/terjedahl/junique) under the hood.  
+Regarding choice of mutex name: 
+ > To avoid potential conflicts, it is advisable to choose a fully qualifying lock ID for each application using JUnique. Using a generic ID, such "notepad", "chat" or "myapp", is not a good idea. Better to use something like "myName.myAppName", and even better it's to pick your application main class full name as the JUnique lock ID.
+
 
 ## A slimmer alternative
 

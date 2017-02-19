@@ -47,6 +47,23 @@
         <url>git@github.com:edvin/fxlauncher.git</url>
     </scm>
 
+    <repositories>
+        <repository>
+            <id>github-terjedahl-junique</id>
+            <name>GitHub TerjeDahl JUnique</name>
+            <!--<url>https://github.com/terjedahl/junique/tree/master/maven2</url>-->
+            <url>https://raw.githubusercontent.com/terjedahl/junique/master/maven2</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>it.sauronsoftware</groupId>
+            <artifactId>junique</artifactId>
+            <version>1.0.4</version>
+        </dependency>
+    </dependencies>
+
     <build>
         <pluginManagement>
             <plugins>
@@ -84,6 +101,36 @@
                     </archive>
                 </configuration>
             </plugin>
+
+            <!--
+Builds an "uberjar" (jar with dependencies included).
+When appendAsemblyId=false, the uberjar will get the same name as the original jar, thereby replacing it (and making it backwards compatible).
+             -->
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <mainClass>fxlauncher.Launcher</mainClass>
+                        </manifest>
+                    </archive>
+                    <appendAssemblyId>false</appendAssemblyId>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
