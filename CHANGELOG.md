@@ -9,6 +9,7 @@ the *blue coat proxy* that uses a man in the middle attack to sniff on https con
 - App URI can now be any kind of URI, for example file://
 - log statements get logged to TEMPDIR/fxlauncher.log. TEMPDIR is OS specific. The Error dialog will show you where it 
 expects to find it. Logfile location can be overwritten with the `--logfile=filename` command line option.
+- `--offline` flag added. when used on the command line the files will not be checked or downloaded from the remote.
 
 ## [1.0.14] - 2016-10-26
 
