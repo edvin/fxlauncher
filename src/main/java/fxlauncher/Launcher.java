@@ -185,9 +185,21 @@ public class Launcher extends Application {
         syncManifest();
     }
 
+    /**
+     * Check if remote files are newer then local files. Return true if files are updated, triggering the whatsnew option else false.
+     * Also return false and do not check for updates if the <code>--offline</code> commandline argument is set.
+     *
+     * @param cacheDir place to store the files
+     * @return true if new files have been downloaded, false otherwise.
+     * @throws Exception
+     */
     private boolean syncFiles(Path cacheDir) throws Exception {
         phase = "File Synchronization";
 
+        if (getParameters().getUnnamed().contains("--offline")) {
+            log.info("not updating files from remote, offline selected");
+            return false; // to signal that nothing has changed.
+        }
         List<LibraryFile>
                 needsUpdate =
                 manifest.files.stream().filter(LibraryFile::loadForCurrentPlatform).filter(it -> it.needsUpdate(cacheDir)).collect(Collectors.toList());
@@ -324,6 +336,10 @@ public class Launcher extends Application {
         if (Files.exists(manifestPath))
             manifest = JAXB.unmarshal(manifestPath.toFile(), FXManifest.class);
 
+        if (getParameters().getUnnamed().contains("--offline")) {
+            log.info("offline selected");
+            return;
+        }
         try {
             FXManifest remoteManifest = FXManifest.load(manifest.getFXAppURI());
 
