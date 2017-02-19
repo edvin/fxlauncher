@@ -6,7 +6,8 @@ All notable changes to this project will be documented in this file.
 the *blue coat proxy* that uses a man in the middle attack to sniff on https connections.
 - `whatsnew` option is available, see README.md how to use it.
 - App URI can now be any kind of URI, for example file://
-
+- log statements get logged to TEMPDIR/fxlauncer.log. TEMPDIR is OS specific. The Error dialog will show you where it 
+expects to find it. Logfile location can be overwritten with the `--logfile=filename` command line option.
 ## [1.0.14] - 2016-10-26
 
 - `include-extensions` was consulted too early, leaving the matched files out of the manifest
