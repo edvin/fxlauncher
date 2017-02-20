@@ -38,7 +38,7 @@ public interface UIProvider {
 
 	/**
 	 * Create the Node that will be displayed while the launcher is loading resources,
-	 * before the update process starts. The default implementation is an intdeterminate
+	 * before the update process starts. The default implementation is an indeterminate
 	 * progress indicator, but you can return any arbitrary scene graph.
 	 *
 	 * @return The launcher UI
@@ -52,6 +52,7 @@ public interface UIProvider {
 	 * method is called.
 	 *
 	 * @see #updateProgress(double)
+	 * @param manifest The manifest instance. Allows implementing class access to all manifest attributes.
 	 * @return The updater Node
 	 */
 	Parent createUpdater(FXManifest manifest);

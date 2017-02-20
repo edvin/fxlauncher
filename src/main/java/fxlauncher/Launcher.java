@@ -35,6 +35,10 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.stream.Collectors;
 
+import it.sauronsoftware.junique.JUnique;
+import it.sauronsoftware.junique.AlreadyLockedException;
+
+
 @SuppressWarnings("unchecked")
 public class Launcher extends Application {
     private static final Logger log = Logger.getLogger("Launcher");
@@ -61,6 +65,7 @@ public class Launcher extends Application {
         uiProvider = providers.hasNext() ? providers.next() : new DefaultUIProvider();
     }
 
+
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
         stage = new Stage(StageStyle.UNDECORATED);
@@ -76,8 +81,7 @@ public class Launcher extends Application {
 
         stage.show();
 
-        new Thread(() ->
-        {
+        new Thread(() -> {
             Thread.currentThread().setName("FXLauncher-Thread");
             try {
                 updateManifest();
@@ -90,6 +94,20 @@ public class Launcher extends Application {
             }
 
             try {
+
+                if (manifest.isMutex()) {
+                    if (!acquireMutexLock(manifest.getMutex())) {
+                        log.info(String.format("Mutex lock '%s' not acquired. Exiting.", manifest.getMutex()));
+                        System.exit(1);
+                    }
+                    else {
+                        log.info(String.format("Mutex lock '%s' acquired.", manifest.getMutex()));
+                    }
+                }
+                else {
+                    log.info(String.format("No mutex."));
+                }
+
                 createApplication();
                 launchAppFromManifest(filesUpdated[0]);
             } catch (Exception ex) {
@@ -145,13 +163,28 @@ public class Launcher extends Application {
     private void createUpdateWrapper() {
         phase = "Update Wrapper Creation";
 
-        Platform.runLater(() ->
-        {
+        Platform.runLater(() -> {
             Parent updater = uiProvider.createUpdater(manifest);
             root.getChildren().clear();
             root.getChildren().add(updater);
         });
     }
+
+    /** Attempts to acquire a lock.  If successful, then 'true' is returned.
+     * If 'false' is returned, then another instance is already running
+     * and this instance should exit.
+     */
+    private boolean acquireMutexLock(String name) {
+        boolean acquired;
+        try {
+            JUnique.acquireLock(name);
+            acquired = true;
+        } catch (AlreadyLockedException e) {
+            acquired = false;
+        }
+        return acquired;
+    }
+
 
     private URLClassLoader createClassLoader(Path cacheDir) {
         List<URL> libs = manifest.files.stream().filter(LibraryFile::loadForCurrentPlatform).map(it -> it.toURL(cacheDir)).collect(Collectors.toList());
@@ -182,7 +215,15 @@ public class Launcher extends Application {
 
     private void updateManifest() throws Exception {
         phase = "Update Manifest";
+
         syncManifest();
+
+        Map<String, String> namedParams = getParameters().getNamed();
+
+        if (namedParams.containsKey("mutex")) {
+            manifest.mutex = namedParams.get("mutex");
+            log.info(String.format("Setting 'mutex' parameter supplied: %s", manifest.mutex));
+        }
     }
 
     /**
@@ -253,8 +294,7 @@ public class Launcher extends Application {
         Platform.runLater(() -> Thread.currentThread().setContextClassLoader(classLoader));
         Class<? extends Application> appclass = (Class<? extends Application>) classLoader.loadClass(manifest.launchClass);
 
-        PlatformImpl.runAndWait(() ->
-        {
+        PlatformImpl.runAndWait(() -> {
             try {
                 app = appclass.newInstance();
                 ParametersImpl.registerParameters(app, new LauncherParams(getParameters(), manifest));
@@ -273,8 +313,7 @@ public class Launcher extends Application {
     private void reportError(String title, Throwable error) {
         log.log(Level.WARNING, title, error);
 
-        Platform.runLater(() ->
-        {
+        Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle(title);
             alert.setHeaderText(String.format("%s\ncheck the logfile 'fxlauncher.log, usually in the %s directory", title, System.getProperty("java.io.tmpdir")));
@@ -299,7 +338,7 @@ public class Launcher extends Application {
         String appStr = null;
 
         if (namedParams.containsKey("app")) {
-            // get --app-param
+            // get --app param
             appStr = namedParams.get("app");
             log.info(String.format("Loading manifest from 'app' parameter supplied: %s", appStr));
         }
