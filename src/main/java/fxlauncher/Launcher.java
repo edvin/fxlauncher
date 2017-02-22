@@ -153,10 +153,24 @@ public class Launcher extends Application {
         });
     }
 
-    private URLClassLoader createClassLoader(Path cacheDir) {
+    private ClassLoader createClassLoader(Path cacheDir) {
         List<URL> libs = manifest.files.stream().filter(LibraryFile::loadForCurrentPlatform).map(it -> it.toURL(cacheDir)).collect(Collectors.toList());
 
-        return new URLClassLoader(libs.toArray(new URL[libs.size()]));
+        ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
+        if (systemClassLoader instanceof FxlauncherClassCloader)
+        {
+            ((FxlauncherClassCloader) systemClassLoader).addUrls(libs);
+            return systemClassLoader;
+        }
+        else
+        {
+            ClassLoader classLoader = new URLClassLoader(libs.toArray(new URL[libs.size()]));
+            FXMLLoader.setDefaultClassLoader(classLoader);
+            Thread.currentThread().setContextClassLoader(classLoader);
+            Platform.runLater(() -> Thread.currentThread().setContextClassLoader(classLoader));
+
+            return classLoader;
+        }
     }
 
     private void launchAppFromManifest(boolean showWhatsnew) throws Exception {
@@ -247,10 +261,7 @@ public class Launcher extends Application {
 
         Path cacheDir = manifest.resolveCacheDir(getParameters() != null ? getParameters().getNamed() : null);
 
-        URLClassLoader classLoader = createClassLoader(cacheDir);
-        FXMLLoader.setDefaultClassLoader(classLoader);
-        Thread.currentThread().setContextClassLoader(classLoader);
-        Platform.runLater(() -> Thread.currentThread().setContextClassLoader(classLoader));
+        ClassLoader classLoader = createClassLoader(cacheDir);
         Class<? extends Application> appclass = (Class<? extends Application>) classLoader.loadClass(manifest.launchClass);
 
         PlatformImpl.runAndWait(() ->
