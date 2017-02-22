@@ -3,6 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [1.0.15-SNAPSHOT]
 
+- Alternative classloader strategy (https://github.com/edvin/fxlauncher/pull/55)
 - `USERLIB` Now resolves to `user.home`/`AppData`/`Local` on Windows (https://github.com/edvin/fxlauncher/issues/52)
 - `--ignoressl` commandline argument to the fxlauncher.jar will ignore ssl certificate errors. This especially usefull when running in a business environment with for example 
 the *blue coat proxy* that uses a man in the middle attack to sniff on https connections.
