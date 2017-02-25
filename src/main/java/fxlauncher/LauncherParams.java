@@ -27,7 +27,7 @@ public class LauncherParams extends Application.Parameters {
         rawArgs.addAll(delegate.getRaw());
 
         // Add parameters from the manifest unless they were already specified on the command line
-        if (manifest.parameters != null) {
+        if (manifest != null && manifest.parameters != null) {
             for (String arg : manifest.parameters.split("\\s")) {
                 if (arg != null) {
                     if (rawArgs.contains(arg))
