@@ -14,20 +14,21 @@ import java.util.stream.Collectors;
  * by the command line.
  */
 public class LauncherParams extends Application.Parameters {
-    private List<String> rawArgs;
-    private Map<String, String> namedParams;
-    private List<String> unnamedParams;
+    private final List<String> rawArgs = new ArrayList<>();
+    private final Map<String, String> namedParams = new HashMap<>();
+    private final List<String> unnamedParams = new ArrayList<>();
+
+    public LauncherParams(List<String> rawArgs) {
+        this.rawArgs.addAll(rawArgs);
+        computeParams();
+    }
 
     public LauncherParams(Application.Parameters delegate, FXManifest manifest) {
-        rawArgs = new ArrayList<>();
-        namedParams = new HashMap<>();
-        unnamedParams = new ArrayList<>();
-
         // Add all raw args from the parent application
         rawArgs.addAll(delegate.getRaw());
 
         // Add parameters from the manifest unless they were already specified on the command line
-        if (manifest != null && manifest.parameters != null) {
+        if (manifest.parameters != null) {
             for (String arg : manifest.parameters.split("\\s")) {
                 if (arg != null) {
                     if (rawArgs.contains(arg))
@@ -36,7 +37,7 @@ public class LauncherParams extends Application.Parameters {
                     if (arg.startsWith("--") && arg.contains("=")) {
                         String argname = arg.substring(0, arg.indexOf("="));
                         if (rawArgs.stream().filter(a -> a.startsWith(argname)).findAny().isPresent())
-	                        continue;
+                            continue;
                     }
 
                     rawArgs.add(arg);
@@ -44,6 +45,10 @@ public class LauncherParams extends Application.Parameters {
             }
         }
 
+        computeParams();
+    }
+
+    private void computeParams() {
         // Compute named and unnamed parameters
         computeNamedParams();
         computeUnnamedParams();

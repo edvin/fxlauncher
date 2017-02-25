@@ -23,32 +23,11 @@ public class HeadlessMainLauncher extends AbstractLauncher<Object>
         this.parameters = parameters;
     }
 
-    private static List<String> mainArgs;
-
     public static void main(String[] args) throws Exception
     {
-        mainArgs = Arrays.asList(args);
+        List<String> mainArgs = Arrays.asList(args);
 
-        LauncherParams parameters = new LauncherParams(new Application.Parameters()
-        {
-            @Override
-            public List<String> getRaw()
-            {
-                return mainArgs;
-            }
-
-            @Override
-            public List<String> getUnnamed()
-            {
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
-            public Map<String, String> getNamed()
-            {
-                throw new UnsupportedOperationException();
-            }
-        }, null);
+        LauncherParams parameters = new LauncherParams(mainArgs);
 
         HeadlessMainLauncher headlessMainLauncher = new HeadlessMainLauncher(parameters);
         headlessMainLauncher.process();
@@ -59,26 +38,7 @@ public class HeadlessMainLauncher extends AbstractLauncher<Object>
         syncManifest();
 
         // replace parameters to deal with manifest settings
-        parameters = new LauncherParams(new Application.Parameters()
-        {
-            @Override
-            public List<String> getRaw()
-            {
-                return mainArgs;
-            }
-
-            @Override
-            public List<String> getUnnamed()
-            {
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
-            public Map<String, String> getNamed()
-            {
-                throw new UnsupportedOperationException();
-            }
-        }, getManifest());
+        parameters = new LauncherParams(parameters, getManifest());
 
         setupLogFile();
         checkSSLIgnoreflag();
