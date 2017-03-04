@@ -66,7 +66,7 @@ public class Launcher extends Application {
         stage = new Stage(StageStyle.UNDECORATED);
         root = new StackPane();
         final boolean[] filesUpdated = new boolean[1];
-        boolean ignoreUpdateErrors = false;
+        boolean ignoreUpdateErrors[] = {false};
         final boolean[] updateFailed = {false};
 
         Scene scene = new Scene(root);
@@ -74,7 +74,7 @@ public class Launcher extends Application {
 
         setupLogFile(getParameters());
         checkSSLIgnoreflag();
-        ignoreUpdateErrors = checkIgnoreUpdateErrorSetting();
+        ignoreUpdateErrors[0] = checkIgnoreUpdateErrorSetting();
         this.uiProvider.init(stage);
         root.getChildren().add(uiProvider.createLoader());
 
@@ -91,7 +91,7 @@ public class Launcher extends Application {
                 filesUpdated[0] = syncFiles(cacheDir);
             } catch (Exception ex) {
                 log.log(Level.WARNING, String.format("Error during %s phase", phase), ex);
-                if(ignoreUpdateErrors) {
+                if(ignoreUpdateErrors[0]) {
                     reportError(String.format("Error during %s phase", phase), ex);
                     System.exit(0);
                 }
