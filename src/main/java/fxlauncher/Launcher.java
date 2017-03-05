@@ -66,7 +66,7 @@ public class Launcher extends Application {
         stage = new Stage(StageStyle.UNDECORATED);
         root = new StackPane();
         final boolean[] filesUpdated = new boolean[1];
-        boolean ignoreUpdateErrors[] = {false};
+        final boolean[] stoponUpdateErrors = {false};
         final boolean[] updateFailed = {false};
 
         Scene scene = new Scene(root);
@@ -74,7 +74,7 @@ public class Launcher extends Application {
 
         setupLogFile(getParameters());
         checkSSLIgnoreflag();
-        ignoreUpdateErrors[0] = checkIgnoreUpdateErrorSetting();
+        stoponUpdateErrors[0] = checkIgnoreUpdateErrorSetting();
         this.uiProvider.init(stage);
         root.getChildren().add(uiProvider.createLoader());
 
@@ -91,7 +91,7 @@ public class Launcher extends Application {
                 filesUpdated[0] = syncFiles(cacheDir);
             } catch (Exception ex) {
                 log.log(Level.WARNING, String.format("Error during %s phase", phase), ex);
-                if(ignoreUpdateErrors[0]) {
+                if(stoponUpdateErrors[0]) {
                     reportError(String.format("Error during %s phase", phase), ex);
                     System.exit(0);
                 }
@@ -108,7 +108,7 @@ public class Launcher extends Application {
     }
 
     private boolean checkIgnoreUpdateErrorSetting() {
-        return getParameters().getUnnamed().contains("--ignoreUpdateErrors");
+        return getParameters().getUnnamed().contains("--stopOnUpDateErrors");
     }
 
     /**
@@ -301,7 +301,6 @@ public class Launcher extends Application {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle(title);
             alert.setHeaderText(String.format("%s\ncheck the logfile 'fxlauncher.log, usually in the %s directory", title, System.getProperty("java.io.tmpdir")));
-//            alert.setHeaderText(title+"\nCheck the logfile usually in the "+System.getProperty("java.io.tmpdir") + "directory");
             alert.getDialogPane().setPrefWidth(600);
 
             ByteArrayOutputStream out = new ByteArrayOutputStream();
