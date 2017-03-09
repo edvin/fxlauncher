@@ -29,8 +29,7 @@ public class Launcher extends Application {
     private UIProvider uiProvider;
     private StackPane root;
 
-    private final AbstractLauncher superLauncher = new AbstractLauncher<Application>()
-    {
+    private final AbstractLauncher superLauncher = new AbstractLauncher<Application>() {
         @Override
         protected Parameters getParameters() {
             return Launcher.this.getParameters();
@@ -54,8 +53,7 @@ public class Launcher extends Application {
         }
 
         @Override
-        protected void reportError(String title, Throwable error)
-        {
+        protected void reportError(String title, Throwable error) {
             log.log(Level.WARNING, title, error);
 
             Platform.runLater(() ->
@@ -114,8 +112,7 @@ public class Launcher extends Application {
 
         stage.show();
 
-        new Thread(() ->
-        {
+        new Thread(() -> {
             Thread.currentThread().setName("FXLauncher-Thread");
             try {
                 superLauncher.updateManifest();
@@ -142,16 +139,23 @@ public class Launcher extends Application {
         superLauncher.setPhase("Application Init");
         app.init();
         superLauncher.setPhase("Application Start");
-        log.info("show whats new dialog? " + showWhatsnew);
+        log.info("Show whats new dialog? " + showWhatsnew);
         PlatformImpl.runAndWait(() ->
         {
             try {
-                if (showWhatsnew && superLauncher.getManifest().whatsNewPage != null) showWhatsNewDialog(superLauncher.getManifest().whatsNewPage);
-                primaryStage.showingProperty().addListener(observable ->
-                {
-                    if (stage.isShowing())
-                        stage.close();
-                });
+                if (showWhatsnew && superLauncher.getManifest().whatsNewPage != null)
+                    showWhatsNewDialog(superLauncher.getManifest().whatsNewPage);
+
+                // Lingering update screen will close when primary stage is shown
+                if (superLauncher.getManifest().lingeringUpdateScreen) {
+                    primaryStage.showingProperty().addListener(observable -> {
+                        if (stage.isShowing())
+                            stage.close();
+                    });
+                } else {
+                    stage.close();
+                }
+
                 app.start(primaryStage);
             } catch (Exception ex) {
                 superLauncher.reportError("Failed to start application", ex);
