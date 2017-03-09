@@ -135,6 +135,12 @@ The file needs to be copied into the jar like so:
 </plugin>
 ```
 
+### Applications with no default UI
+
+By default the update screen will remain visible until the primary stage is shown. If your application does not show anything on the primary
+stage at startup, the update screen will stay visible until it does. You can pass in `--lingering-update-screen=false` to hide it immediately
+after the update process has completed.
+
 ## A slimmer alternative
 
 It is also possible to embed the launchar jar in a native installer system like Advanced Installer - same approach as above, 
