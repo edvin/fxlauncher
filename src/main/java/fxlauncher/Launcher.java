@@ -163,16 +163,22 @@ public class Launcher extends Application {
         phase = "Application Init";
         app.init();
         phase = "Application Start";
-        log.info("show whats new dialog? " + showWhatsnew);
+        log.info("Show whats new dialog? " + showWhatsnew);
         PlatformImpl.runAndWait(() ->
         {
             try {
                 if (showWhatsnew && manifest.whatsNewPage != null) showWhatsNewDialog(manifest.whatsNewPage);
-                primaryStage.showingProperty().addListener(observable ->
-                {
-                    if (stage.isShowing())
-                        stage.close();
-                });
+
+                // Lingering update screen will close when primary stage is shown
+                if (manifest.lingeringUpdateScreen) {
+                    primaryStage.showingProperty().addListener(observable -> {
+                        if (stage.isShowing())
+                            stage.close();
+                    });
+                } else {
+                    stage.close();
+                }
+
                 app.start(primaryStage);
             } catch (Exception ex) {
                 reportError("Failed to start application", ex);

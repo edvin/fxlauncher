@@ -1,22 +1,17 @@
 package fxlauncher;
 
+import com.sun.javafx.application.ParametersImpl;
+
+import javax.xml.bind.JAXB;
 import java.io.IOException;
 import java.net.URI;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
+import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import javax.xml.bind.JAXB;
-
-import com.sun.javafx.application.ParametersImpl;
 
 public class CreateManifest {
     private static ArrayList<String> includeExtensions = new ArrayList<>();
@@ -35,6 +30,7 @@ public class CreateManifest {
         String parameters = null;
         String whatsNew = null;
         String preloadNativeLibraries = null;
+        Boolean lingeringUpdateScreen = false;
 
         if (args.length > 3) {
             // Parse named parameters
@@ -56,7 +52,11 @@ public class CreateManifest {
                 if (named.containsKey("preload-native-libraries"))
                     preloadNativeLibraries = named.get("preload-native-libraries");
 
-                // configure the whats-new option
+                // Should the update screen stay until the primary stage is shown?
+                if (named.containsKey("lingering-update-screen"))
+                    lingeringUpdateScreen = Boolean.valueOf(named.get("lingering-update-screen"));
+
+                // Configure the whats-new option
                 if (named.containsKey("whats-new"))
                     whatsNew = named.get("whats-new");
 
@@ -77,6 +77,7 @@ public class CreateManifest {
                 if (raw.startsWith("--include-extensions=")) continue;
                 if (raw.startsWith("--preload-native-libraries=")) continue;
                 if (raw.startsWith("--whats-new")) continue;
+                if (raw.startsWith("--lingering-update-screen")) continue;
                 if (rest.length() > 0) rest.append(" ");
                 rest.append(raw);
             }
@@ -91,11 +92,12 @@ public class CreateManifest {
         if (acceptDowngrade != null) manifest.acceptDowngrade = acceptDowngrade;
         if (parameters != null) manifest.parameters = parameters;
         if (preloadNativeLibraries != null) manifest.preloadNativeLibraries = preloadNativeLibraries;
-        if(whatsNew != null) manifest.whatsNewPage = whatsNew;
+        if (whatsNew != null) manifest.whatsNewPage = whatsNew;
+        manifest.lingeringUpdateScreen = lingeringUpdateScreen;
         JAXB.marshal(manifest, appPath.resolve("app.xml").toFile());
     }
 
-    public static FXManifest create(URI baseURI, String launchClass, Path appPath) throws IOException {
+    static FXManifest create(URI baseURI, String launchClass, Path appPath) throws IOException {
         FXManifest manifest = new FXManifest();
         manifest.ts = System.currentTimeMillis();
         manifest.uri = baseURI;

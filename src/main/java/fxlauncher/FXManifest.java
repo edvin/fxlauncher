@@ -41,9 +41,10 @@ public class FXManifest {
 	public Boolean acceptDowngrade = false;
 	@XmlElement
 	public String preloadNativeLibraries;
-
 	@XmlElement
 	public String whatsNewPage;
+	@XmlElement
+	public Boolean lingeringUpdateScreen = false;
 
 	public List<String> getPreloadNativeLibraryList() {
 		if (preloadNativeLibraries == null || preloadNativeLibraries.isEmpty()) return Collections.emptyList();
@@ -134,8 +135,8 @@ public class FXManifest {
 		if (wrapperStyle != null ? !wrapperStyle.equals(that.wrapperStyle) : that.wrapperStyle != null) return false;
 		if (parameters != null ? !parameters.equals(that.parameters) : that.parameters != null) return false;
 		if (cacheDir != null ? !cacheDir.equals(that.cacheDir) : that.cacheDir != null) return false;
+		if (lingeringUpdateScreen != null ? !lingeringUpdateScreen.equals(that.lingeringUpdateScreen) : that.lingeringUpdateScreen != null) return false;
 		return acceptDowngrade != null ? acceptDowngrade.equals(that.acceptDowngrade) : that.acceptDowngrade == null;
-
 	}
 
 	@Override
