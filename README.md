@@ -41,7 +41,7 @@ Before each run, the launcher will synchronize all resources and seamlessly laun
 
 See the QuickStart projects at the top of the README for information on integrating FXLauncher in your build system.
 
-## Adhoc usage
+### Adhoc usage
 	
 FXLauncher can also be used to launch an application at an arbitrary url by specifying the `--app` parameter at startup:
 	
@@ -63,7 +63,35 @@ java -jar fxlauncher.jar --app=http://remote/location/app.xml --uri=http://remot
 
 Note: All parameters (including these) are passed on to your application.  So please ensure that your parameters have a different name if they carry different data.
 
-#### Native installers
+#### Class-Loader issues
+
+To load the application FXLauncher creates a new classloader fed with the classes of your manifest. This works as long as none of the
+classes uses the system classloader to load one of your classes or resources which is not aware of the application classes then.
+
+One example is Java's `java.net.URL` class which uses `Class.forName` to load a custom handler, which uses the classloader of
+the callee which is the system classloader then.
+
+To workaround that problem you could setup a special FXLauncher classloader which allows a different strategy how to feed the classpath
+with additional classpath entries.
+
+```bash
+java -Djava.system.class.loader=fxlauncher.FxlauncherClassCloader -jar fxlauncher.jar --app=http://remote/location/app.xml
+```
+
+### Headless
+
+FXLauncher allows you to run in headless mode and thus be used not only for JavaFX applications, but also for e.g. services which run
+without any gui at all.
+
+For this to work you could use `fxlauncher.HeadlessMainLauncher`
+
+```bash
+java -classpath fxlauncher.jar fxlauncher.HeadlessMainLauncher --app=http://remote/location/app.xml
+```
+
+Notice: `WhatsNew` is not supported.
+
+### Native installers
 
 The native installer does not contain any application code, only the launcher. There is
 	no need to rebuild your native installer when you update your project, simply run the `deploy-app` goal
