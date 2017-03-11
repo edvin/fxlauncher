@@ -125,6 +125,7 @@ public class Launcher extends Application {
                 log.log(Level.WARNING, String.format("Error during %s phase", superLauncher.getPhase()), ex);
                 if(superLauncher.checkIgnoreUpdateErrorSetting()) {
                     superLauncher.reportError(String.format("Error during %s phase", superLauncher.getPhase()), ex);
+                    System.exit(1);
                 }
             }
 

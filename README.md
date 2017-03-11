@@ -102,6 +102,18 @@ by comparing a timestamp in the manifest. Specifying `--accept-downgrades=true` 
 allow you to make sure that the version you have published will always be used by your clients even if they have a newer version installed.
 This option is also available in the Gradle plugin as `acceptDowngrades`.
 
+## Ignore ssl errors.
+
+If you are behind a proxy that does a _man in the middle attack_ to snoop on ssl connections, you can use the
+```--ignoressl``` commandline option to ignore the ssl errors this will generate.
+
+## Stop after update errors.
+
+Normally FXlauncher will try to launch the application even if there were errors
+during the update of the files from the server. Often this will work using the files 
+already in the local cache. With the option ```--stopOnUpdateErrors``` this will not be done.
+The error will be shown and the launcher will exit.
+
 ## Show what's new dialog.
 Starting from 1.0.15, you can have fxlauncher show a whats new dialog. This dialog will
 only be shown when fxlauncher has to download new files from the server. Fxlauncher will use a `webView` to show it. Specify `--whats-new=filename.html`
