@@ -81,6 +81,8 @@ public class Launcher extends Application {
             FXMLLoader.setDefaultClassLoader(classLoader);
             Platform.runLater(() -> Thread.currentThread().setContextClassLoader(classLoader));
         }
+
+
     };
 
     /**
@@ -102,6 +104,7 @@ public class Launcher extends Application {
         stage = new Stage(StageStyle.UNDECORATED);
         root = new StackPane();
         final boolean[] filesUpdated = new boolean[1];
+
         Scene scene = new Scene(root);
         stage.setScene(scene);
 
@@ -120,6 +123,10 @@ public class Launcher extends Application {
                 filesUpdated[0] = superLauncher.syncFiles();
             } catch (Exception ex) {
                 log.log(Level.WARNING, String.format("Error during %s phase", superLauncher.getPhase()), ex);
+                if(superLauncher.checkIgnoreUpdateErrorSetting()) {
+                    superLauncher.reportError(String.format("Error during %s phase", superLauncher.getPhase()), ex);
+                    System.exit(1);
+                }
             }
 
             try {

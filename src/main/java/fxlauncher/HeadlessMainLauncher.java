@@ -85,4 +85,5 @@ public class HeadlessMainLauncher extends AbstractLauncher<Object>
     protected void setupClassLoader(ClassLoader classLoader)
     {
     }
+
 }
