@@ -253,6 +253,9 @@ public abstract class AbstractLauncher<APP>  {
         HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);
     }
 
+    protected boolean checkIgnoreUpdateErrorSetting() {
+        return getParameters().getUnnamed().contains("--stopOnUpDateErrors");
+    }
     public String getPhase() {
         return phase;
     }
