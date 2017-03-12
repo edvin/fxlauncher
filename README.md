@@ -143,8 +143,9 @@ already in the local cache. With the option ```--stopOnUpdateErrors``` this will
 The error will be shown and the launcher will exit.
 
 ## Show what's new dialog.
-Starting from 1.0.15, you can have fxlauncher show a whats new dialog. This dialog will
-only be shown when fxlauncher has to download new files from the server. Fxlauncher will use a `webView` to show it. Specify `--whats-new=filename.html`
+
+Starting from 1.0.15, you can have FXLauncher show a whats new dialog. This dialog will
+only be shown when FXLauncher has to download new files from the server. The html content will be shown in a `WebView`. Specify `--whats-new=filename.html`
 The file needs to be copied into the jar like so:
 
 ```xml

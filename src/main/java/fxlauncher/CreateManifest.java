@@ -97,7 +97,7 @@ public class CreateManifest {
         JAXB.marshal(manifest, appPath.resolve("app.xml").toFile());
     }
 
-    static FXManifest create(URI baseURI, String launchClass, Path appPath) throws IOException {
+    private static FXManifest create(URI baseURI, String launchClass, Path appPath) throws IOException {
         FXManifest manifest = new FXManifest();
         manifest.ts = System.currentTimeMillis();
         manifest.uri = baseURI;
