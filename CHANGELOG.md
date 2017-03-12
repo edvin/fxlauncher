@@ -1,6 +1,9 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [10.0.16-SNAPSHOT]
+
+
 ## [1.0.15]
 
 - `--lingering-update-screen` will keep the update screen active until the primary stage is shown. The default is false, whereas the old behavior was similar to setting it to true.
