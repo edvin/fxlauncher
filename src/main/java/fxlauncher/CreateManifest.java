@@ -97,7 +97,7 @@ public class CreateManifest {
         JAXB.marshal(manifest, appPath.resolve("app.xml").toFile());
     }
 
-    private static FXManifest create(URI baseURI, String launchClass, Path appPath) throws IOException {
+    public static FXManifest create(URI baseURI, String launchClass, Path appPath) throws IOException {
         FXManifest manifest = new FXManifest();
         manifest.ts = System.currentTimeMillis();
         manifest.uri = baseURI;
@@ -112,6 +112,16 @@ public class CreateManifest {
         });
 
         return manifest;
+    }
+
+    /**
+     * Add the includeExtensions to the default list of "war" and "jar".
+     *
+     * Allthough the method is called setIncludeExtensions, it actually does an addAll.
+     * @param includeExtensions
+     */
+    public static void setIncludeExtensions(List<String> includeExtensions) {
+        CreateManifest.includeExtensions.addAll(includeExtensions);
     }
 
     private static boolean shouldIncludeInManifest(Path file) {
