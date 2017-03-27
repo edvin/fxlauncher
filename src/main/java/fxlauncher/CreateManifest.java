@@ -1,10 +1,12 @@
 package fxlauncher;
 
 import com.sun.javafx.application.ParametersImpl;
+import com.sun.javafx.fxml.builder.URLBuilder;
 
 import javax.xml.bind.JAXB;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
@@ -20,7 +22,7 @@ public class CreateManifest {
         includeExtensions.addAll(Arrays.asList("jar", "war"));
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, URISyntaxException {
         URI baseURI = URI.create(args[0]);
         String launchClass = args[1];
         Path appPath = Paths.get(args[2]);
@@ -97,12 +99,15 @@ public class CreateManifest {
         JAXB.marshal(manifest, appPath.resolve("app.xml").toFile());
     }
 
-    private static FXManifest create(URI baseURI, String launchClass, Path appPath) throws IOException {
+    public static FXManifest create(URI baseURI, String launchClass, Path appPath) throws IOException, URISyntaxException {
         FXManifest manifest = new FXManifest();
         manifest.ts = System.currentTimeMillis();
         manifest.uri = baseURI;
         manifest.launchClass = launchClass;
 
+        if(!manifest.uri.getPath().endsWith("/")) {
+            manifest.uri = new URI(String.format("%s/", baseURI.toString()));
+        }
         Files.walkFileTree(appPath, new SimpleFileVisitor<Path>() {
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                 if (!Files.isDirectory(file) && shouldIncludeInManifest(file) && !file.getFileName().toString().startsWith("fxlauncher"))
@@ -112,6 +117,16 @@ public class CreateManifest {
         });
 
         return manifest;
+    }
+
+    /**
+     * Add the includeExtensions to the default list of "war" and "jar".
+     *
+     * Allthough the method is called setIncludeExtensions, it actually does an addAll.
+     * @param includeExtensions
+     */
+    public static void setIncludeExtensions(List<String> includeExtensions) {
+        CreateManifest.includeExtensions.addAll(includeExtensions);
     }
 
     private static boolean shouldIncludeInManifest(Path file) {
