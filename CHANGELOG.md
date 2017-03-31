@@ -1,9 +1,9 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## [10.0.16-SNAPSHOT]
+## [10.0.16]
 
-- `createManifest` is now a method that can be called without having to use the `main` method.
+- `createManifest` is now a method that can be called without having to use the `main` method (Can be accessed as a library, used by the upcoming Maven plugin)
 
 ## [1.0.15]
 
