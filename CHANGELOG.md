@@ -3,6 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [10.0.16-SNAPSHOT]
 
+- `createManifest` is now a method that can be called without having to use the `main` method.
 
 ## [1.0.15]
 
