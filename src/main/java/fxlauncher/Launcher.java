@@ -88,9 +88,14 @@ public class Launcher extends Application {
 
     /**
      * Check if a new version is available and return the manifest for the new version or null if no update.
+     *
+     * Note that updates will only be detected if the application was actually launched with FXLauncher.
+     *
      * @return The manifest for the new version if available
      */
     public static FXManifest checkForUpdate() throws IOException {
+        // We might be called even when FXLauncher wasn't used to start the application
+        if (AbstractLauncher.manifest == null) return null;
         FXManifest manifest = FXManifest.load(URI.create(AbstractLauncher.manifest.uri + "/app.xml"));
         return manifest.equals(AbstractLauncher.manifest) ? null : manifest;
     }
