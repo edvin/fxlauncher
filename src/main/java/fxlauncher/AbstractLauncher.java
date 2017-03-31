@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 public abstract class AbstractLauncher<APP>  {
     private static final Logger log = Logger.getLogger("AbstractLauncher");
 
-    private FXManifest manifest;
+    protected static FXManifest manifest;
     private String phase;
 
     /**

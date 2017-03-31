@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.*;
+import java.net.URI;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -84,6 +85,16 @@ public class Launcher extends Application {
 
 
     };
+
+    /**
+     * Check if a new version is available and return the manifest for the new version or null if no update.
+     * @return The manifest for the new version if available
+     */
+    public static FXManifest checkForUpdate() throws IOException {
+        FXManifest manifest = FXManifest.load(URI.create(AbstractLauncher.manifest.uri + "/app.xml"));
+        return manifest.equals(AbstractLauncher.manifest) ? null : manifest;
+    }
+
 
     /**
      * Initialize the UI Provider by looking for an UIProvider inside the launcher

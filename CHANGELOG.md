@@ -3,7 +3,8 @@ All notable changes to this project will be documented in this file.
 
 ## [10.0.16]
 
-- `createManifest` is now a method that can be called without having to use the `main` method (Can be accessed as a library, used by the upcoming Maven plugin)
+- Library function: `Launcher.checkForUpdate()`. Call at runtime from your app to check for new version.
+- Library function: `CreateManifest.create`. Used by the build plugins to generate manifest in-process.
 
 ## [1.0.15]
 
