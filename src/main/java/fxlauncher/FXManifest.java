@@ -129,6 +129,7 @@ public class FXManifest {
 
 		if (ts != null ? !ts.equals(that.ts) : that.ts != null) return false;
 		if (uri != null ? !uri.equals(that.uri) : that.uri != null) return false;
+		if (projectName != null ? !projectName.equals(that.projectName) : that.projectName != null) return false;
 		if (launchClass != null ? !launchClass.equals(that.launchClass) : that.launchClass != null) return false;
 		if (files != null ? !files.equals(that.files) : that.files != null) return false;
 		if (updateText != null ? !updateText.equals(that.updateText) : that.updateText != null) return false;
