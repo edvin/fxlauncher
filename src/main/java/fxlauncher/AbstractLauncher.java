@@ -100,7 +100,7 @@ public abstract class AbstractLauncher<APP>  {
      * @throws Exception
      */
     protected boolean syncFiles() throws Exception {
-
+        String projectName = manifest.projectName == null ? "" : manifest.projectName + "/";
         Path cacheDir = manifest.resolveCacheDir(getParameters().getNamed());
         log.info(String.format("Using cache dir %s", cacheDir));
 
@@ -123,7 +123,7 @@ public abstract class AbstractLauncher<APP>  {
             Path target = cacheDir.resolve(lib.file).toAbsolutePath();
             Files.createDirectories(target.getParent());
 
-            URI uri = manifest.uri.resolve(lib.file);
+            URI uri = manifest.uri.resolve(projectName + lib.file);
             URLConnection connection = uri.toURL().openConnection();
             if (uri.getUserInfo() != null) {
                 byte[] payload = uri.getUserInfo().getBytes(StandardCharsets.UTF_8);
