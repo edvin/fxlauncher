@@ -21,6 +21,8 @@ public class FXManifest {
 	public Long ts;
 	@XmlAttribute
 	public URI uri;
+	@XmlAttribute
+	public String projectName;
 	@XmlAttribute(name = "launch")
 	public String launchClass;
 	@XmlElement(name = "lib")
@@ -143,6 +145,7 @@ public class FXManifest {
 	public int hashCode() {
 		int result = ts != null ? ts.hashCode() : 0;
 		result = 31 * result + (uri != null ? uri.hashCode() : 0);
+		result = 31 * result + (projectName != null ? projectName.hashCode() : 0);
 		result = 31 * result + (launchClass != null ? launchClass.hashCode() : 0);
 		result = 31 * result + (files != null ? files.hashCode() : 0);
 		result = 31 * result + (updateText != null ? updateText.hashCode() : 0);
