@@ -28,6 +28,7 @@ public class CreateManifest {
         Path appPath = Paths.get(args[2]);
 
         String cacheDir = null;
+        String certDigest = null;
         Boolean acceptDowngrade = null;
         String parameters = null;
         String whatsNew = null;
@@ -45,6 +46,10 @@ public class CreateManifest {
                 // Configure cacheDir
                 if (named.containsKey("cache-dir"))
                     cacheDir = named.get("cache-dir");
+
+                // Configure certDigest
+                if (named.containsKey("cert-digest"))
+                    certDigest = named.get("cert-digest");
 
                 // Configure acceptDowngrade
                 if (named.containsKey("accept-downgrade"))
@@ -75,6 +80,7 @@ public class CreateManifest {
             StringBuilder rest = new StringBuilder();
             for (String raw : params.getRaw()) {
                 if (raw.startsWith("--cache-dir=")) continue;
+                if (raw.startsWith("--cert-digest=")) continue;
                 if (raw.startsWith("--accept-downgrade=")) continue;
                 if (raw.startsWith("--include-extensions=")) continue;
                 if (raw.startsWith("--preload-native-libraries=")) continue;
@@ -91,6 +97,7 @@ public class CreateManifest {
 
         FXManifest manifest = create(baseURI, launchClass, appPath);
         if (cacheDir != null) manifest.cacheDir = cacheDir;
+        if (certDigest != null) manifest.certDigest = certDigest;
         if (acceptDowngrade != null) manifest.acceptDowngrade = acceptDowngrade;
         if (parameters != null) manifest.parameters = parameters;
         if (preloadNativeLibraries != null) manifest.preloadNativeLibraries = preloadNativeLibraries;

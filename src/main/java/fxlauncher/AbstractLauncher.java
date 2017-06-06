@@ -1,6 +1,7 @@
 package fxlauncher;
 
 import javafx.application.Application;
+import org.apache.http.ssl.SSLContexts;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -20,6 +21,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.KeyManagementException;
+import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -64,6 +66,20 @@ public abstract class AbstractLauncher<APP>  {
     protected void checkSSLIgnoreflag() throws KeyManagementException, NoSuchAlgorithmException {
         if (getParameters().getUnnamed().contains("--ignoressl")) {
             setupIgnoreSSLCertificate();
+        }
+    }
+
+    /**
+     * Check if the SSL connection needs to validate the custom self signed SSL certificate
+     *
+     * @throws NoSuchAlgorithmException
+     * @throws KeyStoreException
+     * @throws KeyManagementException
+     */
+    protected void checkSSLCertMatchFlag() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        String certDigest = manifest.resolveCertDigestStr(getParameters().getNamed());
+        if (certDigest != null && !certDigest.isEmpty()) {
+            setupSSLCertMatchStrategy(certDigest);
         }
     }
 
@@ -210,6 +226,8 @@ public abstract class AbstractLauncher<APP>  {
             log.info("offline selected");
             return;
         }
+        /** validating cert digest and injecting it; As the first instance of connection happens here */
+        checkSSLCertMatchFlag();
         try {
             FXManifest remoteManifest = FXManifest.load(manifest.getFXAppURI());
 
@@ -251,6 +269,12 @@ public abstract class AbstractLauncher<APP>  {
 
         HostnameVerifier hostnameVerifier = (s, sslSession) -> true;
         HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);
+    }
+
+    private void setupSSLCertMatchStrategy(String certDigest) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        log.info("Found Cert digest :: "+certDigest);
+        SSLContext sslContext = SSLContexts.custom().loadTrustMaterial(new CertificateInKeystoreTrustStrategy(certDigest, "fxlauncher", null)).build();
+        HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
     }
 
     protected boolean checkIgnoreUpdateErrorSetting() {
