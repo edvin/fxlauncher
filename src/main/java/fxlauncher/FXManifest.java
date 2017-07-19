@@ -40,6 +40,8 @@ public class FXManifest {
 	@XmlElement
 	public Boolean acceptDowngrade = false;
 	@XmlElement
+	public Boolean stopOnUpdateErrors = false;
+	@XmlElement
 	public String preloadNativeLibraries;
 	@XmlElement
 	public String whatsNewPage;
@@ -136,7 +138,9 @@ public class FXManifest {
 		if (parameters != null ? !parameters.equals(that.parameters) : that.parameters != null) return false;
 		if (cacheDir != null ? !cacheDir.equals(that.cacheDir) : that.cacheDir != null) return false;
 		if (lingeringUpdateScreen != null ? !lingeringUpdateScreen.equals(that.lingeringUpdateScreen) : that.lingeringUpdateScreen != null) return false;
+		if (stopOnUpdateErrors != null ? !stopOnUpdateErrors.equals(that.stopOnUpdateErrors) : that.stopOnUpdateErrors != null) return false;
 		return acceptDowngrade != null ? acceptDowngrade.equals(that.acceptDowngrade) : that.acceptDowngrade == null;
+
 	}
 
 	@Override
@@ -152,6 +156,7 @@ public class FXManifest {
 		result = 31 * result + (parameters != null ? parameters.hashCode() : 0);
 		result = 31 * result + (cacheDir != null ? cacheDir.hashCode() : 0);
 		result = 31 * result + (acceptDowngrade != null ? acceptDowngrade.hashCode() : 0);
+		result = 31 * result + (stopOnUpdateErrors != null ? stopOnUpdateErrors.hashCode() : 0);
 		return result;
 	}
 
