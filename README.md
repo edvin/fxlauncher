@@ -13,6 +13,10 @@ You can see the launcher in action in this [Demo Application](http://fxldemo.tor
 - [Maven Example](https://github.com/edvin/fxldemo) with [pom.xml](https://github.com/edvin/fxldemo/blob/master/pom.xml)
 - [Gradle Example](https://github.com/edvin/fxldemo-gradle) with [build.gradle](https://github.com/edvin/fxldemo-gradle/blob/master/build.gradle)
 
+### Changelog
+
+Check out [the changelog](https://github.com/edvin/fxlauncher/blob/master/CHANGELOG.md) for a list of all updates to the project.
+
 ### Video demonstration
  	
 See the launcher in action in this short [screencast](https://www.youtube.com/watch?v=NCP9wjRPQ14). There is also a [video](https://www.youtube.com/watch?v=-6PlFVUgntU) about customizing the update user interface.
@@ -37,7 +41,7 @@ Before each run, the launcher will synchronize all resources and seamlessly laun
 
 See the QuickStart projects at the top of the README for information on integrating FXLauncher in your build system.
 
-## Adhoc usage
+### Adhoc usage
 	
 FXLauncher can also be used to launch an application at an arbitrary url by specifying the `--app` parameter at startup:
 	
@@ -45,7 +49,49 @@ FXLauncher can also be used to launch an application at an arbitrary url by spec
 java -jar fxlauncher.jar --app=http://remote/location/app.xml
 ```
 
-#### Native installers
+Alternatively (or in combination with `--app...`), you can override the uri attribute in the manifest (`app.xml`) so that both `app.xml` and all resources are loaded from the specified uri. This is especially useful for testing the complete setup locally or from a staging environment.
+
+```bash
+java -jar fxlauncher.jar --uri=http://remote/location/
+```
+
+The two parameters also work in tandem, allowing you to load a specified manifest from one URL and override its uri.
+
+```bash
+java -jar fxlauncher.jar --app=http://remote/location/app.xml --uri=http://remote/location/
+```
+
+Note: All parameters (including these) are passed on to your application.  So please ensure that your parameters have a different name if they carry different data.
+
+#### Class-Loader issues
+
+To load the application FXLauncher creates a new classloader fed with the classes of your manifest. This works as long as none of the
+classes uses the system classloader to load one of your classes or resources which is not aware of the application classes then.
+
+One example is Java's `java.net.URL` class which uses `Class.forName` to load a custom handler, which uses the classloader of
+the callee which is the system classloader then.
+
+To workaround that problem you could setup a special FXLauncher classloader which allows a different strategy how to feed the classpath
+with additional classpath entries.
+
+```bash
+java -Djava.system.class.loader=fxlauncher.FxlauncherClassCloader -jar fxlauncher.jar --app=http://remote/location/app.xml
+```
+
+### Headless
+
+FXLauncher allows you to run in headless mode and thus be used not only for JavaFX applications, but also for e.g. services which run
+without any gui at all.
+
+For this to work you could use `fxlauncher.HeadlessMainLauncher`
+
+```bash
+java -classpath fxlauncher.jar fxlauncher.HeadlessMainLauncher --app=http://remote/location/app.xml
+```
+
+Notice: `WhatsNew` is not supported.
+
+### Native installers
 
 The native installer does not contain any application code, only the launcher. There is
 	no need to rebuild your native installer when you update your project, simply run the `deploy-app` goal
@@ -56,15 +102,26 @@ The native installer does not contain any application code, only the launcher. T
 	
 Check out these prebuilt installers for a more complex demo application
 
-- [MacOSX](http://fxsamples.tornado.no/CRMApplication-1.0.dmg)
-- [Windows](http://fxsamples.tornado.no/CRMApplication-1.0.exe)
-- [Linux](http://fxsamples.tornado.no/crmapplication-1.0.deb)
+- [MacOSX](http://fxldemo.tornado.no/FxlDemo-2.0.dmg)
+- [Windows](http://fxldemo.tornado.no/FxlDemo-2.0.exe)
+- [Linux](http://fxldemo.tornado.no/fxldemo-2.0.deb)
 
 ## Specify cache directory
 
 By default, the artifacts are downloaded to the current working directory. This is usually fine for native installers, but if you distribute
 your application via just the launcher jar, you might want to specify where the downloaded artifacts land. See the 
 [cache dir documentation](https://github.com/edvin/fxlauncher/wiki/Optional-Cache-Directory)for more information.
+
+## Installation location
+
+It's worth noting that the two package alternatives for Windows, (EXE and MSI) have different install location defaults.
+While EXE will default to %APPDATALOCAL%, the MSI installer will default to %ProgramFiles%. If you use the MSI installer you
+might therefore need to specify the cache dir parameter as `cacheDir 'USERLIB/MyApp'` to make sure that the launcher has
+write access to download the artifacts for your application.
+
+Read more about Java Packager in the official documentation:
+
+https://docs.oracle.com/javase/8/docs/technotes/guides/deploy/self-contained-packaging.html
 
 ## Accept downgrades
 
@@ -73,10 +130,62 @@ by comparing a timestamp in the manifest. Specifying `--accept-downgrades=true` 
 allow you to make sure that the version you have published will always be used by your clients even if they have a newer version installed.
 This option is also available in the Gradle plugin as `acceptDowngrades`.
 
+## Ignore ssl errors.
+
+If you are behind a proxy that does a _man in the middle attack_ to snoop on ssl connections, you can use the
+```--ignoressl``` commandline option to ignore the ssl errors this will generate.
+
+## Stop after update errors.
+
+Normally FXlauncher will try to launch the application even if there were errors
+during the update of the files from the server. Often this will work using the files 
+already in the local cache. With the option ```--stopOnUpdateErrors``` this will not be done.
+The error will be shown and the launcher will exit.
+
+## Show what's new dialog.
+
+Starting from 1.0.15, you can have FXLauncher show a whats new dialog. This dialog will
+only be shown when FXLauncher has to download new files from the server. The html content will be shown in a `WebView`. Specify `--whats-new=filename.html`
+The file needs to be copied into the jar like so:
+
+```xml
+<plugin>
+   <groupId>org.codehaus.mojo</groupId>
+   <artifactId>exec-maven-plugin</artifactId>
+   <version>1.4.0</version>
+   <executions>
+      <execution>
+         <id>copy-whatsnewfile</id>
+         <phase>package</phase>
+         <goals>
+            <goal>exec</goal>
+         </goals>
+         <configuration>
+            <executable>jar</executable>
+            <workingDirectory>${app.dir}</workingDirectory>
+            <arguments>
+               <argument>uf</argument>
+               <argument>fxlauncher.jar</argument>
+               <argument>-C</argument>
+               <argument>${project.basedir}/src/main/resources</argument>
+               <argument>whatsnew.html</argument>
+            </arguments>
+         </configuration>
+   </execution>
+</executions>
+</plugin>
+```
+
+### Applications with no default UI
+
+By default the update screen will remain visible until the primary stage is shown. If your application does not show anything on the primary
+stage at startup, the update screen will stay visible until it does. You can pass in `--lingering-update-screen=false` to hide it immediately
+after the update process has completed.
+
 ## A slimmer alternative
 
 It is also possible to embed the launchar jar in a native installer system like Advanced Installer - same approach as above, 
-but without using javapackager. With this approach, you can choose wether to include a JRE or have the installer software preinstall it.
+but without using javapackager. With this approach, you can choose whether to include a JRE or have the installer software preinstall it.
 Again, you are only distributing the launcher with the native installer, the rest is pulled down on demand.
 
 ### A note on classloaders
@@ -89,6 +198,11 @@ then made available to the `FXMLLoader`. You can access it via `FXMLLoader.getDe
 FXLauncher supports filtering of resources for the running platform. Any resource
 that ends with `-[mac|win|linux].jar` will only be downloaded and put on the classpath on the corresponding
 platform. The manifest enforces this though the `os` attribute in `app.xml`.
+
+### Native libraries (Version 1.0.15-SNAPSHOT)
+
+If you need to load native libraries before the custom class loader kicks inn, specify the `--preload-native-libraries=` parameter
+to CreateManifest. It supports a comma separated list of libraries to load. Remember: No extensions, just the library name.
 
 ### Custom UI
 

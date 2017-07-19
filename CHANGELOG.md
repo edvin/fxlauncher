@@ -1,9 +1,29 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## [10.0.14-SNAPSHOT]
+## [10.0.16]
+
+- Library function: `Launcher.checkForUpdate()`. Call at runtime from your app to check for new version.
+- Library function: `CreateManifest.create`. Used by the build plugins to generate manifest in-process.
+
+## [1.0.15]
+
+- `--lingering-update-screen` will keep the update screen active until the primary stage is shown. The default is false, whereas the old behavior was similar to setting it to true.
+- Alternative classloader strategy (https://github.com/edvin/fxlauncher/pull/55)
+- `USERLIB` Now resolves to `user.home`/`AppData`/`Local` on Windows (https://github.com/edvin/fxlauncher/issues/52)
+- `--ignoressl` commandline argument to the fxlauncher.jar will ignore ssl certificate errors. This especially usefull when running in a business environment with for example 
+the *blue coat proxy* that uses a man in the middle attack to sniff on https connections.
+- `whatsnew` option is available, see README.md how to use it.
+- App URI can now be any kind of URI, for example file://
+- log statements get logged to TEMPDIR/fxlauncher.log. TEMPDIR is OS specific. The Error dialog will show you where it 
+expects to find it. Logfile location can be overwritten with the `--logfile=filename` command line option.
+- `--offline` flag added. when used on the command line the files will not be checked or downloaded from the remote.
+- `--stopOnUpdateErrors` added. This will stop the fxlauncher from trying to start the application when there were errors updating the jars from the remote
+
+## [1.0.14] - 2016-10-26
 
 - `include-extensions` was consulted too early, leaving the matched files out of the manifest
+- Basic Authentication only worked for manifest, not for the artifacts
 
 ## [1.0.13] - 2016-09-12
 
@@ -16,7 +36,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
-- Added `include-extensions` parameter to CreateManaifest. By default only `jar` and `war` files are included, add more extensions via this comma separated list.
+- Added `include-extensions` parameter to CreateManifest. By default only `jar` and `war` files are included, add more extensions via this comma separated list.
 - Added --accept-downgrade=<true|false> parameter to CreateManifest. Default is to not accept downgrades (server version is older than local version)
 - Artifacts in subfolders gets correct path delimiter in app manifest for Windows
 

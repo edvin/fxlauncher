@@ -6,8 +6,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -39,6 +39,17 @@ public class FXManifest {
 	public String cacheDir;
 	@XmlElement
 	public Boolean acceptDowngrade = false;
+	@XmlElement
+	public String preloadNativeLibraries;
+	@XmlElement
+	public String whatsNewPage;
+	@XmlElement
+	public Boolean lingeringUpdateScreen = false;
+
+	public List<String> getPreloadNativeLibraryList() {
+		if (preloadNativeLibraries == null || preloadNativeLibraries.isEmpty()) return Collections.emptyList();
+		return Arrays.asList(preloadNativeLibraries.split(".*,-*"));
+	}
 
 	public String getFilename() {
 		return String.format("%s.xml", launchClass);
@@ -77,6 +88,7 @@ public class FXManifest {
 				case win:
 					replacement = Paths.get(System.getProperty("user.home"))
 						.resolve("AppData")
+						.resolve("Local")
 						.resolve(cacheDir.substring(8))
 						.toString();
 					break;
@@ -101,6 +113,11 @@ public class FXManifest {
 		return path;
 	}
 
+	public String getWhatsNewPage()
+	{
+		return whatsNewPage;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -118,8 +135,8 @@ public class FXManifest {
 		if (wrapperStyle != null ? !wrapperStyle.equals(that.wrapperStyle) : that.wrapperStyle != null) return false;
 		if (parameters != null ? !parameters.equals(that.parameters) : that.parameters != null) return false;
 		if (cacheDir != null ? !cacheDir.equals(that.cacheDir) : that.cacheDir != null) return false;
+		if (lingeringUpdateScreen != null ? !lingeringUpdateScreen.equals(that.lingeringUpdateScreen) : that.lingeringUpdateScreen != null) return false;
 		return acceptDowngrade != null ? acceptDowngrade.equals(that.acceptDowngrade) : that.acceptDowngrade == null;
-
 	}
 
 	@Override
@@ -143,7 +160,7 @@ public class FXManifest {
 	}
 
 	static FXManifest load(URI uri) throws IOException {
-		HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
+		URLConnection connection = uri.toURL().openConnection();
 		if (uri.getUserInfo() != null) {
 			byte[] payload = uri.getUserInfo().getBytes(StandardCharsets.UTF_8);
 			String encoded = Base64.getEncoder().encodeToString(payload);
@@ -153,4 +170,5 @@ public class FXManifest {
 			return JAXB.unmarshal(input, FXManifest.class);
 		}
 	}
+
 }
