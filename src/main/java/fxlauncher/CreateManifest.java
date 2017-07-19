@@ -29,6 +29,7 @@ public class CreateManifest {
 
         String cacheDir = null;
         Boolean acceptDowngrade = null;
+        Boolean stopOnUpdateErrors = null;
         String parameters = null;
         String whatsNew = null;
         String preloadNativeLibraries = null;
@@ -49,6 +50,10 @@ public class CreateManifest {
                 // Configure acceptDowngrade
                 if (named.containsKey("accept-downgrade"))
                     acceptDowngrade = Boolean.valueOf(named.get("accept-downgrade"));
+
+                // Configure stopOnUpdateErrors
+                if (named.containsKey("stopOnUpdateErrors"))
+                    stopOnUpdateErrors = true;
 
                 // Configure preload native libraries
                 if (named.containsKey("preload-native-libraries"))
@@ -92,6 +97,7 @@ public class CreateManifest {
         FXManifest manifest = create(baseURI, launchClass, appPath);
         if (cacheDir != null) manifest.cacheDir = cacheDir;
         if (acceptDowngrade != null) manifest.acceptDowngrade = acceptDowngrade;
+        if (stopOnUpdateErrors != null) manifest.stopOnUpdateErrors = stopOnUpdateErrors;
         if (parameters != null) manifest.parameters = parameters;
         if (preloadNativeLibraries != null) manifest.preloadNativeLibraries = preloadNativeLibraries;
         if (whatsNew != null) manifest.whatsNewPage = whatsNew;
