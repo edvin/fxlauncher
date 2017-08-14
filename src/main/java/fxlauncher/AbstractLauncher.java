@@ -110,12 +110,14 @@ public abstract class AbstractLauncher<APP>  {
             log.info("not updating files from remote, offline selected");
             return false; // to signal that nothing has changed.
         }
-        List<LibraryFile>
-                needsUpdate =
-                manifest.files.stream().filter(LibraryFile::loadForCurrentPlatform).filter(it -> it.needsUpdate(cacheDir)).collect(Collectors.toList());
+        List<LibraryFile> needsUpdate = manifest.files.stream()
+                .filter(LibraryFile::loadForCurrentPlatform)
+                .filter(it -> it.needsUpdate(cacheDir))
+                .collect(Collectors.toList());
 
         if (needsUpdate.isEmpty())
             return false;
+
         Long totalBytes = needsUpdate.stream().mapToLong(f -> f.size).sum();
         Long totalWritten = 0L;
 
@@ -124,13 +126,8 @@ public abstract class AbstractLauncher<APP>  {
             Files.createDirectories(target.getParent());
 
             URI uri = manifest.uri.resolve(lib.file);
-            URLConnection connection = uri.toURL().openConnection();
-            if (uri.getUserInfo() != null) {
-                byte[] payload = uri.getUserInfo().getBytes(StandardCharsets.UTF_8);
-                String encoded = Base64.getEncoder().encodeToString(payload);
-                connection.setRequestProperty("Authorization", String.format("Basic %s", encoded));
-            }
-            try (InputStream input = connection.getInputStream(); OutputStream output = Files.newOutputStream(target)) {
+
+            try (InputStream input = openDownloadStream(uri); OutputStream output = Files.newOutputStream(target)) {
 
                 byte[] buf = new byte[65536];
 
@@ -144,6 +141,18 @@ public abstract class AbstractLauncher<APP>  {
             }
         }
         return true;
+    }
+
+    private InputStream openDownloadStream(URI uri) throws IOException {
+        if (uri.getScheme().equals("file")) return Files.newInputStream(new File(uri.getPath()).toPath());
+
+        URLConnection connection = uri.toURL().openConnection();
+        if (uri.getUserInfo() != null) {
+            byte[] payload = uri.getUserInfo().getBytes(StandardCharsets.UTF_8);
+            String encoded = Base64.getEncoder().encodeToString(payload);
+            connection.setRequestProperty("Authorization", String.format("Basic %s", encoded));
+        }
+        return connection.getInputStream();
     }
 
     protected void createApplicationEnvironment() throws Exception {

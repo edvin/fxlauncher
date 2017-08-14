@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [10.0.17]
+
+- Support for file:// based deployment
+
 ## [10.0.16]
 
 - Library function: `Launcher.checkForUpdate()`. Call at runtime from your app to check for new version.

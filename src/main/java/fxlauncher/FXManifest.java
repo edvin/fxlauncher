@@ -4,6 +4,7 @@ import javax.xml.bind.JAXB;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -12,7 +13,13 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @SuppressWarnings("unchecked")
 @XmlRootElement(name = "Application")
@@ -165,6 +172,9 @@ public class FXManifest {
 	}
 
 	static FXManifest load(URI uri) throws IOException {
+		if (Objects.equals(uri.getScheme(), "file")) {
+			return JAXB.unmarshal(new File(uri.getPath()), FXManifest.class);
+		}
 		URLConnection connection = uri.toURL().openConnection();
 		if (uri.getUserInfo() != null) {
 			byte[] payload = uri.getUserInfo().getBytes(StandardCharsets.UTF_8);
