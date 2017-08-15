@@ -6,7 +6,7 @@
 
     <groupId>no.tornado</groupId>
     <artifactId>fxlauncher</artifactId>
-    <version>1.0.17-SNAPSHOT</version>
+    <version>1.0.17</version>
     <packaging>jar</packaging>
     <name>FX Launcher</name>
     <description>Auto updating launcher for JavaFX Applications</description>
