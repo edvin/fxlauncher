@@ -91,6 +91,10 @@ java -classpath fxlauncher.jar fxlauncher.HeadlessMainLauncher --app=http://remo
 
 Notice: `WhatsNew` is not supported.
 
+### File based deployment
+
+The app uri can be a file:// based url instead of an web uri if your application is hosted on a common network location for your users.
+
 ### Native installers
 
 The native installer does not contain any application code, only the launcher. There is
@@ -125,7 +129,7 @@ https://docs.oracle.com/javase/8/docs/technotes/guides/deploy/self-contained-pac
 
 ## Accept downgrades
 
-Starting from version 1.0.12, FXLauncher will not download a remote version if the local version is newer. This is controlled
+FXLauncher will not download a remote version if the local version is newer. This is controlled
 by comparing a timestamp in the manifest. Specifying `--accept-downgrades=true` as the last argument to CreateManifest will
 allow you to make sure that the version you have published will always be used by your clients even if they have a newer version installed.
 This option is also available in the Gradle plugin as `acceptDowngrades`.
@@ -144,7 +148,7 @@ The error will be shown and the launcher will exit.
 
 ## Show what's new dialog.
 
-Starting from 1.0.15, you can have FXLauncher show a whats new dialog. This dialog will
+You can have FXLauncher show a whats new dialog. This dialog will
 only be shown when FXLauncher has to download new files from the server. The html content will be shown in a `WebView`. Specify `--whats-new=filename.html`
 The file needs to be copied into the jar like so:
 
@@ -199,7 +203,7 @@ FXLauncher supports filtering of resources for the running platform. Any resourc
 that ends with `-[mac|win|linux].jar` will only be downloaded and put on the classpath on the corresponding
 platform. The manifest enforces this though the `os` attribute in `app.xml`.
 
-### Native libraries (Version 1.0.15-SNAPSHOT)
+### Native libraries
 
 If you need to load native libraries before the custom class loader kicks inn, specify the `--preload-native-libraries=` parameter
 to CreateManifest. It supports a comma separated list of libraries to load. Remember: No extensions, just the library name.

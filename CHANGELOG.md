@@ -1,6 +1,8 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.0.18-SNAPSHOT]
+
 ## [10.0.17]
 
 - Support for file:// based deployment
