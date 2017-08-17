@@ -254,7 +254,7 @@ public abstract class AbstractLauncher<APP>  {
     }
 
     protected boolean checkIgnoreUpdateErrorSetting() {
-        return getParameters().getUnnamed().contains("--stopOnUpDateErrors");
+        return getParameters().getUnnamed().contains("--stopOnUpdateErrors");
     }
     public String getPhase() {
         return phase;
