@@ -9,6 +9,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.security.PrivateKey;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -106,6 +107,10 @@ public class CreateManifest {
     }
 
     public static FXManifest create(URI baseURI, String launchClass, Path appPath) throws IOException, URISyntaxException {
+    	return create(baseURI, launchClass, appPath, null);
+    }
+    
+    public static FXManifest create(URI baseURI, String launchClass, Path appPath, PrivateKey key) throws IOException, URISyntaxException {
         FXManifest manifest = new FXManifest();
         manifest.ts = System.currentTimeMillis();
         manifest.uri = baseURI;
@@ -117,7 +122,7 @@ public class CreateManifest {
         Files.walkFileTree(appPath, new SimpleFileVisitor<Path>() {
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                 if (!Files.isDirectory(file) && shouldIncludeInManifest(file) && !file.getFileName().toString().startsWith("fxlauncher"))
-                    manifest.files.add(new LibraryFile(appPath, file));
+                    manifest.files.add(new LibraryFile(appPath, file, key));
                 return FileVisitResult.CONTINUE;
             }
         });

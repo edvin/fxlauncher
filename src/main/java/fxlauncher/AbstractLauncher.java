@@ -9,6 +9,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import javax.xml.bind.JAXB;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -16,12 +17,16 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLConnection;
+import java.nio.BufferOverflowException;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Base64;
 import java.util.List;
@@ -100,7 +105,7 @@ public abstract class AbstractLauncher<APP>  {
      * @throws Exception
      */
     protected boolean syncFiles() throws Exception {
-
+		
         Path cacheDir = manifest.resolveCacheDir(getParameters().getNamed());
         log.info(String.format("Using cache dir %s", cacheDir));
 
@@ -117,28 +122,53 @@ public abstract class AbstractLauncher<APP>  {
 
         if (needsUpdate.isEmpty())
             return false;
+        
+        Certificate cert = null;
+		if (getParameters().getNamed().containsKey("cert")) {
+			String certPath = getParameters().getNamed().get("cert");
 
-        Long totalBytes = needsUpdate.stream().mapToLong(f -> f.size).sum();
-        Long totalWritten = 0L;
+			try (FileInputStream certIn = new FileInputStream(new File(certPath))) {
+				cert = CertificateFactory.getInstance("X.509").generateCertificate(certIn);
+			}
+		}
+		
+        long totalBytes = needsUpdate.stream().mapToLong(f -> f.size).sum();
+        long totalWritten = 0L;
 
         for (LibraryFile lib : needsUpdate) {
             Path target = cacheDir.resolve(lib.file).toAbsolutePath();
             Files.createDirectories(target.getParent());
 
             URI uri = manifest.uri.resolve(lib.file);
+            
+            // keeps file data for verification
+            ByteBuffer buffer = ByteBuffer.allocate(lib.size.intValue());
+            try (InputStream input = openDownloadStream(uri)) {
 
-            try (InputStream input = openDownloadStream(uri); OutputStream output = Files.newOutputStream(target)) {
+				byte[] buf = new byte[65536];
 
-                byte[] buf = new byte[65536];
+				int read;
+				while ((read = input.read(buf)) > -1) {
+					buffer.put(buf, 0, read);
+					totalWritten += read;
+					double progress = totalWritten / totalBytes;
+					updateProgress(progress);
+				}
 
-                int read;
-                while ((read = input.read(buf)) > -1) {
-                    output.write(buf, 0, read);
-                    totalWritten += read;
-                    Double progress = totalWritten.doubleValue() / totalBytes.doubleValue();
-                    updateProgress(progress);
-                }
-            }
+				if (buffer.remaining() > 0)
+					throw new IOException("Input data is less than file size in manifest.");
+
+				if (cert != null) { // if malicious, don't even write it to a file!
+					lib.verify(buffer.array(), cert);
+				}
+
+			} catch (BufferOverflowException e) {
+				throw new IOException("Input data exceeds file size in manifest.");
+			}
+			try (OutputStream output = Files.newOutputStream(target)) {
+				// now we know it's safe, write
+				output.write(buffer.array());
+			}
         }
         return true;
     }
