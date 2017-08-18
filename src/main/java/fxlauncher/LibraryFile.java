@@ -40,8 +40,8 @@ public class LibraryFile {
         this.checksum = checksum(file);
 
 	    String filename = file.getFileName().toString().toLowerCase();
-	    Pattern osPattern = Pattern.compile(".*-(linux|win|mac).jar");
-	    Matcher osMatcher = osPattern.matcher(filename);
+        Pattern osPattern = Pattern.compile(".+-(linux|win|mac)\\.[^.]+$");
+        Matcher osMatcher = osPattern.matcher(filename);
 	    if (osMatcher.matches())
 		    this.os = OS.valueOf(osMatcher.group(1));
     }
