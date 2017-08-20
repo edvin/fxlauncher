@@ -8,6 +8,8 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import javax.xml.bind.JAXB;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -17,11 +19,10 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLConnection;
-import java.nio.BufferOverflowException;
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.Certificate;
@@ -76,9 +77,9 @@ public abstract class AbstractLauncher<APP>  {
         List<URL> libs = manifest.files.stream().filter(LibraryFile::loadForCurrentPlatform).map(it -> it.toURL(cacheDir)).collect(Collectors.toList());
 
         ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
-        if (systemClassLoader instanceof FxlauncherClassCloader)
+        if (systemClassLoader instanceof FxlauncherClassLoader)
         {
-            ((FxlauncherClassCloader) systemClassLoader).addUrls(libs);
+            ((FxlauncherClassLoader) systemClassLoader).addUrls(libs);
             return systemClassLoader;
         }
         else
@@ -137,37 +138,35 @@ public abstract class AbstractLauncher<APP>  {
 
         for (LibraryFile lib : needsUpdate) {
             Path target = cacheDir.resolve(lib.file).toAbsolutePath();
+            Path temp = Files.createTempFile(cacheDir, "~", ".tmp");
+            
             Files.createDirectories(target.getParent());
 
             URI uri = manifest.uri.resolve(lib.file);
             
             // keeps file data for verification
-            ByteBuffer buffer = ByteBuffer.allocate(lib.size.intValue());
-            try (InputStream input = openDownloadStream(uri)) {
-
+            ByteArrayOutputStream byteArray = new ByteArrayOutputStream(lib.size.intValue());
+            try (InputStream input = openDownloadStream(uri); OutputStream output = Files.newOutputStream(temp)) {
 				byte[] buf = new byte[65536];
 
 				int read;
 				while ((read = input.read(buf)) > -1) {
-					buffer.put(buf, 0, read);
+					byteArray.write(buf, 0, read);
+					output.write(buf, 0, read);
 					totalWritten += read;
-					double progress = totalWritten / totalBytes;
+					double progress = (double) totalWritten / totalBytes;
 					updateProgress(progress);
 				}
 
-				if (buffer.remaining() > 0)
-					throw new IOException("Input data is less than file size in manifest.");
-
-				if (cert != null) { // if malicious, don't even write it to a file!
-					lib.verify(buffer.array(), cert);
+				if (cert != null) {
+					lib.verify(byteArray.toByteArray(), cert);
 				}
+				
+				Files.move(temp, target, StandardCopyOption.REPLACE_EXISTING);
 
-			} catch (BufferOverflowException e) {
-				throw new IOException("Input data exceeds file size in manifest.");
-			}
-			try (OutputStream output = Files.newOutputStream(target)) {
-				// now we know it's safe, write
-				output.write(buffer.array());
+			} catch (Exception e) {
+				Files.delete(temp);
+				throw e;
 			}
         }
         return true;
