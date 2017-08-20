@@ -160,9 +160,14 @@ public class Launcher extends Application {
         ParametersImpl.registerParameters(app, new LauncherParams(getParameters(), superLauncher.getManifest()));
         PlatformImpl.setApplicationName(app.getClass());
         superLauncher.setPhase("Application Init");
-        app.init();
+        try {
+            app.init();
+        } catch (Throwable ex) {
+            superLauncher.reportError("Error during app init", ex);
+        }
         superLauncher.setPhase("Application Start");
         log.info("Show whats new dialog? " + showWhatsnew);
+
         PlatformImpl.runAndWait(() ->
         {
             try {
@@ -180,7 +185,7 @@ public class Launcher extends Application {
                 }
 
                 app.start(primaryStage);
-            } catch (Exception ex) {
+            } catch (Throwable ex) {
                 superLauncher.reportError("Failed to start application", ex);
             }
         });
