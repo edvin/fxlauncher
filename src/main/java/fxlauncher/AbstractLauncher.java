@@ -77,9 +77,9 @@ public abstract class AbstractLauncher<APP>  {
         List<URL> libs = manifest.files.stream().filter(LibraryFile::loadForCurrentPlatform).map(it -> it.toURL(cacheDir)).collect(Collectors.toList());
 
         ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
-        if (systemClassLoader instanceof FxlauncherClassLoader)
+        if (systemClassLoader instanceof FxlauncherClassCloader)
         {
-            ((FxlauncherClassLoader) systemClassLoader).addUrls(libs);
+            ((FxlauncherClassCloader) systemClassLoader).addUrls(libs);
             return systemClassLoader;
         }
         else
@@ -151,7 +151,10 @@ public abstract class AbstractLauncher<APP>  {
 
 				int read;
 				while ((read = input.read(buf)) > -1) {
-					byteArray.write(buf, 0, read);
+					if(cert != null) {
+						byteArray.write(buf, 0, read);
+					}
+					
 					output.write(buf, 0, read);
 					totalWritten += read;
 					double progress = (double) totalWritten / totalBytes;
@@ -167,6 +170,8 @@ public abstract class AbstractLauncher<APP>  {
 			} catch (Exception e) {
 				Files.delete(temp);
 				throw e;
+			} catch (Throwable t) {
+				Files.delete(temp);
 			}
         }
         return true;
