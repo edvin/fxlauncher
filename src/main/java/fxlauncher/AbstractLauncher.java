@@ -167,11 +167,9 @@ public abstract class AbstractLauncher<APP>  {
 				
 				Files.move(temp, target, StandardCopyOption.REPLACE_EXISTING);
 
-			} catch (Exception e) {
+			} catch (Exception | Error e) {
 				Files.delete(temp);
 				throw e;
-			} catch (Throwable t) {
-				Files.delete(temp);
 			}
         }
         return true;
