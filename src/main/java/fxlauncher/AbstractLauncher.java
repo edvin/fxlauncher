@@ -8,7 +8,10 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import javax.xml.bind.JAXB;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -19,9 +22,12 @@ import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Base64;
 import java.util.List;
@@ -100,7 +106,7 @@ public abstract class AbstractLauncher<APP>  {
      * @throws Exception
      */
     protected boolean syncFiles() throws Exception {
-
+		
         Path cacheDir = manifest.resolveCacheDir(getParameters().getNamed());
         log.info(String.format("Using cache dir %s", cacheDir));
 
@@ -117,28 +123,54 @@ public abstract class AbstractLauncher<APP>  {
 
         if (needsUpdate.isEmpty())
             return false;
+        
+        Certificate cert = null;
+		if (getParameters().getNamed().containsKey("cert")) {
+			String certPath = getParameters().getNamed().get("cert");
 
-        Long totalBytes = needsUpdate.stream().mapToLong(f -> f.size).sum();
-        Long totalWritten = 0L;
+			try (FileInputStream certIn = new FileInputStream(new File(certPath))) {
+				cert = CertificateFactory.getInstance("X.509").generateCertificate(certIn);
+			}
+		}
+		
+        long totalBytes = needsUpdate.stream().mapToLong(f -> f.size).sum();
+        long totalWritten = 0L;
 
         for (LibraryFile lib : needsUpdate) {
             Path target = cacheDir.resolve(lib.file).toAbsolutePath();
+            Path temp = Files.createTempFile(cacheDir, "~", ".tmp");
+            
             Files.createDirectories(target.getParent());
 
             URI uri = manifest.uri.resolve(lib.file);
+            
+            // keeps file data for verification
+            ByteArrayOutputStream byteArray = new ByteArrayOutputStream(lib.size.intValue());
+            try (InputStream input = openDownloadStream(uri); OutputStream output = Files.newOutputStream(temp)) {
+				byte[] buf = new byte[65536];
 
-            try (InputStream input = openDownloadStream(uri); OutputStream output = Files.newOutputStream(target)) {
+				int read;
+				while ((read = input.read(buf)) > -1) {
+					if(cert != null) {
+						byteArray.write(buf, 0, read);
+					}
+					
+					output.write(buf, 0, read);
+					totalWritten += read;
+					double progress = (double) totalWritten / totalBytes;
+					updateProgress(progress);
+				}
 
-                byte[] buf = new byte[65536];
+				if (cert != null) {
+					lib.verify(byteArray.toByteArray(), cert);
+				}
+				
+				Files.move(temp, target, StandardCopyOption.REPLACE_EXISTING);
 
-                int read;
-                while ((read = input.read(buf)) > -1) {
-                    output.write(buf, 0, read);
-                    totalWritten += read;
-                    Double progress = totalWritten.doubleValue() / totalBytes.doubleValue();
-                    updateProgress(progress);
-                }
-            }
+			} catch (Exception | Error e) {
+				Files.delete(temp);
+				throw e;
+			}
         }
         return true;
     }

@@ -8,6 +8,13 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.Signature;
+import java.security.SignatureException;
+import java.security.cert.Certificate;
+import java.util.Base64;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.Adler32;
@@ -21,6 +28,8 @@ public class LibraryFile {
     Long size;
 	@XmlAttribute
 	OS os;
+	@XmlAttribute
+	String signature;
 
     public boolean needsUpdate(Path cacheDir) {
         Path path = cacheDir.resolve(file);
@@ -35,6 +44,10 @@ public class LibraryFile {
     }
 
 	public LibraryFile(Path basepath, Path file) throws IOException {
+		this(basepath, file, null);
+	}
+
+	public LibraryFile(Path basepath, Path file, PrivateKey key) throws IOException {
         this.file = basepath.relativize(file).toString().replace("\\", "/");
         this.size = Files.size(file);
         this.checksum = checksum(file);
@@ -44,6 +57,10 @@ public class LibraryFile {
         Matcher osMatcher = osPattern.matcher(filename);
 	    if (osMatcher.matches())
 		    this.os = OS.valueOf(osMatcher.group(1));
+	    
+		if (key != null) {
+			this.signature = sign(file, key);
+		}
     }
 
 	public boolean loadForCurrentPlatform() {
@@ -70,6 +87,48 @@ public class LibraryFile {
             return checksum.getValue();
         }
     }
+    
+	private static String sign(Path file, PrivateKey key) throws IOException {
+		try {
+			Signature sign = Signature.getInstance("SHA256with" + key.getAlgorithm());
+			sign.initSign(key);
+
+			try (InputStream input = Files.newInputStream(file)) {
+				byte[] buf = new byte[1024];
+				int len;
+				while ((len = input.read(buf)) > 0)
+					sign.update(buf, 0, len);
+			}
+
+			byte[] sigData = sign.sign();
+			return Base64.getEncoder().encodeToString(sigData);
+
+		} catch (InvalidKeyException | SignatureException e) {
+			throw new IOException(e);
+		} catch (NoSuchAlgorithmException e) {
+			throw new RuntimeException(e);
+		}
+
+	}
+
+	void verify(byte[] data, Certificate cert) throws InvalidKeyException, IOException, SignatureException {
+		Signature sign = null;
+		try {
+			sign = Signature.getInstance("SHA256with" + cert.getPublicKey().getAlgorithm());
+		} catch (NoSuchAlgorithmException e) {
+			throw new RuntimeException(e);
+		}
+
+		sign.initVerify(cert);
+		sign.update(data);
+
+		byte[] signData = Base64.getDecoder().decode(this.signature);
+
+		if (!sign.verify(signData)) {
+			throw new SecurityException("Signature verification failed.");
+		}
+	}
+
 
     public boolean equals(Object o) {
         if (this == o) return true;
