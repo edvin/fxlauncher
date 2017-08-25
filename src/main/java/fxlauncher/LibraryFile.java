@@ -7,7 +7,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.Adler32;
@@ -42,8 +41,17 @@ public class LibraryFile {
 	    String filename = file.getFileName().toString().toLowerCase();
         Pattern osPattern = Pattern.compile(".+-(linux|win|mac)\\.[^.]+$");
         Matcher osMatcher = osPattern.matcher(filename);
-	    if (osMatcher.matches())
-		    this.os = OS.valueOf(osMatcher.group(1));
+	    if (osMatcher.matches()) {
+            this.os = OS.valueOf(osMatcher.group(1));
+        } else {
+	        if (filename.endsWith(".dll")) {
+	            this.os = OS.win;
+            } else if (filename.endsWith(".dylib")) {
+	            this.os = OS.mac;
+            } else if (filename.endsWith(".so")) {
+	            this.os = OS.linux;
+            }
+        }
     }
 
 	public boolean loadForCurrentPlatform() {
