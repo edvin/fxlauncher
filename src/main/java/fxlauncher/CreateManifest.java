@@ -1,8 +1,5 @@
 package fxlauncher;
 
-import com.sun.javafx.application.ParametersImpl;
-import com.sun.javafx.fxml.builder.URLBuilder;
-
 import javax.xml.bind.JAXB;
 import java.io.IOException;
 import java.net.URI;
@@ -39,7 +36,7 @@ public class CreateManifest {
             // Parse named parameters
             List<String> rawParams = new ArrayList<>();
             rawParams.addAll(Arrays.asList(args).subList(3, args.length));
-            ParametersImpl params = new ParametersImpl(rawParams);
+            LauncherParams params = new LauncherParams(rawParams);
             Map<String, String> named = params.getNamed();
 
             if (named != null) {
