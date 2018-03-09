@@ -1,7 +1,6 @@
 package fxlauncher;
 
 import com.sun.javafx.application.ParametersImpl;
-import com.sun.javafx.fxml.builder.URLBuilder;
 
 import javax.xml.bind.JAXB;
 import java.io.IOException;
@@ -34,6 +33,7 @@ public class CreateManifest {
         String whatsNew = null;
         String preloadNativeLibraries = null;
         Boolean lingeringUpdateScreen = false;
+        Boolean stopOnUpdateErrorsDeprecated = null;
 
         if (args.length > 3) {
             // Parse named parameters
@@ -52,8 +52,8 @@ public class CreateManifest {
                     acceptDowngrade = Boolean.valueOf(named.get("accept-downgrade"));
 
                 // Configure stopOnUpdateErrors
-                if (named.containsKey("stopOnUpdateErrors"))
-                    stopOnUpdateErrors = true;
+                if (named.containsKey("stop-on-update-errors"))
+                    stopOnUpdateErrors = Boolean.valueOf(named.get("stop-on-update-errors"));
 
                 // Configure preload native libraries
                 if (named.containsKey("preload-native-libraries"))
@@ -79,8 +79,14 @@ public class CreateManifest {
             // Append the rest as manifest parameters
             StringBuilder rest = new StringBuilder();
             for (String raw : params.getRaw()) {
+                // Special case for deprecated parameter.
+                if (raw.equals("--stopOnUpdateErrors")) {
+                    stopOnUpdateErrorsDeprecated = true;
+                    continue;
+                }
                 if (raw.startsWith("--cache-dir=")) continue;
                 if (raw.startsWith("--accept-downgrade=")) continue;
+                if (raw.startsWith("--stop-on-update-errors=")) continue;
                 if (raw.startsWith("--include-extensions=")) continue;
                 if (raw.startsWith("--preload-native-libraries=")) continue;
                 if (raw.startsWith("--whats-new")) continue;
@@ -97,11 +103,27 @@ public class CreateManifest {
         FXManifest manifest = create(baseURI, launchClass, appPath);
         if (cacheDir != null) manifest.cacheDir = cacheDir;
         if (acceptDowngrade != null) manifest.acceptDowngrade = acceptDowngrade;
-        if (stopOnUpdateErrors != null) manifest.stopOnUpdateErrors = stopOnUpdateErrors;
         if (parameters != null) manifest.parameters = parameters;
         if (preloadNativeLibraries != null) manifest.preloadNativeLibraries = preloadNativeLibraries;
         if (whatsNew != null) manifest.whatsNewPage = whatsNew;
         manifest.lingeringUpdateScreen = lingeringUpdateScreen;
+
+        // Use --stop-on-update-errors if it was specified.
+        if (stopOnUpdateErrors != null) {
+            manifest.stopOnUpdateErrors = stopOnUpdateErrors;
+            // If --stopOnUpdateErrors is also present, display warning.
+            if (stopOnUpdateErrorsDeprecated != null) {
+                System.out.println("Warning: --stopOnUpdateErrors is deprecated. "
+                        + "Overriding with --stop-on-update-errors.");
+            }
+        }
+        // If --stop-on-update-errors was not specified,
+        // use --stopOnUpdateError if it was specified.
+        else if (stopOnUpdateErrorsDeprecated != null){
+            manifest.stopOnUpdateErrors = stopOnUpdateErrorsDeprecated;
+            System.out.println("Warning: --stopOnUpdateErrors is deprecated. "
+                    + "Use --stop-on-update-errors instead.");
+        }
         JAXB.marshal(manifest, appPath.resolve("app.xml").toFile());
     }
 

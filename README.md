@@ -142,9 +142,12 @@ If you are behind a proxy that does a _man in the middle attack_ to snoop on ssl
 ## Stop after update errors.
 
 Normally FXlauncher will try to launch the application even if there were errors
-during the update of the files from the server. Often this will work using the files 
-already in the local cache. With the option ```--stopOnUpdateErrors``` this will not be done.
-The error will be shown and the launcher will exit.
+during the update of the files from the server. Often this will work using the files
+already in the local cache. You can change this behavior by specifying
+`--stop-on-update-errors=true`. The error will be shown and the launcher will exit.
+Specifying `--stopOnUpdateErrors` will result in the same behavior, but this variant
+is deprecated and will be removed in future versions. If both options are specified
+the value of `--stop-on-update-errors` will be used.
 
 ## Show what's new dialog.
 
