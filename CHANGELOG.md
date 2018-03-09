@@ -1,7 +1,13 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## [1.0.18-SNAPSHOT]
+## [1.0.19]
+
+- Renamed `--stopOnUpdateErrors` to `--stop-on-update-errors` to bring it in line with the other parameters
+ 
+## [1.0.18]
+
+- Support for launching non-JavaFX applications (Added for Spring Boot)
 
 ## [10.0.17]
 
