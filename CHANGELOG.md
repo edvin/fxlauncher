@@ -1,6 +1,9 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.0.20-SNAPSHOT]
+
+
 ## [1.0.19]
 
 - Renamed `--stopOnUpdateErrors` to `--stop-on-update-errors` to bring it in line with the other parameters
