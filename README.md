@@ -63,6 +63,10 @@ java -jar fxlauncher.jar --app=http://remote/location/app.xml --uri=http://remot
 
 Note: All parameters (including these) are passed on to your application.  So please ensure that your parameters have a different name if they carry different data.
 
+#### Include other artifacts
+
+`--include-extensions` accepts a comma separated list of filename extensions to include of other resources from the build dir. By default it always includes jar,war.
+
 #### Class-Loader issues
 
 To load the application FXLauncher creates a new classloader fed with the classes of your manifest. This works as long as none of the
