@@ -108,19 +108,19 @@ public class FXManifest {
 			}
 			path = Paths.get(replacement);
 		} else if (cacheDir.startsWith("ALLUSERS")) {
-		   switch (OS.current) {
-      		case mac:
-      		   path = Paths.get("/Library/Application Support")
-                  .resolve(cacheDir.substring(9));
-               break;
-            case win:
-               path = Paths.get(System.getenv("ALLUSERSPROFILE"))
-                  .resolve(cacheDir.substring(9));
-               break;
-            default:
-               path = Paths.get("/usr/local/share")
-                  .resolve(cacheDir.substring(9));
-		   }
+			switch (OS.current) {
+			case mac:
+				path = Paths.get("/Library/Application Support")
+					.resolve(cacheDir.substring(9));
+				break;
+			case win:
+				path = Paths.get(System.getenv("ALLUSERSPROFILE"))
+					.resolve(cacheDir.substring(9));
+				break;
+			default:
+				path = Paths.get("/usr/local/share")
+					.resolve(cacheDir.substring(9));
+			}
 		} else {
 			path = Paths.get(cacheDir);
 		}
