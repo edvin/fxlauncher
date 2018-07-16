@@ -47,7 +47,7 @@ public class Launcher extends Application {
             PlatformImpl.runAndWait(() ->
             {
                 try {
-                    if (appClass.isAssignableFrom(Application.class)){
+                    if (Application.class.isAssignableFrom(appClass)) {
                         app = appClass.newInstance();
                     }
                 } catch (Throwable t) {
@@ -91,7 +91,7 @@ public class Launcher extends Application {
 
     /**
      * Check if a new version is available and return the manifest for the new version or null if no update.
-     *
+     * <p>
      * Note that updates will only be detected if the application was actually launched with FXLauncher.
      *
      * @return The manifest for the new version if available
@@ -142,7 +142,7 @@ public class Launcher extends Application {
                 filesUpdated[0] = superLauncher.syncFiles();
             } catch (Exception ex) {
                 log.log(Level.WARNING, String.format("Error during %s phase", superLauncher.getPhase()), ex);
-                if(superLauncher.checkIgnoreUpdateErrorSetting()) {
+                if (superLauncher.checkIgnoreUpdateErrorSetting()) {
                     superLauncher.reportError(String.format("Error during %s phase", superLauncher.getPhase()), ex);
                     System.exit(1);
                 }
@@ -223,13 +223,13 @@ public class Launcher extends Application {
     }
 
     private void initApplication() throws Exception {
-        if (app != null){
+        if (app != null) {
             app.init();
         }
     }
 
     private void startApplication() throws Exception {
-        if (app != null){
+        if (app != null) {
             ParametersImpl.registerParameters(app, new LauncherParams(getParameters(), superLauncher.getManifest()));
             PlatformImpl.setApplicationName(app.getClass());
             superLauncher.setPhase("Application Init");
@@ -239,7 +239,7 @@ public class Launcher extends Application {
             List<LibraryFile> files = superLauncher.getManifest().files;
             String cacheDir = superLauncher.getManifest().cacheDir;
             String command = String.format("java -jar %s/%s", cacheDir, files.get(0).file);
-            log.info(String.format("Execute command '%s'",command));
+            log.info(String.format("Execute command '%s'", command));
             Runtime.getRuntime().exec(command);
         }
     }
