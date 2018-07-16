@@ -156,36 +156,7 @@ the value of `--stop-on-update-errors` will be used.
 ## Show what's new dialog.
 
 You can have FXLauncher show a whats new dialog. This dialog will
-only be shown when FXLauncher has to download new files from the server. The html content will be shown in a `WebView`. Specify `--whats-new=filename.html`
-The file needs to be copied into the jar like so:
-
-```xml
-<plugin>
-   <groupId>org.codehaus.mojo</groupId>
-   <artifactId>exec-maven-plugin</artifactId>
-   <version>1.4.0</version>
-   <executions>
-      <execution>
-         <id>copy-whatsnewfile</id>
-         <phase>package</phase>
-         <goals>
-            <goal>exec</goal>
-         </goals>
-         <configuration>
-            <executable>jar</executable>
-            <workingDirectory>${app.dir}</workingDirectory>
-            <arguments>
-               <argument>uf</argument>
-               <argument>fxlauncher.jar</argument>
-               <argument>-C</argument>
-               <argument>${project.basedir}/src/main/resources</argument>
-               <argument>whatsnew.html</argument>
-            </arguments>
-         </configuration>
-   </execution>
-</executions>
-</plugin>
-```
+only be shown when FXLauncher has to download new files from the server. The html content will be shown in a `WebView`. Specify `--whats-new=https://whatsnewurl/here`
 
 ### Applications with no default UI
 

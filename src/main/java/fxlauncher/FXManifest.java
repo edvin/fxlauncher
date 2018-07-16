@@ -89,22 +89,22 @@ public class FXManifest {
 			switch (OS.current) {
 				case mac:
 					replacement = Paths.get(System.getProperty("user.home"))
-						.resolve("Library")
-						.resolve("Application Support")
-						.resolve(cacheDir.substring(8))
-						.toString();
+							.resolve("Library")
+							.resolve("Application Support")
+							.resolve(cacheDir.substring(8))
+							.toString();
 					break;
 				case win:
 					replacement = Paths.get(System.getProperty("user.home"))
-						.resolve("AppData")
-						.resolve("Local")
-						.resolve(cacheDir.substring(8))
-						.toString();
+							.resolve("AppData")
+							.resolve("Local")
+							.resolve(cacheDir.substring(8))
+							.toString();
 					break;
 				default:
 					replacement = Paths.get(System.getProperty("user.home"))
-						.resolve("." + cacheDir.substring(8))
-						.toString();
+							.resolve("." + cacheDir.substring(8))
+							.toString();
 			}
 			path = Paths.get(replacement);
 		} else {
