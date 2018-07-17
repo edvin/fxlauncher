@@ -156,7 +156,7 @@ the value of `--stop-on-update-errors` will be used.
 ## Show what's new dialog.
 
 You can have FXLauncher show a whats new dialog. This dialog will
-only be shown when FXLauncher has to download new files from the server. The html content will be shown in a `WebView`. Specify `--whats-new=https://whatsnewurl/here`
+only be shown when FXLauncher has to download new files from the server. The html will be shown in a `WebView`. Specify `--whats-new=https://whatsnewurl/here`
 
 ### Applications with no default UI
 

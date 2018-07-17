@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 ## [1.0.20-SNAPSHOT]
 
 - Include artifact classifiers when copying dependencies
+- What's New now expects fully qualified URL (https://github.com/edvin/fxlauncher/issues/125)
 
 ## [1.0.19]
 

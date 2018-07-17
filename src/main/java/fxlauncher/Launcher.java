@@ -192,9 +192,9 @@ public class Launcher extends Application {
         });
     }
 
-    private void showWhatsNewDialog(String whatsNewPage) {
+    private void showWhatsNewDialog(String whatsNewURL) {
         WebView view = new WebView();
-        view.getEngine().load(Launcher.class.getResource(whatsNewPage).toExternalForm());
+        view.getEngine().load(whatsNewURL);
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("What's new");
         alert.setHeaderText("New in this update");
