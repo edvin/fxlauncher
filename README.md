@@ -65,7 +65,7 @@ Note: All parameters (including these) are passed on to your application.  So pl
 
 #### Include other artifacts
 
-`--include-extensions` accepts a comma separated list of filename extensions to include of other resources from the build dir. By default it always includes jar,war.
+`--include-extensions` accepts a comma separated list of filename extensions to include of other resources from the build dir. By default it always includes jar, war.
 
 #### Class-Loader issues
 
@@ -118,7 +118,7 @@ Check out these prebuilt installers for a more complex demo application
 
 By default, the artifacts are downloaded to the current working directory. This is usually fine for native installers, but if you distribute
 your application via just the launcher jar, you might want to specify where the downloaded artifacts land. See the 
-[cache dir documentation](https://github.com/edvin/fxlauncher/wiki/Optional-Cache-Directory)for more information.
+[cache dir documentation](https://github.com/edvin/fxlauncher/wiki/Optional-Cache-Directory) for more information.
 
 ## Installation location
 
