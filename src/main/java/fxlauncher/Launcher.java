@@ -237,8 +237,8 @@ public class Launcher extends Application {
         } else {
             // Start any executable jar (i.E. Spring Boot);
             List<LibraryFile> files = superLauncher.getManifest().files;
-            String cacheDir = superLauncher.getManifest().cacheDir;
-            String command = String.format("java -jar %s/%s", cacheDir, files.get(0).file);
+            Path cacheDir = superLauncher.getManifest().resolveCacheDir(getParameters().getNamed());
+            String command = String.format("java -jar %s/%s", cacheDir.toAbsolutePath(), files.get(0).file);
             log.info(String.format("Execute command '%s'", command));
             Runtime.getRuntime().exec(command);
         }

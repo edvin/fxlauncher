@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.0.21-SNAPSHOT]
+
+- Correctly resolve cacheDir (https://github.com/edvin/fxlauncher/issues/131)
+
 ## [1.0.20]
 
 - Include artifact classifiers when copying dependencies
