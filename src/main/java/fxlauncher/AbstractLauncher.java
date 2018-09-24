@@ -167,6 +167,7 @@ public abstract class AbstractLauncher<APP>  {
         Path cacheDir = manifest.resolveCacheDir(getParameters() != null ? getParameters().getNamed() : null);
 
         ClassLoader classLoader = createClassLoader(cacheDir);
+        log.info(String.format("Loading appClass %s", manifest.launchClass));
         Class<APP> appclass = (Class<APP>) classLoader.loadClass(manifest.launchClass);
 
         createApplication(appclass);
