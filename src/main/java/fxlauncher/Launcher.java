@@ -14,10 +14,14 @@ import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URI;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ServiceLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,6 +53,8 @@ public class Launcher extends Application {
                 try {
                     if (Application.class.isAssignableFrom(appClass)) {
                         app = appClass.newInstance();
+                    } else {
+                        throw new IllegalArgumentException(String.format("Supplied appClass %s was not a subclass of javafx.application.Application!", appClass));
                     }
                 } catch (Throwable t) {
                     reportError("Error creating app class", t);
