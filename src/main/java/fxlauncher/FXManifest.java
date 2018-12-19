@@ -65,10 +65,13 @@ public class FXManifest {
 	}
 
 	public URI getFXAppURI() {
-		if (uri.getPath().endsWith("/"))
-			return uri.resolve("app.xml");
+		String appXmlFile = "app.xml";
+		if (!uri.getPath().endsWith("/")) {
+			appXmlFile = "/app.xml";
+		}
 
-		return URI.create(uri.toString() + "/app.xml");
+		// We avoid using resolve here so as to not break UNC paths. See issue #143
+		return URI.create(uri.toString() + appXmlFile);
 	}
 
 	public Path getPath(Path cacheDir) {
