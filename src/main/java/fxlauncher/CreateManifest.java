@@ -27,6 +27,7 @@ public class CreateManifest {
         Path appPath = Paths.get(args[2]);
 
         String cacheDir = null;
+        String updateText = null;
         Boolean acceptDowngrade = null;
         Boolean stopOnUpdateErrors = null;
         String parameters = null;
@@ -54,6 +55,10 @@ public class CreateManifest {
                 // Configure stopOnUpdateErrors
                 if (named.containsKey("stop-on-update-errors"))
                     stopOnUpdateErrors = Boolean.valueOf(named.get("stop-on-update-errors"));
+
+                // Configure stopOnUpdateErrors
+                if (named.containsKey("update-text"))
+                    updateText = named.get("update-text");
 
                 // Configure preload native libraries
                 if (named.containsKey("preload-native-libraries"))
@@ -90,6 +95,7 @@ public class CreateManifest {
                 if (raw.startsWith("--include-extensions=")) continue;
                 if (raw.startsWith("--preload-native-libraries=")) continue;
                 if (raw.startsWith("--whats-new")) continue;
+                if (raw.startsWith("--update-text")) continue;
                 if (raw.startsWith("--lingering-update-screen")) continue;
                 if (rest.length() > 0) rest.append(" ");
                 rest.append(raw);
@@ -106,6 +112,7 @@ public class CreateManifest {
         if (parameters != null) manifest.parameters = parameters;
         if (preloadNativeLibraries != null) manifest.preloadNativeLibraries = preloadNativeLibraries;
         if (whatsNew != null) manifest.whatsNewPage = whatsNew;
+        if (updateText != null) manifest.updateText = updateText;
         manifest.lingeringUpdateScreen = lingeringUpdateScreen;
 
         // Use --stop-on-update-errors if it was specified.
@@ -119,7 +126,7 @@ public class CreateManifest {
         }
         // If --stop-on-update-errors was not specified,
         // use --stopOnUpdateError if it was specified.
-        else if (stopOnUpdateErrorsDeprecated != null){
+        else if (stopOnUpdateErrorsDeprecated != null) {
             manifest.stopOnUpdateErrors = stopOnUpdateErrorsDeprecated;
             System.out.println("Warning: --stopOnUpdateErrors is deprecated. "
                     + "Use --stop-on-update-errors instead.");
@@ -133,7 +140,7 @@ public class CreateManifest {
         manifest.uri = baseURI;
         manifest.launchClass = launchClass;
 
-        if(!manifest.uri.getPath().endsWith("/")) {
+        if (!manifest.uri.getPath().endsWith("/")) {
             manifest.uri = new URI(String.format("%s/", baseURI.toString()));
         }
         Files.walkFileTree(appPath, new SimpleFileVisitor<Path>() {
@@ -149,8 +156,9 @@ public class CreateManifest {
 
     /**
      * Add the includeExtensions to the default list of "war" and "jar".
-     *
+     * <p>
      * Allthough the method is called setIncludeExtensions, it actually does an addAll.
+     *
      * @param includeExtensions
      */
     public static void setIncludeExtensions(List<String> includeExtensions) {
