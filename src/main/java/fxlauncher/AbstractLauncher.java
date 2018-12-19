@@ -127,10 +127,10 @@ public abstract class AbstractLauncher<APP>  {
 
             URI uri;
             if (!manifest.uri.getPath().endsWith("/")) {
-                // We avoid using resolve here so as to not break UNC paths. See issue #143
+                // We avoid using uri.resolve() here so as to not break UNC paths. See issue #143
                 uri = URI.create(manifest.uri.toString() + "/" + lib.file);
             } else {
-                // We avoid using resolve here so as to not break UNC paths. See issue #143
+                // We avoid using uri.resolve() here so as to not break UNC paths. See issue #143
                 uri = URI.create(manifest.uri.toString() + lib.file);
             }
 
@@ -208,7 +208,7 @@ public abstract class AbstractLauncher<APP>  {
             // load manifest from --app param if supplied, else default file at supplied uri
             URI app = (appStr != null)
                     ? URI.create(appStr)
-                    : URI.create(uriStr + "app.xml"); // We avoid using resolve here so as to not break UNC paths. See issue #143
+                    : URI.create(uriStr + "app.xml"); // We avoid using uri.resolve() here so as to not break UNC paths. See issue #143
             manifest = FXManifest.load(app);
             // set supplied uri in manifest
             manifest.uri = uri;

@@ -70,7 +70,7 @@ public class FXManifest {
 			appXmlFile = "/app.xml";
 		}
 
-		// We avoid using resolve here so as to not break UNC paths. See issue #143
+		// We avoid using uri.resolve() here so as to not break UNC paths. See issue #143
 		return URI.create(uri.toString() + appXmlFile);
 	}
 
