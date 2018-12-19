@@ -192,9 +192,15 @@ public abstract class AbstractLauncher<APP>  {
             }
             log.info(String.format("Syncing files from 'uri' parameter supplied:  %s", uriStr));
 
+            if (!uriStr.endsWith("/")) {
+                uriStr += "/";
+            }
             URI uri = URI.create(uriStr);
+
             // load manifest from --app param if supplied, else default file at supplied uri
-            URI app = appStr != null ? URI.create(appStr) : uri.resolve("app.xml");
+            URI app = (appStr != null)
+                    ? URI.create(appStr)
+                    : URI.create(uriStr + "app.xml"); // We avoid using resolve here so as to not break UNC paths. See issue #143
             manifest = FXManifest.load(app);
             // set supplied uri in manifest
             manifest.uri = uri;
