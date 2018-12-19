@@ -125,7 +125,15 @@ public abstract class AbstractLauncher<APP>  {
             Path target = cacheDir.resolve(lib.file).toAbsolutePath();
             Files.createDirectories(target.getParent());
 
-            URI uri = manifest.uri.resolve(lib.file);
+            URI uri;
+            if (!manifest.uri.getPath().endsWith("/")) {
+                // We avoid using resolve here so as to not break UNC paths. See issue #143
+                uri = URI.create(manifest.uri.toString() + "/" + lib.file);
+            } else {
+                // We avoid using resolve here so as to not break UNC paths. See issue #143
+                uri = URI.create(manifest.uri.toString() + lib.file);
+            }
+
 
             try (InputStream input = openDownloadStream(uri); OutputStream output = Files.newOutputStream(target)) {
 
