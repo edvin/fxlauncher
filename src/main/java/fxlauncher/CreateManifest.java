@@ -56,7 +56,7 @@ public class CreateManifest {
                 if (named.containsKey("stop-on-update-errors"))
                     stopOnUpdateErrors = Boolean.valueOf(named.get("stop-on-update-errors"));
 
-                // Configure stopOnUpdateErrors
+                // Configure updateText
                 if (named.containsKey("update-text"))
                     updateText = named.get("update-text");
 
