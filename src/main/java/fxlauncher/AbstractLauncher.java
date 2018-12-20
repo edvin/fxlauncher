@@ -189,6 +189,10 @@ public abstract class AbstractLauncher<APP>  {
             log.info(String.format("Loading manifest from 'app' parameter supplied: %s", appStr));
         }
 
+        if (appStr != null && !appStr.endsWith("/")) {
+            appStr += "/";
+        }
+
         if (namedParams.containsKey("uri")) {
             // get --uri-param
             String uriStr = namedParams.get("uri");
