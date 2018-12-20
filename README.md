@@ -97,7 +97,13 @@ Notice: `WhatsNew` is not supported.
 
 ### File based deployment
 
-The app uri can be a file:// based url instead of an web uri if your application is hosted on a common network location for your users.
+The app uri can be a `file://` based url instead of a web uri if your application is hosted on a common network location for your users.
+
+#### UNC Paths
+FXLauncher can deal with [UNC paths], if you ask it nicely. Instead of `\\server\share\myapp` use `file:////server/share/myapp`.
+Yes, that's four forward slashes; two for the `file://` protocol and two for the UNC path.
+
+[UNC paths]: https://www.lifewire.com/unc-universal-naming-convention-818230
 
 ### Native installers
 
