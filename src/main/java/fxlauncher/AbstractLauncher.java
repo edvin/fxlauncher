@@ -126,13 +126,10 @@ public abstract class AbstractLauncher<APP>  {
             Files.createDirectories(target.getParent());
 
             URI uri;
-            if (!manifest.uri.getPath().endsWith("/")) {
-                // We avoid using uri.resolve() here so as to not break UNC paths. See issue #143
-                uri = URI.create(manifest.uri.toString() + "/" + lib.file);
-            } else {
-                // We avoid using uri.resolve() here so as to not break UNC paths. See issue #143
-                uri = URI.create(manifest.uri.toString() + lib.file);
-            }
+
+            // We avoid using uri.resolve() here so as to not break UNC paths. See issue #143
+            String separator = manifest.uri.getPath().endsWith("/") ? "" : "/";
+            uri = URI.create(manifest.uri.toString() + separator + lib.file);
 
 
             try (InputStream input = openDownloadStream(uri); OutputStream output = Files.newOutputStream(target)) {
