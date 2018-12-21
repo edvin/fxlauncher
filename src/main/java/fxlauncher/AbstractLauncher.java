@@ -2,11 +2,7 @@ package fxlauncher;
 
 import javafx.application.Application;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
+import javax.net.ssl.*;
 import javax.xml.bind.JAXB;
 import java.io.File;
 import java.io.IOException;
@@ -31,6 +27,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.stream.Collectors;
+
+import static fxlauncher.Strings.ensureEndingSlash;
 
 @SuppressWarnings("unchecked")
 public abstract class AbstractLauncher<APP>  {
@@ -185,25 +183,15 @@ public abstract class AbstractLauncher<APP>  {
 
         if (namedParams.containsKey("app")) {
             // get --app-param
-            appStr = namedParams.get("app");
+            appStr = ensureEndingSlash(namedParams.get("app"));
             log.info(String.format("Loading manifest from 'app' parameter supplied: %s", appStr));
-        }
-
-        if (appStr != null && !appStr.endsWith("/")) {
-            appStr += "/";
         }
 
         if (namedParams.containsKey("uri")) {
             // get --uri-param
-            String uriStr = namedParams.get("uri");
-            if (!uriStr.endsWith("/")) {
-                uriStr = uriStr + "/";
-            }
+            String uriStr = ensureEndingSlash(namedParams.get("uri"));
             log.info(String.format("Syncing files from 'uri' parameter supplied:  %s", uriStr));
 
-            if (!uriStr.endsWith("/")) {
-                uriStr += "/";
-            }
             URI uri = URI.create(uriStr);
 
             // load manifest from --app param if supplied, else default file at supplied uri
