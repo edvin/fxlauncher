@@ -132,7 +132,7 @@ jar, you might want to specify where the downloaded artifacts land. See the
 ## Installation location
 
 It's worth noting that the two package alternatives for Windows, (EXE and MSI) have different default install locations.
-While EXE will default to [`%AppDataLocal%`], the MSI installer will default to `%ProgramFiles%`.  To write to 
+While EXE will default to [`%LocalAppData%`], the MSI installer will default to `%ProgramFiles%`.  To write to 
 `%ProgramFiles%` one definitely does need admin privileges—that poses a problem for FXLauncher which, by default, 
 downloads updates to where it was installed. 
 
@@ -141,7 +141,7 @@ to put them. For an OS-independent answer to this problem, look no further than 
 [two magical strings][cache dir documentation], `USERLIB` and `ALLUSERS`. 
 
 
-[`%AppDataLocal%`]: https://www.howtogeek.com/318177/what-is-the-appdata-folder-in-windows/
+[`%LocalAppData%`]: https://www.howtogeek.com/318177/what-is-the-appdata-folder-in-windows/
 
 Read more about Java Packager in the official documentation:
 
