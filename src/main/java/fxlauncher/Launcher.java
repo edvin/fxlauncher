@@ -1,6 +1,5 @@
 package fxlauncher;
 
-import com.sun.javafx.application.ParametersImpl;
 import com.sun.javafx.application.PlatformImpl;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -24,6 +23,7 @@ import java.util.List;
 import java.util.ServiceLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.concurrent.CountDownLatch;
 
 @SuppressWarnings("unchecked")
 public class Launcher extends Application {
@@ -48,7 +48,7 @@ public class Launcher extends Application {
 
         @Override
         protected void createApplication(Class<Application> appClass) {
-            PlatformImpl.runAndWait(() ->
+            runAndWait(() ->
             {
                 try {
                     if (Application.class.isAssignableFrom(appClass)) {
@@ -175,7 +175,7 @@ public class Launcher extends Application {
         superLauncher.setPhase("Application Start");
         log.info("Show whats new dialog? " + showWhatsnew);
 
-        PlatformImpl.runAndWait(() ->
+        runAndWait(() ->
         {
             try {
                 if (showWhatsnew && superLauncher.getManifest().whatsNewPage != null)
@@ -236,7 +236,11 @@ public class Launcher extends Application {
 
     private void startApplication() throws Exception {
         if (app != null) {
-            ParametersImpl.registerParameters(app, new LauncherParams(getParameters(), superLauncher.getManifest()));
+            final LauncherParams params = new LauncherParams(getParameters(), superLauncher.getManifest());
+            app.getParameters().getNamed().putAll(params.getNamed());
+            app.getParameters().getRaw().addAll(params.getRaw());
+            app.getParameters().getUnnamed().addAll(params.getUnnamed());
+
             PlatformImpl.setApplicationName(app.getClass());
             superLauncher.setPhase("Application Init");
             app.start(primaryStage);
@@ -248,6 +252,41 @@ public class Launcher extends Application {
             String command = String.format("java -jar %s/%s", cacheDir.toAbsolutePath(), firstFile);
             log.info(String.format("Execute command '%s'", command));
             Runtime.getRuntime().exec(command);
+        }
+    }
+
+
+    /**
+     * Runs the specified {@link Runnable} on the
+     * JavaFX application thread and waits for completion.
+     *
+     * @param action the {@link Runnable} to run
+     * @throws NullPointerException if {@code action} is {@code null}
+     */
+    void runAndWait(Runnable action) {
+        if (action == null)
+            throw new NullPointerException("action");
+
+        // run synchronously on JavaFX thread
+        if (Platform.isFxApplicationThread()) {
+            action.run();
+            return;
+        }
+
+        // queue on JavaFX thread and wait for completion
+        final CountDownLatch doneLatch = new CountDownLatch(1);
+        Platform.runLater(() -> {
+            try {
+                action.run();
+            } finally {
+                doneLatch.countDown();
+            }
+        });
+
+        try {
+            doneLatch.await();
+        } catch (InterruptedException e) {
+            // ignore exception
         }
     }
 }
