@@ -208,10 +208,6 @@ public class Launcher extends Application {
         alert.showAndWait();
     }
 
-    public static void main(String[] args) {
-        launch(args);
-    }
-
     private void createUpdateWrapper() {
         superLauncher.setPhase("Update Wrapper Creation");
 
