@@ -79,7 +79,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>fxlauncher.Main</mainClass>
+                            <mainClass>fxlauncher.Launcher</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
