@@ -24,8 +24,11 @@ public class CreateManifest {
         String launchClass = args[1];
         Path appPath = Paths.get(args[2]);
 
-        String cacheDir = null;
         String updateText = null;
+        String updateLabelStyle = null;
+        String progressBarStyle = null;
+        String wrapperStyle = null;
+        String cacheDir = null;
         Boolean acceptDowngrade = null;
         Boolean stopOnUpdateErrors = null;
         String parameters = null;
@@ -42,6 +45,22 @@ public class CreateManifest {
             Map<String, String> named = params.getNamed();
 
             if (named != null) {
+                // Configure updateText
+                if (named.containsKey("update-text"))
+                    updateText = named.get("update-text");
+
+                // Configure updateLabelStyle
+                if (named.containsKey("update-label-style"))
+                    updateLabelStyle = named.get("update-label-style");
+
+                // Configure progressBarStyle
+                if (named.containsKey("progress-bar-style"))
+                    progressBarStyle = named.get("progress-bar-style");
+
+                // Configure wrapperStyle
+                if (named.containsKey("wrapper-style"))
+                    wrapperStyle = named.get("wrapper-style");
+
                 // Configure cacheDir
                 if (named.containsKey("cache-dir"))
                     cacheDir = named.get("cache-dir");
@@ -53,10 +72,6 @@ public class CreateManifest {
                 // Configure stopOnUpdateErrors
                 if (named.containsKey("stop-on-update-errors"))
                     stopOnUpdateErrors = Boolean.valueOf(named.get("stop-on-update-errors"));
-
-                // Configure updateText
-                if (named.containsKey("update-text"))
-                    updateText = named.get("update-text");
 
                 // Configure preload native libraries
                 if (named.containsKey("preload-native-libraries"))
@@ -87,13 +102,16 @@ public class CreateManifest {
                     stopOnUpdateErrorsDeprecated = true;
                     continue;
                 }
+                if (raw.startsWith("--update-text=")) continue;
+                if (raw.startsWith("--update-label-style=")) continue;
+                if (raw.startsWith("--progress-bar-style=")) continue;
+                if (raw.startsWith("--wrapper-style=")) continue;
                 if (raw.startsWith("--cache-dir=")) continue;
                 if (raw.startsWith("--accept-downgrade=")) continue;
                 if (raw.startsWith("--stop-on-update-errors=")) continue;
                 if (raw.startsWith("--include-extensions=")) continue;
                 if (raw.startsWith("--preload-native-libraries=")) continue;
                 if (raw.startsWith("--whats-new")) continue;
-                if (raw.startsWith("--update-text")) continue;
                 if (raw.startsWith("--lingering-update-screen")) continue;
                 if (rest.length() > 0) rest.append(" ");
                 rest.append(raw);
@@ -105,12 +123,15 @@ public class CreateManifest {
         }
 
         FXManifest manifest = create(baseURI, launchClass, appPath);
+        if (updateText != null) manifest.updateText = updateText;
+        if (updateLabelStyle != null) manifest.updateLabelStyle = updateLabelStyle;
+        if (progressBarStyle != null) manifest.progressBarStyle = progressBarStyle;
+        if (wrapperStyle != null) manifest.wrapperStyle = wrapperStyle;
         if (cacheDir != null) manifest.cacheDir = cacheDir;
         if (acceptDowngrade != null) manifest.acceptDowngrade = acceptDowngrade;
         if (parameters != null) manifest.parameters = parameters;
         if (preloadNativeLibraries != null) manifest.preloadNativeLibraries = preloadNativeLibraries;
         if (whatsNew != null) manifest.whatsNewPage = whatsNew;
-        if (updateText != null) manifest.updateText = updateText;
         manifest.lingeringUpdateScreen = lingeringUpdateScreen;
 
         // Use --stop-on-update-errors if it was specified.
@@ -155,7 +176,7 @@ public class CreateManifest {
     /**
      * Add the includeExtensions to the default list of "war" and "jar".
      * <p>
-     * Allthough the method is called setIncludeExtensions, it actually does an addAll.
+     * Although the method is called setIncludeExtensions, it actually does an addAll.
      *
      * @param includeExtensions
      */
