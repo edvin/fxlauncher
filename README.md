@@ -182,7 +182,7 @@ after the update process has completed.
 
 ## A slimmer alternative
 
-It is also possible to embed the launchar jar in a native installer system like Advanced Installer - same approach as above, 
+Instead of using javapackager to create an installer, you can embed the fxlauncher jar in a native installer system like Advanced Installer—same approach as above, 
 but without using javapackager. With this approach, you can choose whether to include a JRE or have the installer software preinstall it.
 Again, you are only distributing the launcher with the native installer, the rest is pulled down on demand.
 
