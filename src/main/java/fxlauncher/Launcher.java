@@ -1,6 +1,19 @@
 package fxlauncher;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.URI;
+import java.nio.file.Path;
+import java.util.Iterator;
+import java.util.ServiceLoader;
+import java.util.concurrent.CountDownLatch;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.sun.javafx.application.ParametersImpl;
 import com.sun.javafx.application.PlatformImpl;
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -13,18 +26,6 @@ import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.URI;
-import java.nio.file.Path;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ServiceLoader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.concurrent.CountDownLatch;
-
 @SuppressWarnings("unchecked")
 public class Launcher extends Application {
     private static final Logger log = Logger.getLogger("Launcher");
@@ -35,7 +36,7 @@ public class Launcher extends Application {
     private UIProvider uiProvider;
     private StackPane root;
 
-    private final AbstractLauncher superLauncher = new AbstractLauncher<Application>() {
+    private final AbstractLauncher<Application> superLauncher = new AbstractLauncher<Application>() {
         @Override
         protected Parameters getParameters() {
             return Launcher.this.getParameters();
@@ -236,10 +237,7 @@ public class Launcher extends Application {
 
     private void startApplication() throws Exception {
         if (app != null) {
-            final LauncherParams params = new LauncherParams(getParameters(), superLauncher.getManifest());
-            app.getParameters().getNamed().putAll(params.getNamed());
-            app.getParameters().getRaw().addAll(params.getRaw());
-            app.getParameters().getUnnamed().addAll(params.getUnnamed());
+            ParametersImpl.registerParameters(app, new LauncherParams(getParameters(), superLauncher.getManifest()));
 
             PlatformImpl.setApplicationName(app.getClass());
             superLauncher.setPhase("Application Init");
