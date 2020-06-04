@@ -183,7 +183,9 @@ public abstract class AbstractLauncher<APP>  {
 
         if (namedParams.containsKey("app")) {
             // get --app-param
-            appStr = ensureEndingSlash(namedParams.get("app"));
+           // appStr = ensureEndingSlash(namedParams.get("app"));
+        	// no need to add slass to end
+            appStr = namedParams.get("app");
             log.info(String.format("Loading manifest from 'app' parameter supplied: %s", appStr));
         }
 

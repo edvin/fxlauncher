@@ -17,7 +17,7 @@ import java.util.*;
 
 import static fxlauncher.Strings.ensureEndingSlash;
 
-@SuppressWarnings("unchecked")
+
 @XmlRootElement(name = "Application")
 public class FXManifest {
 	@XmlAttribute
