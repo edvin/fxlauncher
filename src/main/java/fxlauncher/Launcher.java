@@ -53,12 +53,11 @@ public class Launcher extends Application {
 					if (Application.class.isAssignableFrom(appClass)) {
 						app = appClass.newInstance();
 					} else {
-						throw new IllegalArgumentException(String.format(
-								"Supplied appClass %s was not a subclass of javafx.application.Application!",
-								appClass));
+						throw new IllegalArgumentException(
+								String.format(Constants.getString("Error.Application.Create.1"), appClass));
 					}
 				} catch (Throwable t) {
-					reportError("Error creating app class", t);
+					reportError(Constants.getString("Error.Application.Create.2"), t);
 				}
 			});
 		}
@@ -70,9 +69,8 @@ public class Launcher extends Application {
 			Platform.runLater(() -> {
 				Alert alert = new Alert(Alert.AlertType.ERROR);
 				alert.setTitle(title);
-				alert.setHeaderText(String.format("%s\ncheck the logfile 'fxlauncher.log, usually in the %s directory",
-						title, System.getProperty("java.io.tmpdir")));
-//            alert.setHeaderText(title+"\nCheck the logfile usually in the "+System.getProperty("java.io.tmpdir") + "directory");
+				alert.setHeaderText(String.format(Constants.getString("Error.Alert.Header"), title,
+						System.getProperty("java.io.tmpdir")));
 				alert.getDialogPane().setPrefWidth(600);
 
 				ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -151,9 +149,11 @@ public class Launcher extends Application {
 				createUpdateWrapper();
 				filesUpdated[0] = superLauncher.syncFiles();
 			} catch (Exception ex) {
-				log.log(Level.WARNING, String.format("Error during %s phase", superLauncher.getPhase()), ex);
+				log.log(Level.WARNING,
+						String.format(Constants.getString("Error.Start.Phase"), superLauncher.getPhase()), ex);
 				if (superLauncher.checkIgnoreUpdateErrorSetting()) {
-					superLauncher.reportError(String.format("Error during %s phase", superLauncher.getPhase()), ex);
+					superLauncher.reportError(
+							String.format(Constants.getString("Error.Start.Phase"), superLauncher.getPhase()), ex);
 					System.exit(1);
 				}
 			}
@@ -162,22 +162,23 @@ public class Launcher extends Application {
 				superLauncher.createApplicationEnvironment();
 				launchAppFromManifest(filesUpdated[0]);
 			} catch (Exception ex) {
-				superLauncher.reportError(String.format("Error during %s phase", superLauncher.getPhase()), ex);
+				superLauncher.reportError(
+						String.format(Constants.getString("Error.Start.Phase"), superLauncher.getPhase()), ex);
 			}
 
 		}).start();
 	}
 
 	private void launchAppFromManifest(boolean showWhatsnew) throws Exception {
-		superLauncher.setPhase("Application Environment Prepare");
+		superLauncher.setPhase(Constants.getString("Application.Phase.Create"));
 
 		try {
 			initApplication();
 		} catch (Throwable ex) {
-			superLauncher.reportError("Error during app init", ex);
+			superLauncher.reportError(Constants.getString("Error.Application.Init"), ex);
 		}
-		superLauncher.setPhase("Application Start");
-		log.info("Show whats new dialog? " + showWhatsnew);
+		superLauncher.setPhase(Constants.getString("Application.Phase.Start"));
+		log.info(() -> Constants.getString("Whatsnew.Log") + showWhatsnew);
 
 		runAndWait(() -> {
 			try {
@@ -196,7 +197,7 @@ public class Launcher extends Application {
 
 				startApplication();
 			} catch (Throwable ex) {
-				superLauncher.reportError("Failed to start application", ex);
+				superLauncher.reportError(Constants.getString("Error.Application.Start"), ex);
 			}
 		});
 	}
@@ -205,8 +206,8 @@ public class Launcher extends Application {
 		WebView view = new WebView();
 		view.getEngine().load(whatsNewURL);
 		Alert alert = new Alert(Alert.AlertType.INFORMATION);
-		alert.setTitle("What's new");
-		alert.setHeaderText("New in this update");
+		alert.setTitle(Constants.getString("Whatsnew.Title"));
+		alert.setHeaderText(Constants.getString("Whatsnew.Header"));
 		alert.getDialogPane().setContent(view);
 		alert.showAndWait();
 	}
@@ -216,7 +217,7 @@ public class Launcher extends Application {
 	}
 
 	private void createUpdateWrapper() {
-		superLauncher.setPhase("Update Wrapper Creation");
+		superLauncher.setPhase(Constants.getString("Application.Phase.Wrapper"));
 
 		Platform.runLater(() -> {
 			Parent updater = uiProvider.createUpdater(superLauncher.getManifest());
@@ -247,15 +248,15 @@ public class Launcher extends Application {
 				appparams.getUnnamed().addAll(params.getUnnamed());
 			}
 			PlatformImpl.setApplicationName(app.getClass());
-			superLauncher.setPhase("Application Init");
+			superLauncher.setPhase(Constants.getString("Application.Phase.Init"));
 			app.start(primaryStage);
 		} else {
 			// Start any executable jar (i.E. Spring Boot);
 			String firstFile = superLauncher.getManifest().files.get(0).file;
-			log.info(String.format("No app class defined, starting first file (%s)", firstFile));
+			log.info(() -> String.format(Constants.getString("Application.log.Noappclass"), firstFile));
 			Path cacheDir = superLauncher.getManifest().resolveCacheDir(getParameters().getNamed());
 			String command = String.format("java -jar %s/%s", cacheDir.toAbsolutePath(), firstFile);
-			log.info(String.format("Execute command '%s'", command));
+			log.info(() -> String.format(Constants.getString("Application.log.Execute"), command));
 			Runtime.getRuntime().exec(command);
 		}
 	}
