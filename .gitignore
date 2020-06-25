@@ -82,3 +82,4 @@ buildNumber.properties
 /bin/
 /.settings/
 /.project
+/.classpath
