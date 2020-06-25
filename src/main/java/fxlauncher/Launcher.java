@@ -170,7 +170,7 @@ public class Launcher extends Application {
 	}
 
 	private void launchAppFromManifest(boolean showWhatsnew) throws Exception {
-		superLauncher.setPhase(Constants.getString("Application.Phase.Create"));
+		superLauncher.setPhase(Constants.getString("Application.Phase.Prepare"));
 
 		try {
 			initApplication();
