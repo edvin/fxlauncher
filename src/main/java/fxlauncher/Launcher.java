@@ -25,7 +25,7 @@ import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-@SuppressWarnings("restriction")
+
 public class Launcher extends Application {
 	private static final Logger log = Logger.getLogger("Launcher");
 
