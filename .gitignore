@@ -80,3 +80,5 @@ buildNumber.properties
 
 # End of https://www.gitignore.io/api/jetbrains,maven,macos
 /bin/
+/.settings/
+/.project
