@@ -24,7 +24,7 @@ public interface Resolver extends UnaryOperator<String>{
 	
 	public static final Resolver CACHE_DIR = unresolved -> {
 		if(unresolved == null) return unresolved;
-		log.finer("Attempting resolution of CACHE_DIR");
+		log.finer("Attempting resolution of option CACHE_DIR");
 		log.finer(String.format("Unresolved value: '%s'", unresolved));
 		String resolved = unresolved; // assume no change, then check if change is necessary
 
