@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
