@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -37,7 +38,7 @@ public enum LauncherOption {
 	HEADLESS("headless", false, Defaults.BOOL_FALSE, null, null),
 	WHATS_NEW_URL("whats-new-url", true, Defaults.NONE, null, Validator.URL),
 	LINGERING_UPDATE_SCREEN("lingering-update-screen", true, Defaults.BOOL_TRUE, null, Validator.BOOL),;
-
+	
 	// the string that should be used in a command-line argument or properties file to set this option
 	private final String label;
 	private final Pattern pattern;

@@ -2,11 +2,14 @@ package fxlauncher.model;
 
 import static fxlauncher.model.GenericPathLabel.ALLUSERS;
 import static fxlauncher.model.GenericPathLabel.USERLIB;
+import static java.util.logging.Logger.getLogger;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.logging.Logger;
+
 
 /**
  * Represents an operating-system supported by FxLauncher
@@ -21,6 +24,7 @@ public enum OS {
 	OTHER,
 	;
 	
+	private final static Logger log = getLogger(OS.class.getName());
 	public static final OS current;
 	
 	private final Path home = Paths.get(System.getProperty("user.home"));
@@ -57,6 +61,7 @@ public enum OS {
 		return pathMap.get(label);
 	}
 	
+	// initializer runs at class-load time
 	static {
 		String os = System.getProperty("os.name", "generic").toLowerCase();
 		
@@ -64,5 +69,6 @@ public enum OS {
 		else if (os.contains("win")) current = WIN;
 		else if (os.contains("nux")) current = LINUX;
 		else current = OTHER;
+		log.finer(String.format("Current operating system is: %s", MAC));
 	}
 }

@@ -1,5 +1,7 @@
 package fxlauncher.model.lifecycle;
 
+import static java.util.logging.Logger.getLogger;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -28,7 +30,7 @@ public enum LifecyclePhase {
 	APPLICATION_START,
 	;
 	
-	private static Logger log = Logger.getLogger(LifecyclePhase.class.getName());
+	private static Logger log = getLogger(LifecyclePhase.class.getName());
 	
 	public static LifecyclePhase current = STARTUP;
 	
@@ -40,9 +42,10 @@ public enum LifecyclePhase {
 	 * @param phase the new current phase
 	 */
 	public static void setCurrent(LifecyclePhase phase) {
+		log.fine(String.format("exiting launcher lifecycle phase ", current.toString()));
 		LifecyclePhase.current.exitPhaseListeners.forEach(LifecycleListener::notifyListener);
-		log.fine("beginning launcher lifecycle phase");
 		current = phase;
+		log.fine(String.format("beginning launcher lifecycle phase ", current.toString()));
 		LifecyclePhase.current.enterPhaseListeners.forEach(LifecycleListener::notifyListener);
 	}
 	
