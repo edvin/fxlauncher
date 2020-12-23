@@ -1,9 +1,12 @@
-package fxlauncher;
+package fxlauncher.old;
 
 import javax.xml.bind.JAXB;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import static fxlauncher.old.Strings.ensureEndingSlash;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,8 +17,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-
-import static fxlauncher.Strings.ensureEndingSlash;
 
 @SuppressWarnings("unchecked")
 @XmlRootElement(name = "Application")

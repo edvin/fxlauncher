@@ -1,4 +1,4 @@
-package fxlauncher;
+package fxlauncher.old;
 
 import java.io.File;
 import java.net.MalformedURLException;

@@ -1,4 +1,4 @@
-package fxlauncher;
+package fxlauncher.old;
 
 public class Strings {
     public static String ensureEndingSlash(String s) {

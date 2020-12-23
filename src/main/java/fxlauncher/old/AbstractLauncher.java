@@ -1,9 +1,12 @@
-package fxlauncher;
+package fxlauncher.old;
 
 import javafx.application.Application;
 
 import javax.net.ssl.*;
 import javax.xml.bind.JAXB;
+
+import static fxlauncher.old.Strings.ensureEndingSlash;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,8 +30,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.stream.Collectors;
-
-import static fxlauncher.Strings.ensureEndingSlash;
 
 @SuppressWarnings("unchecked")
 public abstract class AbstractLauncher<APP>  {
