@@ -19,7 +19,6 @@ import fxlauncher.model.lifecycle.LifecyclePhase;
 
 /**
  * The set of configurable options for FxLauncher.
- * 
  * @author idavis1
  */
 public enum LauncherOption {
