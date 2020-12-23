@@ -53,6 +53,7 @@ public interface UIProvider {
 	 *
 	 * @see #updateProgress(double)
 	 * @return The updater Node
+	 * @param manifest a manifest that contains style data
 	 */
 	Parent createUpdater(FXManifest manifest);
 
