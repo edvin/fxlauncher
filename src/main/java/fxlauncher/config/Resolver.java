@@ -1,13 +1,13 @@
 package fxlauncher.config;
 
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 import fxlauncher.model.GenericPathLabel;
 import fxlauncher.model.OS;
 
-public interface Resolver extends Function<String, String>{
+public interface Resolver extends UnaryOperator<String>{
 
-	public static Resolver DEFAULT = string -> string;
+	public static Resolver DEFAULT = unresolved -> unresolved;
 	
 	public static final Resolver CACHE_DIR = unresolved -> {
 		if(unresolved == null) return unresolved;
