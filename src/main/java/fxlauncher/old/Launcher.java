@@ -1,4 +1,4 @@
-package fxlauncher;
+package fxlauncher.old;
 
 import com.sun.javafx.application.PlatformImpl;
 import javafx.application.Application;

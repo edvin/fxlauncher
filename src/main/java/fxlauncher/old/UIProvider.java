@@ -1,4 +1,4 @@
-package fxlauncher;
+package fxlauncher.old;
 
 import javafx.scene.Parent;
 import javafx.stage.Stage;

@@ -1,4 +1,4 @@
-package fxlauncher;
+package fxlauncher.old;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import java.io.IOException;

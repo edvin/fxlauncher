@@ -1,4 +1,4 @@
-package fxlauncher;
+package fxlauncher.old;
 
 import javax.xml.bind.JAXB;
 import java.io.IOException;

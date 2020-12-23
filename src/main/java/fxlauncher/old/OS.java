@@ -1,4 +1,4 @@
-package fxlauncher;
+package fxlauncher.old;
 
 enum OS {
 	win, mac, linux, other;
