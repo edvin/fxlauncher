@@ -42,7 +42,7 @@ public abstract class AbstractLauncher<APP>  {
      * Make java.util.logger log to a file. Default it will log to $TMPDIR/fxlauncher.log. This can be overriden by using
      * comman line parameter <code>--logfile=logfile</code>
      *
-     * @throws IOException
+     * @throws IOException when Log file not found or uneditable.
      */
     protected void setupLogFile() throws IOException {
         String filename = System.getProperty("java.io.tmpdir") + File.separator + "fxlauncher.log";
@@ -57,8 +57,8 @@ public abstract class AbstractLauncher<APP>  {
     /**
      * Check if the SSL connection needs to ignore the validity of the ssl certificate.
      *
-     * @throws KeyManagementException
-     * @throws NoSuchAlgorithmException
+     * @throws KeyManagementException if key is not available
+     * @throws NoSuchAlgorithmException if algorithm is invalid
      */
     protected void checkSSLIgnoreflag() throws KeyManagementException, NoSuchAlgorithmException {
         if (getParameters().getUnnamed().contains("--ignoressl")) {
@@ -96,7 +96,7 @@ public abstract class AbstractLauncher<APP>  {
      * Also return false and do not check for updates if the <code>--offline</code> commandline argument is set.
      *
      * @return true if new files have been downloaded, false otherwise.
-     * @throws Exception
+     * @throws Exception if the files cannot be downloaded
      */
     protected boolean syncFiles() throws Exception {
 

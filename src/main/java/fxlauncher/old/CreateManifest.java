@@ -178,7 +178,7 @@ public class CreateManifest {
      * <p>
      * Although the method is called setIncludeExtensions, it actually does an addAll.
      *
-     * @param includeExtensions
+     * @param includeExtensions a list of extensions that should be included in the manifest
      */
     public static void setIncludeExtensions(List<String> includeExtensions) {
         CreateManifest.includeExtensions.addAll(includeExtensions);
