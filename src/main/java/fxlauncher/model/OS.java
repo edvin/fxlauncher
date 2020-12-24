@@ -8,6 +8,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 
@@ -41,7 +43,7 @@ public enum OS {
 				break;
 			case "win":
 				userLibPath = home.resolve("AppData").resolve("Local");
-				allUsersPath = Paths.get(System.getenv("ALLUSERSPROFILE"));
+				allUsersPath = Paths.get(Optional.ofNullable(System.getenv("ALLUSERSPROFILE")).orElse(""));
 				break;
 			default:
 				userLibPath = home;
