@@ -9,9 +9,7 @@ import java.nio.file.Paths;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Supplier;
 import java.util.logging.Logger;
-
 
 /**
  * Represents an operating-system supported by FxLauncher
