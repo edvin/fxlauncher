@@ -1,5 +1,9 @@
 package fxlauncher.model;
 
+import static fxlauncher.model.OS.LINUX;
+import static fxlauncher.model.OS.MAC;
+import static fxlauncher.model.OS.OTHER;
+import static fxlauncher.model.OS.WIN;
 import static java.util.logging.Logger.getLogger;
 
 import java.nio.file.Path;
@@ -18,11 +22,12 @@ public class OSTestHarness {
 
 	private static final String ALLUSERS_ENVVAR_KEY = "ALLUSERSPROFILE";
 	private static final String ALLUSERS_ENVVAR_VAL = "TEST_ALL_USERS_PROFILE";
+	private static final String HOME_PATH = System.getProperty("user.home");
 
 	/*
-	 * initializer causes intervention in System environment variables to occur
-	 * before OS.class is loaded (And therefore before any of its member objects are
-	 * instantiated.
+	 * initializer causes intervention in environment variables to occur before
+	 * OS.class is loaded (And therefore before any of its member objects are
+	 * instantiated and initialized).
 	 */
 	static {
 		try {
@@ -38,12 +43,21 @@ public class OSTestHarness {
 	protected static final Map<OS, Path> expectedAllUsersPathMap = new EnumMap<OS, Path>(OS.class) {
 	};
 
+	@SuppressWarnings("serial")
+	protected static final Map<OS, Path> expectedUserLibPathMap = new EnumMap<OS, Path>(OS.class) {
+	};
+
 	@BeforeAll
 	public static void init() throws ReflectiveOperationException {
-		expectedAllUsersPathMap.put(OS.MAC, Paths.get("/Library/Application Support"));
-		expectedAllUsersPathMap.put(OS.WIN, Paths.get(ALLUSERS_ENVVAR_VAL));
-		expectedAllUsersPathMap.put(OS.LINUX, Paths.get("/usr/local/share"));
-		expectedAllUsersPathMap.put(OS.OTHER, Paths.get("/usr/local/share"));
+		expectedAllUsersPathMap.put(MAC, Paths.get("/Library/Application Support"));
+		expectedAllUsersPathMap.put(WIN, Paths.get(ALLUSERS_ENVVAR_VAL));
+		expectedAllUsersPathMap.put(LINUX, Paths.get("/usr/local/share"));
+		expectedAllUsersPathMap.put(OTHER, Paths.get("/usr/local/share"));
+
+		expectedUserLibPathMap.put(MAC, Paths.get(HOME_PATH).resolve("Library").resolve("Application Support"));
+		expectedUserLibPathMap.put(WIN, Paths.get(HOME_PATH).resolve("AppData").resolve("Local"));
+		expectedUserLibPathMap.put(LINUX, Paths.get(HOME_PATH));
+		expectedUserLibPathMap.put(OTHER, Paths.get(HOME_PATH));
 	}
 
 }

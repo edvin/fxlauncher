@@ -1,6 +1,7 @@
 package fxlauncher.model;
 
 import static fxlauncher.model.GenericPathLabel.ALLUSERS;
+import static fxlauncher.model.GenericPathLabel.USERLIB;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.nio.file.Path;
@@ -21,5 +22,16 @@ public class OSTest extends OSTestHarness {
 		Path expected = expectedAllUsersPathMap.get(os);
 
 		assertEquals(expected, os.getGenericPath(ALLUSERS));
+	}
+
+	@ParameterizedTest(name = "OS \"{0}\" returns the correct USERLIB path.")
+	@ValueSource(strings = { "WIN", "MAC", "LINUX", "OTHER" })
+	@DisplayName("Test of USERLIB Path resolution for all operating systems")
+	void testUserLibPath(String osString) {
+
+		OS os = OS.valueOf(osString);
+		Path expected = expectedUserLibPathMap.get(os);
+
+		assertEquals(expected, os.getGenericPath(USERLIB));
 	}
 }
