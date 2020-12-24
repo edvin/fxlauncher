@@ -39,13 +39,8 @@ public class OSTestHarness {
 		}
 	}
 
-	@SuppressWarnings("serial")
-	protected static final Map<OS, Path> expectedAllUsersPathMap = new EnumMap<OS, Path>(OS.class) {
-	};
-
-	@SuppressWarnings("serial")
-	protected static final Map<OS, Path> expectedUserLibPathMap = new EnumMap<OS, Path>(OS.class) {
-	};
+	protected static final Map<OS, Path> expectedAllUsersPathMap = new EnumMap<OS, Path>(OS.class);
+	protected static final Map<OS, Path> expectedUserLibPathMap = new EnumMap<OS, Path>(OS.class);
 
 	@BeforeAll
 	public static void init() throws ReflectiveOperationException {
