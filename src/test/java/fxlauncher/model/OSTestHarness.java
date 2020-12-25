@@ -21,7 +21,7 @@ public class OSTestHarness {
 	private static final Logger log = getLogger(OSTest.class.getName());
 
 	private static final String ALLUSERS_ENVVAR_KEY = "ALLUSERSPROFILE";
-	private static final String ALLUSERS_ENVVAR_VAL = "TEST_ALL_USERS_PROFILE";
+	private static final String ALLUSERS_ENVVAR_VAL = "TEST_ALLUSERS_PROFILE";
 	private static final String HOME_PATH = System.getProperty("user.home");
 
 	/*
