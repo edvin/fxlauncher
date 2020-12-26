@@ -3,6 +3,7 @@ package fxlauncher.config;
 import static fxlauncher.model.lifecycle.LifecyclePhase.LOAD_EMBEDDED_CONFIG;
 import static fxlauncher.model.lifecycle.LifecyclePhase.PARSE_CLI_ARGS;
 import static fxlauncher.model.lifecycle.LifecyclePhase.STARTUP;
+import static java.util.logging.Logger.getLogger;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toCollection;
 
@@ -10,7 +11,9 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -39,6 +42,8 @@ public enum LauncherOption {
 	HEADLESS("headless", false, Defaults.BOOL_FALSE, null, Validator.BOOL),
 	WHATS_NEW_URL("whats-new-url", true, Defaults.NONE, null, Validator.URL),
 	LINGERING_UPDATE_SCREEN("lingering-update-screen", false, Defaults.BOOL_TRUE, null, Validator.BOOL),;
+
+	private final static Logger log = getLogger(LauncherOption.class.getName());
 
 	// the string that should be used in a command-line argument or properties file
 	// to set this option
@@ -109,6 +114,17 @@ public enum LauncherOption {
 	 */
 	public static Set<LauncherOption> getSet() {
 		return getSubset(LauncherOption::isSet);
+	}
+
+	/**
+	 * Convenience method allows an action to be performed on all LauncherOption
+	 * intances.
+	 *
+	 * @param action the action to be performed
+	 */
+	public static void forEach(Consumer<LauncherOption> action) {
+		for (LauncherOption opt : values())
+			action.accept(opt);
 	}
 
 	private LauncherOption(String label, boolean hasArg, String defaultVal, Resolver resolver, Validator validator) {
@@ -189,7 +205,7 @@ public enum LauncherOption {
 	 * @return a {@link Matcher} created from the {@link LauncherOption}'s label and
 	 *         the string to be matched.
 	 */
-	Matcher getMatcher(String arg) {
+	public Matcher getMatcher(String arg) {
 		return pattern.matcher(arg);
 	}
 
@@ -217,6 +233,7 @@ public enum LauncherOption {
 	 * @param phase
 	 */
 	void recordOptionSet(LifecyclePhase phase) {
+		log.finer(String.format("Option '%s' set during phase '%s'", this, phase));
 		this.lastSetDuring = phase;
 	}
 
