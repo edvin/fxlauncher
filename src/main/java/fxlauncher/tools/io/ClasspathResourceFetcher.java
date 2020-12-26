@@ -2,6 +2,7 @@ package fxlauncher.tools.io;
 
 import java.io.InputStream;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 import fxlauncher.except.FXLauncherException;
 import fxlauncher.old.Launcher;
@@ -14,6 +15,8 @@ import fxlauncher.old.Launcher;
  */
 public class ClasspathResourceFetcher implements FileFetcher {
 
+	private final static Logger log = Logger.getLogger(ClasspathResourceFetcher.class.getName());
+
 	private final String resourceName;
 
 	public ClasspathResourceFetcher(String resourceName) {
@@ -25,6 +28,7 @@ public class ClasspathResourceFetcher implements FileFetcher {
 	 */
 	@Override
 	public Optional<InputStream> fetch() throws FXLauncherException {
+		log.fine("Fetching resource " + resourceName);
 		return Optional.ofNullable(Launcher.class.getResourceAsStream(resourceName));
 	}
 }
