@@ -21,6 +21,17 @@ import fxlauncher.tools.io.ClasspathResourceFetcher;
  * Implementation of {@link ConfigurationIngester} that reads values in from a
  * Java properties file.
  *
+ * @implNote using {@link Supplier<String>} to provide the configuration
+ *           filename allows resolution of the value when {@code _ingest()} is
+ *           invoked, rather than at or before execution of the constructor.
+ *           This is useful when another {@link ConfigurationIngester} changes
+ *           the configuration state after this object is constructed, but
+ *           before its {@code _ingest()} method runs. We always want to run
+ *           {@code _ingest()} based on the current state at the time of
+ *           execution. In the case where this value is not expected to be
+ *           changed, a String can be provided and this class will construct the
+ *           appropriate Supplier for it.
+ *
  * @author idavis1
  *
  */
@@ -30,10 +41,6 @@ public class PropertiesFileIngester extends ConfigurationIngester {
 
 	private final Properties props = new Properties();
 
-	// using Supplier here allows the source to be defined at construction-time, but
-	// not retrieved before _ingest() is invoked. This is handy when another
-	// ConfigurationIngester can change configuration state after this object is
-	// constructed, but before the _ingest() method is invoked.
 	private Supplier<String> resourceNameSupplier = () -> LauncherOption.CONFIG_FILE.getDefault();
 
 	public PropertiesFileIngester() {
