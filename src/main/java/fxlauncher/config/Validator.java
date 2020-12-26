@@ -1,7 +1,5 @@
 package fxlauncher.config;
 
-import static java.util.logging.Logger.getLogger;
-
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -13,7 +11,13 @@ import java.util.regex.Pattern;
  */
 public interface Validator extends Predicate<String> {
 
-	static final Logger log = getLogger(Validator.class.getName());
+	static public String getExpected(Validator validator) {
+		if (validator == Validator.BOOL)
+			return "boolean";
+		if (validator == Validator.URL)
+			return "URL";
+		return "String";
+	}
 
 	// OWASP-supplied URL pattern-matching regexp
 	static final String URL_REGEX = "^((((https?|ftps?|gopher|telnet|nntp)://)|(mailto:|news:))"
@@ -24,12 +28,13 @@ public interface Validator extends Predicate<String> {
 	public static final Validator DEFAULT = string -> true;
 
 	public static final Validator BOOL = string -> {
-		log.finer(String.format("validating as boolean: '%s'", string));
+		Logger.getLogger(Validator.BOOL.getClass().getName())
+				.finer(String.format("validating as boolean: '%s'", string));
 		return string == null ? false : string.equalsIgnoreCase("true") || string.equalsIgnoreCase("false");
 	};
 
 	public static final Validator URL = string -> {
-		log.finer(String.format("validating as URL: '%s'", string));
+		Logger.getLogger(Validator.URL.getClass().getName()).finer(String.format("validating as URL: '%s'", string));
 
 		return string == null ? false : URL_PATTERN.matcher(string).matches();
 	};
