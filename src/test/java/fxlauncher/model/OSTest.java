@@ -8,7 +8,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
-@DisplayName("Test of methods in the fxlauncher.model.OS enumerated type")
 public class OSTest extends OSTestHarness {
 
 	@ParameterizedTest(name = "OS \"{0}\" returns the correct path.")
@@ -20,7 +19,7 @@ public class OSTest extends OSTestHarness {
 
 	@ParameterizedTest(name = "OS \"{0}\" returns the correct path.")
 	@EnumSource(OS.class)
-	@DisplayName("When resolver 'USERLIB' sentinel value...")
+	@DisplayName("When resolving 'USERLIB' sentinel value...")
 	void testUserLibPath(OS os) {
 
 		assertEquals(expectedUserLibPathMap.get(os), os.getGenericPath(USERLIB));
