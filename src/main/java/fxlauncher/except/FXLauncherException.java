@@ -5,26 +5,26 @@ package fxlauncher.except;
  * that are thrown during execution of FxLauncher.
  * @author idavis1
  */
-public abstract class FxLauncherException extends RuntimeException {
+public abstract class FXLauncherException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 
-	public FxLauncherException() {
+	public FXLauncherException() {
 		super();
 	}
 
-	public FxLauncherException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+	public FXLauncherException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
 		super(message, cause, enableSuppression, writableStackTrace);
 	}
 
-	public FxLauncherException(String message, Throwable cause) {
+	public FXLauncherException(String message, Throwable cause) {
 		super(message, cause);
 	}
 
-	public FxLauncherException(String message) {
+	public FXLauncherException(String message) {
 		super(message);
 	}
 
-	public FxLauncherException(Throwable cause) {
+	public FXLauncherException(Throwable cause) {
 		super(cause);
 	}
 	
